@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["TokenType","The role that a token plays: `Whitespace` or `Word`."]],"fn":[["tokenize","Tokenize a body of text."]],"struct":[["SourceLocation","A range within a string."],["SourceOffset","A position within a string."],["Token","A token from a body of text."]]});

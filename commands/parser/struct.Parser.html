@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Parser` struct in crate `commands`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Parser">
+
+    <title>commands::parser::Parser - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>commands</a>::<wbr><a href='index.html'>parser</a></p><script>window.sidebarCurrent = {name: 'Parser', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>commands</a>::<wbr><a href='index.html'>parser</a>::<wbr><a class='struct' href=''>Parser</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-340' class='srclink' href='../../src/commands/src/parser/mod.rs.html#28-37' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Parser&lt;'r, 'p&gt; {
+    pub nodes: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'r <a class='trait' href='../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'r&gt;&gt;,
+    pub tokens: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'p <a class='struct' href='../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'p&gt;&gt;,
+    // some fields omitted
+}</pre><div class='docblock'><p>Command parser</p>
+
+<p>The lifetime parameter <code>&#39;r</code> refers to the lifetime of the
+root node of the command tree that was used to create this
+parser.</p>
+
+<p>The lifetime parameter <code>&#39;p</code> refers to the lifetime of the parser
+and of the tokens passed into this parser.</p>
+</div><h2 class='fields'>Fields</h2>
+<table><tr class='stab '>
+                                  <td id='structfield.nodes'><code>nodes</code></td><td><div class='docblock'><p>The nodes which have been accepted during <code>parse</code> or <code>advance</code>.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.tokens'><code>tokens</code></td><td><div class='docblock'><p>The tokens which have been accepted during <code>parse</code> or <code>advance</code>.</p>
+</div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;'r, 'p&gt; <a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>&lt;'r, 'p&gt;</code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(initial_node: &amp;'r <a class='struct' href='../../commands/parser/nodes/struct.RootNode.html' title='commands::parser::nodes::RootNode'>RootNode</a>&lt;'r&gt;) -&gt; <a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>&lt;'r, 'p&gt;</code></h4>
+<div class='docblock'><p>Construct a parser with a root node.</p>
+</div><h4 id='method.push_command' class='method'><code>fn <a href='#method.push_command' class='fnname'>push_command</a>(&amp;mut self, command: &amp;'r <a class='trait' href='../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'r&gt;)</code></h4>
+<div class='docblock'><p>XXX: Temporarily public.</p>
+</div><h4 id='method.parse' class='method'><code>fn <a href='#method.parse' class='fnname'>parse</a>(&amp;mut self, tokens: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'p <a class='struct' href='../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'p&gt;&gt;)</code></h4>
+<div class='docblock'><p>Parse a vector of tokens, advancing through the
+node hierarchy.</p>
+</div><h4 id='method.advance' class='method'><code>fn <a href='#method.advance' class='fnname'>advance</a>(&amp;mut self, token: &amp;'p <a class='struct' href='../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'p&gt;)</code></h4>
+<div class='docblock'><p>Parse a single token, advancing through the node hierarchy.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "commands";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>
