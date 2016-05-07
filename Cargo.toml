@@ -1,0 +1,13 @@
+[package]
+name = "commands"
+version = "0.1.0"
+authors = ["Bruce Mitchener <bruce.mitchener@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+description = "A command system for Rust."
+keywords = ["argument", "cli", "command"]
+homepage = "https://github.com/waywardmonkeys/commands.rs"
+repository = "https://github.com/waywardmonkeys/commands.rs"
+documentation = "http://waywardmonkeys.github.io/commands.rs/"
+
+[dependencies]
