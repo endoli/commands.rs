@@ -232,7 +232,8 @@ impl<'t> Tokenizer<'t> {
                     }
                 }
                 State::WordBackslash => {
-                    if !c.is_whitespace() {
+                    // XXX: This should be if !c.is_control() perhaps?
+                    if c.is_alphanumeric() || c.is_whitespace() {
                         self.shift(offset, State::Word);
                     } else {
                         panic!("Character not allowed here.");
@@ -325,5 +326,12 @@ mod test {
         assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
         assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
         assert_eq!(ts[2], mk_token("\"b c\"", TokenType::Word, 2, 6));
+    }
+
+    #[test]
+    fn escaped_whitespace_in_word() {
+        let ts = tokenize("a\\ b");
+        assert_eq!(ts.len(), 1);
+        assert_eq!(ts[0], mk_token("a\\ b", TokenType::Word, 0, 3));
     }
 }
