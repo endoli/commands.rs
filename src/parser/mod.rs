@@ -9,13 +9,12 @@
 
 #![allow(dead_code)]
 
-pub mod tokenizer;
 pub mod nodes;
 pub mod completion;
 
 use std::collections::HashMap;
-use parser::tokenizer::{Token, TokenType};
 use parser::nodes::*;
+use tokenizer::{Token, TokenType};
 
 /// Command parser
 ///

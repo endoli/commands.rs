@@ -4,7 +4,7 @@
 #![allow(dead_code, missing_docs, unused_variables)]
 
 use parser::nodes::*;
-use parser::tokenizer::Token;
+use tokenizer::Token;
 
 /// Represents a single option returned by `complete`.
 ///

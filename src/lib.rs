@@ -12,3 +12,4 @@
         unused_import_braces, unused_qualifications)]
 
 pub mod parser;
+pub mod tokenizer;

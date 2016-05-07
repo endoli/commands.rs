@@ -11,7 +11,7 @@
 //! # Examples
 //!
 //! ```
-//! use commands::parser::tokenizer::tokenize;
+//! use commands::tokenizer::tokenize;
 //!
 //! let tokens = tokenize("word");
 //! assert_eq!(tokens.len(), 1);
