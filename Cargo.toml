@@ -8,6 +8,6 @@ description = "A command system for Rust."
 keywords = ["argument", "cli", "command"]
 homepage = "https://github.com/waywardmonkeys/commands.rs"
 repository = "https://github.com/waywardmonkeys/commands.rs"
-documentation = "http://waywardmonkeys.github.io/commands.rs/"
+documentation = "http://waywardmonkeys.github.io/commands.rs/commands/"
 
 [dependencies]
