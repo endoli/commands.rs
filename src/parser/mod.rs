@@ -26,12 +26,11 @@ use tokenizer::{Token, TokenType};
 /// and of the tokens passed into this parser.
 pub struct Parser<'r, 'p> {
     current_node: &'r Node<'r>,
-
     /// The nodes which have been accepted during `parse` or `advance`.
     pub nodes: Vec<&'r Node<'r>>,
     /// The tokens which have been accepted during `parse` or `advance`.
     pub tokens: Vec<&'p Token<'p>>,
-    commands: Vec<&'r Node<'r>>,
+    commands: Vec<&'r CommandNode<'r>>,
     parameters: HashMap<String, String>,
 }
 
@@ -54,7 +53,7 @@ impl<'r, 'p> Parser<'r, 'p> {
     }
 
     /// XXX: Temporarily public.
-    pub fn push_command(&mut self, command: &'r Node<'r>) {
+    pub fn push_command(&mut self, command: &'r CommandNode<'r>) {
         self.commands.push(command);
     }
 
