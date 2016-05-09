@@ -299,8 +299,12 @@ impl<'t> Tokenizer<'t> {
             State::Whitespace => self.reduce(),
             State::WordBackslash => return Err(TokenizerError::EscapingBackslashAtEndOfInput),
             State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput),
-            State::DoublequoteBackslash => return Err(TokenizerError::EscapedDoubleQuoteAtEndOfInput),
-            State::Special => return Err(TokenizerError::SpecialNotYetImplemented(self.text.len() - 1)),
+            State::DoublequoteBackslash => {
+                return Err(TokenizerError::EscapedDoubleQuoteAtEndOfInput)
+            }
+            State::Special => {
+                return Err(TokenizerError::SpecialNotYetImplemented(self.text.len() - 1))
+            }
         }
 
         Ok(())
@@ -331,7 +335,7 @@ mod test {
     fn empty_test() {
         match tokenize("") {
             Ok(ts) => assert_eq!(ts.len(), 0),
-            _ => {}, 
+            _ => {}
         };
     }
 
@@ -341,8 +345,8 @@ mod test {
             Ok(ts) => {
                 assert_eq!(ts.len(), 1);
                 assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
-            },
-            _ => {},
+            }
+            _ => {}
         };
     }
 
@@ -358,8 +362,8 @@ mod test {
                 assert_eq!(ts[4], mk_token("  ", TokenType::Whitespace, 6, 7));
                 assert_eq!(ts[5], mk_token("ccc", TokenType::Word, 8, 10));
                 assert_eq!(ts[6], mk_token(" ", TokenType::Whitespace, 11, 11));
-            },
-            _ => {},
+            }
+            _ => {}
         };
     }
 
@@ -371,8 +375,8 @@ mod test {
                 assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
                 assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
                 assert_eq!(ts[2], mk_token("\"b c\"", TokenType::Word, 2, 6));
-            },
-            _ => {},
+            }
+            _ => {}
         };
     }
 
@@ -382,8 +386,8 @@ mod test {
             Ok(ts) => {
                 assert_eq!(ts.len(), 1);
                 assert_eq!(ts[0], mk_token("a\\ b", TokenType::Word, 0, 3));
-            },
-            _ => {},
+            }
+            _ => {}
         };
     }
 }
