@@ -97,13 +97,13 @@ impl<'r, 'p> Parser<'r, 'p> {
             // XXX: We'll want an enum error here with a Result.
             return false;
         } else {
-            // for expected in self.commands[0].parameters() {
-            //     if expected.required() {
-            //         if !self.parameters.contains_key(expected.name()) {
-            //             return false;
-            //         }
-            //     }
-            // }
+            for expected in self.commands[0].parameters() {
+                if expected.required() {
+                    // if !self.parameters.contains_key(expected.name()) {
+                    // return false;
+                    // }
+                }
+            }
         }
         true
     }
