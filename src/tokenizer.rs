@@ -25,6 +25,10 @@
 //!
 //! let tokens = tokenize("echo -n \"a b c\"");
 //! assert_eq!(tokens.len(), 5);
+//!
+//! let tokens = tokenize("ls My\\ Documents");
+//! assert_eq!(tokens.len(), 3);
+//! assert_eq!(tokens[2].text, "My\\ Documents");
 //! ```
 
 /// A position within a string.
