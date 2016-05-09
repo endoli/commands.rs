@@ -8,6 +8,10 @@
 //! handles using double quotes to provide a single token
 //! which may include whitespace.
 //!
+//! Tokens also track their source location within the source
+//! text. This allows the parser using the tokenizer to provide
+//! better error highlighting and other functionality.
+//!
 //! # Examples
 //!
 //! ```
