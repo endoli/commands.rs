@@ -17,18 +17,22 @@
 //! ```
 //! use commands::tokenizer::tokenize;
 //!
-//! let tokens = tokenize("word");
-//! assert_eq!(tokens.len(), 1);
+//! if let Ok(tokens) = tokenize("word") {
+//!     assert_eq!(tokens.len(), 1);
+//! }
+//! 
+//! if let Ok(tokens) = tokenize("show interface") {
+//!     assert_eq!(tokens.len(), 3);
+//! }
 //!
-//! let tokens = tokenize("show interface");
-//! assert_eq!(tokens.len(), 3);
+//! if let Ok(tokens) = tokenize("echo -n \"a b c\"") {
+//!     assert_eq!(tokens.len(), 5);
+//! }
 //!
-//! let tokens = tokenize("echo -n \"a b c\"");
-//! assert_eq!(tokens.len(), 5);
-//!
-//! let tokens = tokenize("ls My\\ Documents");
-//! assert_eq!(tokens.len(), 3);
-//! assert_eq!(tokens[2].text, "My\\ Documents");
+//! if let Ok(tokens) = tokenize("ls My\\ Documents") {
+//!     assert_eq!(tokens.len(), 3);
+//!     assert_eq!(tokens[2].text, "My\\ Documents");
+//! }
 //! ```
 
 /// A position within a string.
@@ -80,6 +84,24 @@ impl SourceLocation {
             end: end,
         }
     }
+}
+
+/// Errors
+pub enum TokenizerError {
+    /// Character not allowed here
+    CharacterNotAllowedHere(usize),
+
+    /// Special not yet implemented
+    SpecialNotYetImplemented(usize),
+
+    /// Escaping backslash at end of input
+    EscapingBackslashAtEndOfInput,
+
+    /// Unclosed double quote at end of input
+    UnclosedDoubleQuoteAtEndOfInput,
+
+    /// Escaped double quote at end of input
+    EscapedDoubleQuoteAtEndOfInput,
 }
 
 /// The role that a token plays: `Whitespace` or `Word`.
@@ -208,7 +230,7 @@ impl<'t> Tokenizer<'t> {
         }
     }
 
-    fn tokenize(&mut self) {
+    fn tokenize(&mut self) -> Result<(), TokenizerError> {
         for (offset, c) in self.text.chars().enumerate() {
             match self.state {
                 State::Initial => self.initial(offset, c),
@@ -244,7 +266,7 @@ impl<'t> Tokenizer<'t> {
                     if c.is_alphanumeric() || c.is_whitespace() {
                         self.shift(offset, State::Word);
                     } else {
-                        panic!("Character not allowed here.");
+                        return Err(TokenizerError::CharacterNotAllowedHere(offset));
                     };
                 }
                 State::Doublequote => {
@@ -261,11 +283,11 @@ impl<'t> Tokenizer<'t> {
                     if !c.is_whitespace() {
                         self.shift(offset, State::Doublequote);
                     } else {
-                        panic!("Character not allowed here.");
+                        return Err(TokenizerError::CharacterNotAllowedHere(offset));
                     };
                 }
                 State::Special => {
-                    panic!("Special not yet implemented.");
+                    return Err(TokenizerError::SpecialNotYetImplemented(offset));
                 }
             }
         }
@@ -275,19 +297,23 @@ impl<'t> Tokenizer<'t> {
             State::Initial => {}
             State::Word => self.reduce(),
             State::Whitespace => self.reduce(),
-            State::WordBackslash => panic!("Escaping backslash at end of input"),
-            State::Doublequote => panic!("Unclosed double quote at end of input"),
-            State::DoublequoteBackslash => panic!("Escaped doublequote at end of input"),
-            State::Special => panic!("Special not yet implemented"),
+            State::WordBackslash => return Err(TokenizerError::EscapingBackslashAtEndOfInput),
+            State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput),
+            State::DoublequoteBackslash => return Err(TokenizerError::EscapedDoubleQuoteAtEndOfInput),
+            State::Special => return Err(TokenizerError::SpecialNotYetImplemented(self.text.len() - 1)),
         }
+
+        Ok(())
     }
 }
 
 /// Tokenize a body of text.
-pub fn tokenize(text: &str) -> Vec<Token> {
+pub fn tokenize(text: &str) -> Result<Vec<Token>, TokenizerError> {
     let mut tokenizer = Tokenizer::new(text);
-    tokenizer.tokenize();
-    tokenizer.tokens
+    match tokenizer.tokenize() {
+        Ok(_) => Ok(tokenizer.tokens),
+        Err(error) => Err(error),
+    }
 }
 
 #[cfg(test)]
@@ -303,43 +329,61 @@ mod test {
 
     #[test]
     fn empty_test() {
-        let ts = tokenize("");
-        assert_eq!(ts.len(), 0);
+        match tokenize("") {
+            Ok(ts) => assert_eq!(ts.len(), 0),
+            _ => {}, 
+        };
     }
 
     #[test]
     fn single_word() {
-        let ts = tokenize("a");
-        assert_eq!(ts.len(), 1);
-        assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
+        match tokenize("a") {
+            Ok(ts) => {
+                assert_eq!(ts.len(), 1);
+                assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
+            },
+            _ => {},
+        };
     }
 
     #[test]
     fn multiple_words() {
-        let ts = tokenize(" aa bb  ccc ");
-        assert_eq!(ts.len(), 7);
-        assert_eq!(ts[0], mk_token(" ", TokenType::Whitespace, 0, 0));
-        assert_eq!(ts[1], mk_token("aa", TokenType::Word, 1, 2));
-        assert_eq!(ts[2], mk_token(" ", TokenType::Whitespace, 3, 3));
-        assert_eq!(ts[3], mk_token("bb", TokenType::Word, 4, 5));
-        assert_eq!(ts[4], mk_token("  ", TokenType::Whitespace, 6, 7));
-        assert_eq!(ts[5], mk_token("ccc", TokenType::Word, 8, 10));
-        assert_eq!(ts[6], mk_token(" ", TokenType::Whitespace, 11, 11));
+        match tokenize(" aa bb  ccc ") {
+            Ok(ts) => {
+                assert_eq!(ts.len(), 7);
+                assert_eq!(ts[0], mk_token(" ", TokenType::Whitespace, 0, 0));
+                assert_eq!(ts[1], mk_token("aa", TokenType::Word, 1, 2));
+                assert_eq!(ts[2], mk_token(" ", TokenType::Whitespace, 3, 3));
+                assert_eq!(ts[3], mk_token("bb", TokenType::Word, 4, 5));
+                assert_eq!(ts[4], mk_token("  ", TokenType::Whitespace, 6, 7));
+                assert_eq!(ts[5], mk_token("ccc", TokenType::Word, 8, 10));
+                assert_eq!(ts[6], mk_token(" ", TokenType::Whitespace, 11, 11));
+            },
+            _ => {},
+        };
     }
 
     #[test]
     fn quoted_text() {
-        let ts = tokenize("a \"b c\"");
-        assert_eq!(ts.len(), 3);
-        assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
-        assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
-        assert_eq!(ts[2], mk_token("\"b c\"", TokenType::Word, 2, 6));
+        match tokenize("a \"b c\"") {
+            Ok(ts) => {
+                assert_eq!(ts.len(), 3);
+                assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
+                assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
+                assert_eq!(ts[2], mk_token("\"b c\"", TokenType::Word, 2, 6));
+            },
+            _ => {},
+        };
     }
 
     #[test]
     fn escaped_whitespace_in_word() {
-        let ts = tokenize("a\\ b");
-        assert_eq!(ts.len(), 1);
-        assert_eq!(ts[0], mk_token("a\\ b", TokenType::Word, 0, 3));
+        match tokenize("a\\ b") {
+            Ok(ts) => {
+                assert_eq!(ts.len(), 1);
+                assert_eq!(ts[0], mk_token("a\\ b", TokenType::Word, 0, 3));
+            },
+            _ => {},
+        };
     }
 }
