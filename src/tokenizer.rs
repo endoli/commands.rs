@@ -20,7 +20,7 @@
 //! if let Ok(tokens) = tokenize("word") {
 //!     assert_eq!(tokens.len(), 1);
 //! }
-//! 
+//!
 //! if let Ok(tokens) = tokenize("show interface") {
 //!     assert_eq!(tokens.len(), 3);
 //! }
@@ -35,12 +35,12 @@
 //! }
 //! ```
 
-/// A position within a string.
+/// A position within a body of text.
 ///
 /// The `SourceOffset` tracks 2 different ways of locating the
 /// position:
 ///
-/// * The index of the character within the string.
+/// * The index of the character within the body of text.
 /// * The column and line number of the character.
 ///
 /// The `SourceOffset` is typically used as a pair of offsets
@@ -48,7 +48,7 @@
 /// by the `SourceLocation`.
 #[derive(Debug,PartialEq)]
 pub struct SourceOffset {
-    /// The index of this character within the string.
+    /// The index of this character within the body of text.
     pub char: usize,
     /// The line number on which this character may be found.
     pub line: usize,
@@ -67,7 +67,7 @@ impl SourceOffset {
     }
 }
 
-/// A range within a string.
+/// A range within a body of text.
 #[derive(Debug,PartialEq)]
 pub struct SourceLocation {
     /// The start of the range.
@@ -111,7 +111,7 @@ pub enum TokenType {
     Invalid,
     /// The token represents whitespace and not a word.
     Whitespace,
-    /// The token represents a word within the string. This
+    /// The token represents a word within the body of text. This
     /// takes double quoted strings into account.
     Word,
 }
