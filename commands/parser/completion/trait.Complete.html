@@ -46,19 +46,21 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-315' class='srclink' href='../../../src/commands/src/parser/completion.rs.html#78-81' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-196' class='srclink' href='../../../src/commands/src/parser/completion.rs.html#79-82' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Complete&lt;'c, 'n, 't&gt; {
-    fn <a href='#tymethod.complete' class='fnname'>complete</a>(&amp;'n self, token: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'t <a class='struct' href='../../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'t&gt;&gt;) -&gt; <a class='struct' href='../../../commands/parser/completion/struct.Completion.html' title='commands::parser::completion::Completion'>Completion</a>&lt;'c, 'n, 't&gt;;
+    fn <a href='#tymethod.complete' class='fnname'>complete</a>(&amp;'n self, token: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'t <a class='struct' href='../../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>&lt;'t&gt;&gt;) -&gt; <a class='struct' href='../../../commands/parser/completion/struct.Completion.html' title='commands::parser::completion::Completion'>Completion</a>&lt;'c, 't&gt;;
 }</pre><div class='docblock'><p>Trait for nodes that support completion.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.complete' class='method stab '><code>fn <a href='#tymethod.complete' class='fnname'>complete</a>(&amp;'n self, token: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'t <a class='struct' href='../../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'t&gt;&gt;) -&gt; <a class='struct' href='../../../commands/parser/completion/struct.Completion.html' title='commands::parser::completion::Completion'>Completion</a>&lt;'c, 'n, 't&gt;</code></h3><div class='docblock'><p>Given a node and an optional token, provide the completion options.</p>
+        <h3 id='tymethod.complete' class='method stab '><code>fn <a href='#tymethod.complete' class='fnname'>complete</a>(&amp;'n self, token: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'t <a class='struct' href='../../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>&lt;'t&gt;&gt;) -&gt; <a class='struct' href='../../../commands/parser/completion/struct.Completion.html' title='commands::parser::completion::Completion'>Completion</a>&lt;'c, 't&gt;</code></h3><div class='docblock'><p>Given a node and an optional token, provide the completion options.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
     <li><code>impl&lt;'c, 'n, 't&gt; <a class='trait' href='../../../commands/parser/completion/trait.Complete.html' title='commands::parser::completion::Complete'>Complete</a>&lt;'c, 'n, 't&gt; for <a class='trait' href='../../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'n&gt;</code></li>
 <li><code>impl&lt;'c, 'n, 't&gt; <a class='trait' href='../../../commands/parser/completion/trait.Complete.html' title='commands::parser::completion::Complete'>Complete</a>&lt;'c, 'n, 't&gt; for <a class='struct' href='../../../commands/parser/nodes/struct.RootNode.html' title='commands::parser::nodes::RootNode'>RootNode</a>&lt;'n&gt;</code></li>
+<li><code>impl&lt;'c, 'n, 't&gt; <a class='trait' href='../../../commands/parser/completion/trait.Complete.html' title='commands::parser::completion::Complete'>Complete</a>&lt;'c, 'n, 't&gt; for <a class='struct' href='../../../commands/parser/nodes/struct.CommandNode.html' title='commands::parser::nodes::CommandNode'>CommandNode</a>&lt;'n&gt;</code></li>
+<li><code>impl&lt;'c, 'n, 't&gt; <a class='trait' href='../../../commands/parser/completion/trait.Complete.html' title='commands::parser::completion::Complete'>Complete</a>&lt;'c, 'n, 't&gt; for <a class='struct' href='../../../commands/parser/nodes/struct.ParameterNameNode.html' title='commands::parser::nodes::ParameterNameNode'>ParameterNameNode</a>&lt;'n&gt;</code></li>
 </ul><script type="text/javascript" async
                               src="../../../implementors/commands/parser/completion/trait.Complete.js">
                       </script></section>

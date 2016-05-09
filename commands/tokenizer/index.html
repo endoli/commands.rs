@@ -7,10 +7,10 @@
     <meta name="description" content="API documentation for the Rust `tokenizer` mod in crate `commands`.">
     <meta name="keywords" content="rust, rustlang, rust-lang, tokenizer">
 
-    <title>commands::parser::tokenizer - Rust</title>
+    <title>commands::tokenizer - Rust</title>
 
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
 
     
     
@@ -27,7 +27,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../../index.html'>commands</a>::<wbr><a href='../index.html'>parser</a></p><script>window.sidebarCurrent = {name: 'tokenizer', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>commands</a></p><script>window.sidebarCurrent = {name: 'tokenizer', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,11 +42,11 @@
     </nav>
 
     <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>commands</a>::<wbr><a href='../index.html'>parser</a>::<wbr><a class='mod' href=''>tokenizer</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>commands</a>::<wbr><a class='mod' href=''>tokenizer</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-6' class='srclink' href='../../../src/commands/src/parser/tokenizer.rs.html#1-329' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-271' class='srclink' href='../../src/commands/src/tokenizer.rs.html#1-393' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='command-tokenization' class='section-header'><a href='#command-tokenization'>Command Tokenization</a></h1>
 <p>The command parser needs to be able to tokenize commands
@@ -57,39 +57,51 @@ which can be either whitespace or a word. The tokenizer
 handles using double quotes to provide a single token
 which may include whitespace.</p>
 
+<p>Tokens also track their source location within the source
+text. This allows the parser using the tokenizer to provide
+better error highlighting and other functionality.</p>
+
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class='rust rust-example-rendered'>
-<span class='kw'>use</span> <span class='ident'>commands</span>::<span class='ident'>parser</span>::<span class='ident'>tokenizer</span>::<span class='ident'>tokenize</span>;
+<span class='kw'>use</span> <span class='ident'>commands</span>::<span class='ident'>tokenizer</span>::<span class='ident'>tokenize</span>;
 
-<span class='kw'>let</span> <span class='ident'>tokens</span> <span class='op'>=</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;word&quot;</span>);
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
+<span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Ok</span>(<span class='ident'>tokens</span>) <span class='op'>=</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;word&quot;</span>) {
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
+}
 
-<span class='kw'>let</span> <span class='ident'>tokens</span> <span class='op'>=</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;show interface&quot;</span>);
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
+<span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Ok</span>(<span class='ident'>tokens</span>) <span class='op'>=</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;show interface&quot;</span>) {
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
+}
 
-<span class='kw'>let</span> <span class='ident'>tokens</span> <span class='op'>=</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;echo -n \&quot;a b c\&quot;&quot;</span>);
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>.<span class='ident'>len</span>(), <span class='number'>5</span>);</pre>
+<span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Ok</span>(<span class='ident'>tokens</span>) <span class='op'>=</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;echo -n \&quot;a b c\&quot;&quot;</span>) {
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>.<span class='ident'>len</span>(), <span class='number'>5</span>);
+}
+
+<span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Ok</span>(<span class='ident'>tokens</span>) <span class='op'>=</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;ls My\\ Documents&quot;</span>) {
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>tokens</span>[<span class='number'>2</span>].<span class='ident'>text</span>, <span class='string'>&quot;My\\ Documents&quot;</span>);
+}</pre>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                     <tr class=' module-item'>
                         <td><a class='struct' href='struct.SourceLocation.html'
-                               title='commands::parser::tokenizer::SourceLocation'>SourceLocation</a></td>
+                               title='commands::tokenizer::SourceLocation'>SourceLocation</a></td>
                         <td class='docblock short'>
-                             <p>A range within a string.</p>
+                             <p>A range within a body of text.</p>
                         </td>
                     </tr>
                 
                     <tr class=' module-item'>
                         <td><a class='struct' href='struct.SourceOffset.html'
-                               title='commands::parser::tokenizer::SourceOffset'>SourceOffset</a></td>
+                               title='commands::tokenizer::SourceOffset'>SourceOffset</a></td>
                         <td class='docblock short'>
-                             <p>A position within a string.</p>
+                             <p>A position within a body of text.</p>
                         </td>
                     </tr>
                 
                     <tr class=' module-item'>
                         <td><a class='struct' href='struct.Token.html'
-                               title='commands::parser::tokenizer::Token'>Token</a></td>
+                               title='commands::tokenizer::Token'>Token</a></td>
                         <td class='docblock short'>
                              <p>A token from a body of text.</p>
                         </td>
@@ -98,16 +110,24 @@ which may include whitespace.</p>
 <table>
                     <tr class=' module-item'>
                         <td><a class='enum' href='enum.TokenType.html'
-                               title='commands::parser::tokenizer::TokenType'>TokenType</a></td>
+                               title='commands::tokenizer::TokenType'>TokenType</a></td>
                         <td class='docblock short'>
                              <p>The role that a token plays: <code>Whitespace</code> or <code>Word</code>.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.TokenizerError.html'
+                               title='commands::tokenizer::TokenizerError'>TokenizerError</a></td>
+                        <td class='docblock short'>
+                             <p>Errors</p>
                         </td>
                     </tr>
                 </table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                     <tr class=' module-item'>
                         <td><a class='fn' href='fn.tokenize.html'
-                               title='commands::parser::tokenizer::tokenize'>tokenize</a></td>
+                               title='commands::tokenizer::tokenize'>tokenize</a></td>
                         <td class='docblock short'>
                              <p>Tokenize a body of text.</p>
                         </td>
@@ -164,13 +184,13 @@ which may include whitespace.</p>
     
 
     <script>
-        window.rootPath = "../../../";
+        window.rootPath = "../../";
         window.currentCrate = "commands";
         window.playgroundUrl = "";
     </script>
-    <script src="../../../jquery.js"></script>
-    <script src="../../../main.js"></script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
     
-    <script defer src="../../../search-index.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>

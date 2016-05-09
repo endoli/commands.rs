@@ -46,10 +46,10 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-340' class='srclink' href='../../src/commands/src/parser/mod.rs.html#28-37' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-235' class='srclink' href='../../src/commands/src/parser/mod.rs.html#30-38' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Parser&lt;'r, 'p&gt; {
     pub nodes: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'r <a class='trait' href='../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'r&gt;&gt;,
-    pub tokens: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'p <a class='struct' href='../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'p&gt;&gt;,
+    pub tokens: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'p <a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>&lt;'p&gt;&gt;,
     // some fields omitted
 }</pre><div class='docblock'><p>Command parser</p>
 
@@ -66,13 +66,30 @@ and of the tokens passed into this parser.</p>
                                   <td id='structfield.tokens'><code>tokens</code></td><td><div class='docblock'><p>The tokens which have been accepted during <code>parse</code> or <code>advance</code>.</p>
 </div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;'r, 'p&gt; <a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>&lt;'r, 'p&gt;</code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(initial_node: &amp;'r <a class='struct' href='../../commands/parser/nodes/struct.RootNode.html' title='commands::parser::nodes::RootNode'>RootNode</a>&lt;'r&gt;) -&gt; <a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>&lt;'r, 'p&gt;</code></h4>
 <div class='docblock'><p>Construct a parser with a root node.</p>
-</div><h4 id='method.push_command' class='method'><code>fn <a href='#method.push_command' class='fnname'>push_command</a>(&amp;mut self, command: &amp;'r <a class='trait' href='../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'r&gt;)</code></h4>
+</div><h4 id='method.push_command' class='method'><code>fn <a href='#method.push_command' class='fnname'>push_command</a>(&amp;mut self, command: &amp;'r <a class='struct' href='../../commands/parser/nodes/struct.CommandNode.html' title='commands::parser::nodes::CommandNode'>CommandNode</a>&lt;'r&gt;)</code></h4>
 <div class='docblock'><p>XXX: Temporarily public.</p>
-</div><h4 id='method.parse' class='method'><code>fn <a href='#method.parse' class='fnname'>parse</a>(&amp;mut self, tokens: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'p <a class='struct' href='../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'p&gt;&gt;)</code></h4>
+</div><h4 id='method.parse' class='method'><code>fn <a href='#method.parse' class='fnname'>parse</a>(&amp;mut self, tokens: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'p <a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>&lt;'p&gt;&gt;)</code></h4>
 <div class='docblock'><p>Parse a vector of tokens, advancing through the
 node hierarchy.</p>
-</div><h4 id='method.advance' class='method'><code>fn <a href='#method.advance' class='fnname'>advance</a>(&amp;mut self, token: &amp;'p <a class='struct' href='../../commands/parser/tokenizer/struct.Token.html' title='commands::parser::tokenizer::Token'>Token</a>&lt;'p&gt;)</code></h4>
+</div><h4 id='method.advance' class='method'><code>fn <a href='#method.advance' class='fnname'>advance</a>(&amp;mut self, token: &amp;'p <a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>&lt;'p&gt;)</code></h4>
 <div class='docblock'><p>Parse a single token, advancing through the node hierarchy.</p>
+</div><h4 id='method.execute' class='method'><code>fn <a href='#method.execute' class='fnname'>execute</a>(&amp;self)</code></h4>
+<div class='docblock'><p>Execute the command that has been accepted by the parser.</p>
+
+<ul>
+<li>XXX: This isn&#39;t implemented yet.</li>
+<li>XXX: This should be returning a Result probably.</li>
+</ul>
+</div><h4 id='method.verify' class='method'><code>fn <a href='#method.verify' class='fnname'>verify</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Verify that the parser is in a valid state with
+respect to having accepted a command and all
+required parameters.</p>
+
+<ul>
+<li>XXX: This isn&#39;t implemented yet.</li>
+<li>XXX: This should be returning Option or Result
+   with an enum for the various error conditions.</li>
+</ul>
 </div></div></section>
     <section id='search' class="content hidden"></section>
 

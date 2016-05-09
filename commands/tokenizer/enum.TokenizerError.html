@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `parser` mod in crate `commands`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, parser">
+    <meta name="description" content="API documentation for the Rust `TokenizerError` enum in crate `commands`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, TokenizerError">
 
-    <title>commands::parser - Rust</title>
+    <title>commands::tokenizer::TokenizerError - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -27,7 +27,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>commands</a></p><script>window.sidebarCurrent = {name: 'parser', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>commands</a>::<wbr><a href='index.html'>tokenizer</a></p><script>window.sidebarCurrent = {name: 'TokenizerError', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -41,52 +41,26 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>commands</a>::<wbr><a class='mod' href=''>parser</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>commands</a>::<wbr><a href='index.html'>tokenizer</a>::<wbr><a class='enum' href=''>TokenizerError</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-27' class='srclink' href='../../src/commands/src/parser/mod.rs.html#1-110' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'>
-<h1 id='command-parser' class='section-header'><a href='#command-parser'>Command Parser</a></h1>
-<p>The <code>commands::parser</code> module provides:</p>
-
-<ul>
-<li>Functionality for building a tree of commands based on their names.</li>
-<li>Parsing tokenized input to select a command. Input tokenization can
-be performed by the <code>commands::tokenizer</code> module.</li>
-<li>Validating parameters.</li>
-<li>Performing completion on commands and parameters.</li>
-</ul>
-
-<p>The parser is still a work in progress but is rapidly advancing.</p>
-</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
-<table>
-                    <tr class=' module-item'>
-                        <td><a class='mod' href='completion/index.html'
-                               title='commands::parser::completion'>completion</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='mod' href='nodes/index.html'
-                               title='commands::parser::nodes'>nodes</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                    <tr class=' module-item'>
-                        <td><a class='struct' href='struct.Parser.html'
-                               title='commands::parser::Parser'>Parser</a></td>
-                        <td class='docblock short'>
-                             <p>Command parser</p>
-                        </td>
-                    </tr>
-                </table></section>
+        </span><a id='src-338' class='srclink' href='../../src/commands/src/tokenizer.rs.html#90-105' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum TokenizerError {
+    CharacterNotAllowedHere(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>),
+    SpecialNotYetImplemented(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>),
+    EscapingBackslashAtEndOfInput,
+    UnclosedDoubleQuoteAtEndOfInput,
+    EscapedDoubleQuoteAtEndOfInput,
+}</pre><div class='docblock'><p>Errors</p>
+</div><h2 class='variants'>Variants</h2>
+<table class='variants_table'><tr><td id='variant.CharacterNotAllowedHere'><code>CharacterNotAllowedHere</code></td><td><div class='docblock'><p>Character not allowed here</p>
+</div></td><td></td></tr><tr><td id='variant.SpecialNotYetImplemented'><code>SpecialNotYetImplemented</code></td><td><div class='docblock'><p>Special not yet implemented</p>
+</div></td><td></td></tr><tr><td id='variant.EscapingBackslashAtEndOfInput'><code>EscapingBackslashAtEndOfInput</code></td><td><div class='docblock'><p>Escaping backslash at end of input</p>
+</div></td><td></td></tr><tr><td id='variant.UnclosedDoubleQuoteAtEndOfInput'><code>UnclosedDoubleQuoteAtEndOfInput</code></td><td><div class='docblock'><p>Unclosed double quote at end of input</p>
+</div></td><td></td></tr><tr><td id='variant.EscapedDoubleQuoteAtEndOfInput'><code>EscapedDoubleQuoteAtEndOfInput</code></td><td><div class='docblock'><p>Escaped double quote at end of input</p>
+</div></td><td></td></tr></table></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

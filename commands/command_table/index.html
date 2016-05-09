@@ -4,13 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `commands` crate.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, commands">
+    <meta name="description" content="API documentation for the Rust `command_table` mod in crate `commands`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, command_table">
 
-    <title>commands - Rust</title>
+    <title>commands::command_table - Rust</title>
 
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
 
     
     
@@ -27,7 +27,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'></p><script>window.sidebarCurrent = {name: 'commands', ty: 'mod', relpath: '../'};</script>
+        <p class='location'><a href='../index.html'>commands</a></p><script>window.sidebarCurrent = {name: 'command_table', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,61 +42,54 @@
     </nav>
 
     <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>commands</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>commands</a>::<wbr><a class='mod' href=''>command_table</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/commands/src/lib.rs.html#1-27' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-4' class='srclink' href='../../src/commands/src/command_table.rs.html#1-64' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
-<h1 id='commands' class='section-header'><a href='#commands'>Commands</a></h1>
-<p>This crate provides a command system for use in Rust.</p>
-
-<p>It provides a general command system which can be used
-in a variety of environments, including GUI applications
-and command line utilities. This is inspired by elements
-of the Lisp Machine, the Common Lisp Interface Manager
-(CLIM), router command line interfaces, and the TOPS-20
-command line among other things.</p>
-
-<ul>
-<li>Commands can be defined and grouped into command tables.</li>
-<li>Commands can be hooked up with a <code>Parser</code> for implementing
-command line interfaces with completion and parameter validation.</li>
-</ul>
-
-<p>This library is in the early stages of development and
-not everything works yet.</p>
-</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<h1 id='command-tables' class='section-header'><a href='#command-tables'>Command Tables</a></h1></div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                     <tr class=' module-item'>
-                        <td><a class='mod' href='command_table/index.html'
-                               title='commands::command_table'>command_table</a></td>
+                        <td><a class='struct' href='struct.CommandTable.html'
+                               title='commands::command_table::CommandTable'>CommandTable</a></td>
                         <td class='docblock short'>
-                             
+                             <p>A group of related commands</p>
                         </td>
                     </tr>
                 
                     <tr class=' module-item'>
-                        <td><a class='mod' href='parser/index.html'
-                               title='commands::parser'>parser</a></td>
+                        <td><a class='struct' href='struct.CommandTableEntry.html'
+                               title='commands::command_table::CommandTableEntry'>CommandTableEntry</a></td>
                         <td class='docblock short'>
-                             
+                             <p>Information about a command in a command table.</p>
                         </td>
                     </tr>
                 
                     <tr class=' module-item'>
-                        <td><a class='mod' href='tokenizer/index.html'
-                               title='commands::tokenizer'>tokenizer</a></td>
+                        <td><a class='struct' href='struct.MenuDefinition.html'
+                               title='commands::command_table::MenuDefinition'>MenuDefinition</a></td>
                         <td class='docblock short'>
-                             
+                             <p>The definition to be used to generate a menu or
+toolbar in whatever GUI framework is being used.</p>
                         </td>
                     </tr>
-                
+                </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
                     <tr class=' module-item'>
-                        <td><a class='mod' href='util/index.html'
-                               title='commands::util'>util</a></td>
+                        <td><a class='enum' href='enum.MenuItem.html'
+                               title='commands::command_table::MenuItem'>MenuItem</a></td>
                         <td class='docblock short'>
-                             <p>Utilities</p>
+                             <p>Types of menu items.</p>
+                        </td>
+                    </tr>
+                </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Command.html'
+                               title='commands::command_table::Command'>Command</a></td>
+                        <td class='docblock short'>
+                             <p>A command</p>
                         </td>
                     </tr>
                 </table></section>
@@ -151,13 +144,13 @@ not everything works yet.</p>
     
 
     <script>
-        window.rootPath = "../";
+        window.rootPath = "../../";
         window.currentCrate = "commands";
         window.playgroundUrl = "";
     </script>
-    <script src="../jquery.js"></script>
-    <script src="../main.js"></script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
     
-    <script defer src="../search-index.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>

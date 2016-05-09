@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["parser","Command Parser"]]});
+initSidebarItems({"mod":[["command_table","Command Tables"],["parser","Command Parser"],["tokenizer","Command Tokenization"],["util","Utilities"]]});

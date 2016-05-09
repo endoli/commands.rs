@@ -55,21 +55,47 @@
 <span id="12">12</span>
 <span id="13">13</span>
 <span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! # Commands</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! This crate provides a command system.</span>
+<span class='doccomment'>//! This crate provides a command system for use in Rust.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! It provides a general command system which can be used</span>
+<span class='doccomment'>//! in a variety of environments, including GUI applications</span>
+<span class='doccomment'>//! and command line utilities. This is inspired by elements</span>
+<span class='doccomment'>//! of the Lisp Machine, the Common Lisp Interface Manager</span>
+<span class='doccomment'>//! (CLIM), router command line interfaces, and the TOPS-20</span>
+<span class='doccomment'>//! command line among other things.</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! * Commands can be defined and grouped into command tables.</span>
 <span class='doccomment'>//! * Commands can be hooked up with a ``Parser`` for implementing</span>
 <span class='doccomment'>//!   command line interfaces with completion and parameter validation.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! This library is in the early stages of development and</span>
+<span class='doccomment'>//! not everything works yet.</span>
 
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>deny</span>(<span class='ident'>trivial_casts</span>, <span class='ident'>trivial_numeric_casts</span>,
         <span class='ident'>unsafe_code</span>, <span class='ident'>unstable_features</span>,
         <span class='ident'>unused_import_braces</span>, <span class='ident'>unused_qualifications</span>)]</span>
 
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>command_table</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>parser</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>tokenizer</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>util</span>;
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

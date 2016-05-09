@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["completion","Completion"],["nodes","Parser Nodes"],["tokenizer","Command Tokenization"]],"struct":[["Parser","Command parser"]]});
+initSidebarItems({"mod":[["completion","Completion"],["nodes","Parser Nodes"]],"struct":[["Parser","Command parser"]]});

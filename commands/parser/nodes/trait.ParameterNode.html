@@ -46,11 +46,33 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-240' class='srclink' href='../../../src/commands/src/parser/nodes.rs.html#46' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait ParameterNode&lt;'n&gt; { }</pre>
+        </span><a id='src-119' class='srclink' href='../../../src/commands/src/parser/nodes.rs.html#145-159' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait ParameterNode&lt;'n&gt; {
+    fn <a href='#tymethod.parameter_data' class='fnname'>parameter_data</a>(&amp;'n self) -&gt; &amp;'n <a class='struct' href='../../../commands/parser/nodes/struct.ParameterNodeFields.html' title='commands::parser::nodes::ParameterNodeFields'>ParameterNodeFields</a>&lt;'n&gt;;
+
+    fn <a href='#method.repeatable' class='fnname'>repeatable</a>(&amp;'n self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a> { ... }
+    fn <a href='#method.repeat_marker' class='fnname'>repeat_marker</a>(&amp;'n self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'n <a class='trait' href='../../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'n&gt;&gt; { ... }
+    fn <a href='#method.required' class='fnname'>required</a>(&amp;'n self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a> { ... }
+}</pre>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.parameter_data' class='method stab '><code>fn <a href='#tymethod.parameter_data' class='fnname'>parameter_data</a>(&amp;'n self) -&gt; &amp;'n <a class='struct' href='../../../commands/parser/nodes/struct.ParameterNodeFields.html' title='commands::parser::nodes::ParameterNodeFields'>ParameterNodeFields</a>&lt;'n&gt;</code></h3></div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.repeatable' class='method stab '><code>fn <a href='#method.repeatable' class='fnname'>repeatable</a>(&amp;'n self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3><h3 id='method.repeat_marker' class='method stab '><code>fn <a href='#method.repeat_marker' class='fnname'>repeat_marker</a>(&amp;'n self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'n <a class='trait' href='../../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'n&gt;&gt;</code></h3><h3 id='method.required' class='method stab '><code>fn <a href='#method.required' class='fnname'>required</a>(&amp;'n self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;'n&gt; <a class='trait' href='../../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'n&gt; for <a class='trait' href='../../../commands/parser/nodes/trait.ParameterNode.html' title='commands::parser::nodes::ParameterNode'>ParameterNode</a>&lt;'n&gt;</code></h3><div class='impl-items'><h4 id='method.node_data' class='method'><code>fn <a href='../../../commands/parser/nodes/trait.Node.html#method.node_data' class='fnname'>node_data</a>(&amp;'n self) -&gt; &amp;'n <a class='struct' href='../../../commands/parser/nodes/struct.NodeFields.html' title='commands::parser::nodes::NodeFields'>NodeFields</a>&lt;'n&gt;</code></h4>
+<h4 id='method.help_symbol' class='method'><code>fn <a href='../../../commands/parser/nodes/trait.Node.html#method.help_symbol' class='fnname'>help_symbol</a>(&amp;'n self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>
+<h4 id='method.help_text' class='method'><code>fn <a href='../../../commands/parser/nodes/trait.Node.html#method.help_text' class='fnname'>help_text</a>(&amp;'n self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>
+<h4 id='method.successors' class='method'><code>fn <a href='../../../commands/parser/nodes/trait.Node.html#method.successors' class='fnname'>successors</a>(&amp;'n self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'n <a class='trait' href='../../../commands/parser/nodes/trait.Node.html' title='commands::parser::nodes::Node'>Node</a>&lt;'n&gt;&gt;</code></h4>
+<h4 id='method.hidden' class='method'><code>fn <a href='../../../commands/parser/nodes/trait.Node.html#method.hidden' class='fnname'>hidden</a>(&amp;'n self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.name' class='method'><code>fn <a href='../../../commands/parser/nodes/trait.Node.html#method.name' class='fnname'>name</a>(&amp;'n self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></h4>
+<h4 id='method.priority' class='method'><code>fn <a href='../../../commands/parser/nodes/trait.Node.html#method.priority' class='fnname'>priority</a>(&amp;'n self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></h4>
+</div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    </ul><script type="text/javascript" async
+    <li><code>impl&lt;'n&gt; <a class='trait' href='../../../commands/parser/nodes/trait.ParameterNode.html' title='commands::parser::nodes::ParameterNode'>ParameterNode</a>&lt;'n&gt; for <a class='struct' href='../../../commands/parser/nodes/struct.FlagParameterNode.html' title='commands::parser::nodes::FlagParameterNode'>FlagParameterNode</a>&lt;'n&gt;</code></li>
+<li><code>impl&lt;'n&gt; <a class='trait' href='../../../commands/parser/nodes/trait.ParameterNode.html' title='commands::parser::nodes::ParameterNode'>ParameterNode</a>&lt;'n&gt; for <a class='struct' href='../../../commands/parser/nodes/struct.NamedParameterNode.html' title='commands::parser::nodes::NamedParameterNode'>NamedParameterNode</a>&lt;'n&gt;</code></li>
+<li><code>impl&lt;'n&gt; <a class='trait' href='../../../commands/parser/nodes/trait.ParameterNode.html' title='commands::parser::nodes::ParameterNode'>ParameterNode</a>&lt;'n&gt; for <a class='struct' href='../../../commands/parser/nodes/struct.SimpleParameterNode.html' title='commands::parser::nodes::SimpleParameterNode'>SimpleParameterNode</a>&lt;'n&gt;</code></li>
+</ul><script type="text/javascript" async
                               src="../../../implementors/commands/parser/nodes/trait.ParameterNode.js">
                       </script></section>
     <section id='search' class="content hidden"></section>
