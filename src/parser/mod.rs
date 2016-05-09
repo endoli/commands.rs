@@ -3,9 +3,12 @@
 //! The ``commands::parser`` module provides:
 //!
 //! * Functionality for building a tree of commands based on their names.
-//! * Tokenizing and parsing input to select a command.
+//! * Parsing tokenized input to select a command. Input tokenization can
+//!   be performed by the ``commands::tokenizer`` module.
 //! * Validating parameters.
 //! * Performing completion on commands and parameters.
+//!
+//! The parser is still a work in progress but is rapidly advancing.
 
 #![allow(dead_code)]
 
@@ -70,5 +73,38 @@ impl<'r, 'p> Parser<'r, 'p> {
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: &'p Token<'p>) {
         self.push_node(token, self.current_node);
+    }
+
+    /// Execute the command that has been accepted by the parser.
+    ///
+    /// * XXX: This isn't implemented yet.
+    /// * XXX: This should be returning a Result probably.
+    pub fn execute(&self) {
+        if !self.commands.is_empty() {
+            // self.commands[0].execute(self)
+        }
+    }
+
+    /// Verify that the parser is in a valid state with
+    /// respect to having accepted a command and all
+    /// required parameters.
+    ///
+    /// * XXX: This isn't implemented yet.
+    /// * XXX: This should be returning Option or Result
+    ///        with an enum for the various error conditions.
+    pub fn verify(&self) -> bool {
+        if self.commands.is_empty() {
+            // XXX: We'll want an enum error here with a Result.
+            return false;
+        } else {
+            // for expected in self.commands[0].parameters() {
+            //     if expected.required() {
+            //         if !self.parameters.contains_key(expected.name()) {
+            //             return false;
+            //         }
+            //     }
+            // }
+        }
+        true
     }
 }

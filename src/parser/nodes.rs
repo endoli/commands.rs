@@ -71,12 +71,19 @@ pub struct CommandNodeFields<'n> {
     node: NodeFields<'n>,
     help: &'n str,
     handler: fn(&node: Node) -> (),
-    parameters: Vec<&'n Node<'n>>,
+    parameters: Vec<&'n ParameterNode<'n>>,
 }
 
 impl<'n> Node<'n> for CommandNode<'n> {
     fn node_data(&'n self) -> &'n NodeFields<'n> {
         &self.fields.node
+    }
+}
+
+impl<'n> CommandNode<'n> {
+    /// Get the parameter nodes for this command
+    pub fn parameters(&'n self) -> &'n Vec<&'n ParameterNode<'n>> {
+        &self.fields.parameters
     }
 }
 
