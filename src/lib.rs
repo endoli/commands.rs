@@ -11,6 +11,7 @@
         unsafe_code, unstable_features,
         unused_import_braces, unused_qualifications)]
 
+pub mod command_table;
 pub mod parser;
 pub mod tokenizer;
 pub mod util;
