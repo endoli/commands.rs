@@ -35,6 +35,9 @@
 //! }
 //! ```
 
+use std::fmt;
+use std::error::Error;
+
 /// A position within a body of text.
 ///
 /// The `SourceOffset` tracks 2 different ways of locating the
@@ -87,6 +90,7 @@ impl SourceLocation {
 }
 
 /// Errors
+#[derive(Clone,Debug)]
 pub enum TokenizerError {
     /// Character not allowed here
     CharacterNotAllowedHere(usize),
@@ -102,6 +106,24 @@ pub enum TokenizerError {
 
     /// Escaped double quote at end of input
     EscapedDoubleQuoteAtEndOfInput,
+}
+
+impl Error for TokenizerError {
+    fn description(&self) -> &str {
+        match *self {
+            TokenizerError::CharacterNotAllowedHere(_) => "Character not allowed here",
+            TokenizerError::SpecialNotYetImplemented(_) => "Special not yet implemented",
+            TokenizerError::EscapingBackslashAtEndOfInput => "Escaping backlash at end of input",
+            TokenizerError::UnclosedDoubleQuoteAtEndOfInput => "Unclosed double quote at end of input",
+            TokenizerError::EscapedDoubleQuoteAtEndOfInput => "Escaped double quote at end of input",
+        }
+    }
+}
+
+impl fmt::Display for TokenizerError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        self.description().fmt(f)
+    }
 }
 
 /// The role that a token plays: `Whitespace` or `Word`.
