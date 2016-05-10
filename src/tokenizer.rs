@@ -114,8 +114,12 @@ impl Error for TokenizerError {
             TokenizerError::CharacterNotAllowedHere(_) => "Character not allowed here",
             TokenizerError::SpecialNotYetImplemented(_) => "Special not yet implemented",
             TokenizerError::EscapingBackslashAtEndOfInput => "Escaping backlash at end of input",
-            TokenizerError::UnclosedDoubleQuoteAtEndOfInput => "Unclosed double quote at end of input",
-            TokenizerError::EscapedDoubleQuoteAtEndOfInput => "Escaped double quote at end of input",
+            TokenizerError::UnclosedDoubleQuoteAtEndOfInput => {
+                "Unclosed double quote at end of input"
+            }
+            TokenizerError::EscapedDoubleQuoteAtEndOfInput => {
+                "Escaped double quote at end of input"
+            }
         }
     }
 }
