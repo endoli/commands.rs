@@ -19,6 +19,7 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use parser::nodes::*;
 use tokenizer::{Token, TokenType};
+use parser::completion::{Complete, Completion};
 
 /// Command parser
 ///
@@ -48,6 +49,27 @@ impl<'p> Parser<'p> {
             commands: vec![],
             parameters: HashMap::new(),
         }
+    }
+
+    /// Given an optional token, get the possible valid completions
+    /// for the current parser state.
+    pub fn complete(&self, token: Option<&'p Token<'p>>) -> Vec<Completion> {
+        fn possible_completion(node: &Rc<Node>, parser: &Parser, token: Option<&Token>) -> bool {
+            // To be a possible completion, the node should not be
+            // hidden, it should be acceptable, and if there's a token,
+            // it should be a valid match for the node.
+            !node.hidden() && node.acceptable(parser) &&
+            match token {
+                Some(t) => node.matches(parser, t),
+                _ => true,
+            }
+        }
+        self.current_node
+            .successors()
+            .into_iter()
+            .filter(|n| possible_completion(n, self, token))
+            .map(|n| n.complete(token))
+            .collect::<Vec<_>>()
     }
 
     /// Parse a vector of tokens, advancing through the
