@@ -74,8 +74,10 @@ impl<'p> Parser<'p> {
     /// node hierarchy.
     pub fn parse(&mut self, tokens: Vec<&'p Token<'p>>) {
         for token in tokens {
-            if token.token_type != TokenType::Whitespace {
-                self.advance(token);
+            match token.token_type {
+                TokenType::Invalid => unreachable!(),
+                TokenType::Whitespace => {}
+                TokenType::Word => self.advance(token),
             }
         }
     }
