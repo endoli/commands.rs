@@ -106,13 +106,25 @@ impl Node for WrapperNode {
     }
 }
 
-pub struct ParameterNameNode {
-    fields: ParameterNameNodeFields,
+pub trait RepeatableNode: Node {
+    fn repeatable_data(&self) -> &RepeatableNodeFields;
+
+    fn repeatable(&self) -> bool {
+        self.repeatable_data().repeatable
+    }
+
+    fn repeat_marker(&self) -> &Option<Rc<Node>> {
+        &self.repeatable_data().repeat_marker
+    }
 }
 
 pub struct RepeatableNodeFields {
     repeatable: bool,
     repeat_marker: Option<Rc<Node>>,
+}
+
+pub struct ParameterNameNode {
+    fields: ParameterNameNodeFields,
 }
 
 pub struct ParameterNameNodeFields {
@@ -136,29 +148,23 @@ impl Node for ParameterNameNode {
     }
 }
 
-impl ParameterNameNode {
-    pub fn repeatable(&self) -> bool {
-        self.fields.repeatable.repeatable
-    }
-
-    pub fn repeat_marker(&self) -> &Option<Rc<Node>> {
-        &self.fields.repeatable.repeat_marker
+impl RepeatableNode for ParameterNameNode {
+    fn repeatable_data(&self) -> &RepeatableNodeFields {
+        &self.fields.repeatable
     }
 }
 
 pub trait ParameterNode {
     fn parameter_data(&self) -> &ParameterNodeFields;
 
-    fn repeatable(&self) -> bool {
-        self.parameter_data().repeatable.repeatable
-    }
-
-    fn repeat_marker(&self) -> &Option<Rc<Node>> {
-        &self.parameter_data().repeatable.repeat_marker
-    }
-
     fn required(&self) -> bool {
         self.parameter_data().required
+    }
+}
+
+impl RepeatableNode for ParameterNode {
+    fn repeatable_data(&self) -> &RepeatableNodeFields {
+        &self.parameter_data().repeatable
     }
 }
 
