@@ -143,12 +143,12 @@ trait Advance {
 }
 
 impl Advance for Node {
-    fn acceptable(&self, parser: &Parser) -> bool {
+    fn acceptable(&self, _parser: &Parser) -> bool {
         unimplemented!();
         // !parser.nodes.contains(self)
     }
 
-    fn matches(&self, parser: &Parser, token: &Token) -> bool {
+    fn matches(&self, _parser: &Parser, token: &Token) -> bool {
         self.name().starts_with(token.text)
     }
 }
@@ -158,13 +158,13 @@ trait Accept {
 }
 
 impl Accept for Node {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token) {}
+    fn accept<'p>(&'p self, _parser: &mut Parser<'p>, _token: &Token) {}
 }
 
 impl Accept for Rc<CommandNode> {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token) {
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, _token: &Token) {
         match self.handler() {
-            Some(handler) => parser.commands.push(self),
+            Some(_) => parser.commands.push(self),
             _ => {}
         }
     }
