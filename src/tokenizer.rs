@@ -408,4 +408,46 @@ mod test {
             _ => {}
         };
     }
+
+    #[test]
+    fn character_not_allowed_here() {
+        match tokenize("ab \\!") {
+            Err(TokenizerError::CharacterNotAllowedHere(_)) => {}
+            _ => panic!(),
+        };
+
+        match tokenize("ab \"\\ ab") {
+            Err(TokenizerError::CharacterNotAllowedHere(_)) => {}
+            _ => panic!(),
+        };
+    }
+
+    // TODO: Test TokenizeError::SpecialNotYetImplemented
+
+    #[test]
+    #[should_panic]
+    fn escaping_backslash_at_end_of_input() {
+        match tokenize("ab \\") {
+            Err(TokenizerError::EscapingBackslashAtEndOfInput) => panic!(),
+            _ => {}
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn unclosed_double_quote_at_end_of_input() {
+        match tokenize("ab \"") {
+            Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput) => panic!(),
+            _ => {}
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn escaped_double_quote_at_end_of_input() {
+        match tokenize("ab \"\\") {
+            Err(TokenizerError::EscapedDoubleQuoteAtEndOfInput) => panic!(),
+            _ => {}
+        }
+    }
 }
