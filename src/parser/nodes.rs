@@ -6,6 +6,8 @@
 
 #![allow(dead_code, missing_docs, unused_variables)]
 
+use std::rc::Rc;
+
 /// Minimum priority.
 pub const PRIORITY_MINIMUM: i32 = -10000;
 /// The default priority for a parameter.
@@ -13,165 +15,165 @@ pub const PRIORITY_PARAMETER: i32 = -10;
 /// The default priority.
 pub const PRIORITY_DEFAULT: i32 = 0;
 
-pub trait Node<'n> {
-    fn node_data(&'n self) -> &'n NodeFields<'n>;
+pub trait Node {
+    fn node_data(&self) -> &NodeFields;
 
-    fn successors(&'n self) -> &Vec<&'n Node<'n>> {
+    fn successors(&self) -> &Vec<Rc<Node>> {
         &self.node_data().successors
     }
 
-    fn help_symbol(&'n self) -> String {
+    fn help_symbol(&self) -> String {
         self.node_data().name.to_string()
     }
 
-    fn help_text(&'n self) -> String {
-        String::from("")
+    fn help_text(&self) -> &String {
+        unimplemented!();
     }
 
-    fn hidden(&'n self) -> bool {
+    fn hidden(&self) -> bool {
         self.node_data().hidden
     }
 
-    fn name(&'n self) -> &str {
-        self.node_data().name
+    fn name(&self) -> &String {
+        &self.node_data().name
     }
 
-    fn priority(&'n self) -> i32 {
+    fn priority(&self) -> i32 {
         self.node_data().priority
     }
 }
 
 /// A parse tree node.
-pub struct NodeFields<'n> {
+pub struct NodeFields {
     /// Possible successor nodes. Collected while building.
-    pub successors: Vec<&'n Node<'n>>,
+    pub successors: Vec<Rc<Node>>,
     /// The name of this node.
-    pub name: &'n str,
+    pub name: String,
     /// Match and complete priority.
     pub priority: i32,
     /// Hidden nodes are not completed. This doesn't modify matching.
     pub hidden: bool,
 }
 
-pub struct RootNode<'n> {
-    fields: NodeFields<'n>,
+pub struct RootNode {
+    fields: NodeFields,
 }
 
-impl<'n> Node<'n> for RootNode<'n> {
-    fn node_data(&'n self) -> &'n NodeFields<'n> {
+impl Node for RootNode {
+    fn node_data(&self) -> &NodeFields {
         &self.fields
     }
 }
 
-pub struct CommandNode<'n> {
-    fields: CommandNodeFields<'n>,
+pub struct CommandNode {
+    fields: CommandNodeFields,
 }
 
-pub struct CommandNodeFields<'n> {
-    node: NodeFields<'n>,
-    help: &'n str,
+pub struct CommandNodeFields {
+    node: NodeFields,
+    help: String,
     handler: fn(&node: Node) -> (),
-    parameters: Vec<&'n ParameterNode<'n>>,
+    parameters: Vec<Rc<ParameterNode>>,
 }
 
-impl<'n> Node<'n> for CommandNode<'n> {
-    fn node_data(&'n self) -> &'n NodeFields<'n> {
+impl Node for CommandNode {
+    fn node_data(&self) -> &NodeFields {
         &self.fields.node
     }
 }
 
-impl<'n> CommandNode<'n> {
+impl CommandNode {
     /// Get the parameter nodes for this command
-    pub fn parameters(&'n self) -> &'n Vec<&'n ParameterNode<'n>> {
+    pub fn parameters(&self) -> &Vec<Rc<ParameterNode>> {
         &self.fields.parameters
     }
 }
 
-pub struct WrapperNode<'n> {
-    fields: WrapperNodeFields<'n>,
+pub struct WrapperNode {
+    fields: WrapperNodeFields,
 }
 
-pub struct WrapperNodeFields<'n> {
-    command: CommandNodeFields<'n>,
-    root: &'n Node<'n>,
+pub struct WrapperNodeFields {
+    command: CommandNodeFields,
+    root: Rc<Node>,
 }
 
-impl<'n> Node<'n> for WrapperNode<'n> {
-    fn node_data(&'n self) -> &'n NodeFields<'n> {
+impl Node for WrapperNode {
+    fn node_data(&self) -> &NodeFields {
         &self.fields.command.node
     }
 }
 
-pub struct ParameterNameNode<'n> {
-    fields: ParameterNameNodeFields<'n>,
+pub struct ParameterNameNode {
+    fields: ParameterNameNodeFields,
 }
 
-pub struct RepeatableNodeFields<'n> {
+pub struct RepeatableNodeFields {
     repeatable: bool,
-    repeat_marker: Option<&'n Node<'n>>,
+    repeat_marker: Option<Rc<Node>>,
 }
 
-pub struct ParameterNameNodeFields<'n> {
-    node: NodeFields<'n>,
-    repeatable: RepeatableNodeFields<'n>,
-    help: &'n str,
-    parameter: &'n Node<'n>,
+pub struct ParameterNameNodeFields {
+    node: NodeFields,
+    repeatable: RepeatableNodeFields,
+    help: String,
+    parameter: Rc<Node>,
 }
 
-impl<'n> Node<'n> for ParameterNameNode<'n> {
-    fn node_data(&'n self) -> &'n NodeFields<'n> {
+impl Node for ParameterNameNode {
+    fn node_data(&self) -> &NodeFields {
         &self.fields.node
     }
 
-    fn help_symbol(&'n self) -> String {
-        self.fields.node.name.to_string() + " " + self.fields.parameter.help_symbol().as_str()
+    fn help_symbol(&self) -> String {
+        self.fields.node.name.clone() + " " + self.fields.parameter.help_symbol().as_str()
     }
 
-    fn help_text(&'n self) -> String {
-        self.fields.help.to_string()
+    fn help_text(&self) -> &String {
+        &self.fields.help
     }
 }
 
-impl<'n> ParameterNameNode<'n> {
-    pub fn repeatable(&'n self) -> bool {
+impl ParameterNameNode {
+    pub fn repeatable(&self) -> bool {
         self.fields.repeatable.repeatable
     }
 
-    pub fn repeat_marker(&'n self) -> Option<&'n Node<'n>> {
-        self.fields.repeatable.repeat_marker
+    pub fn repeat_marker(&self) -> &Option<Rc<Node>> {
+        &self.fields.repeatable.repeat_marker
     }
 }
 
-pub trait ParameterNode<'n> {
-    fn parameter_data(&'n self) -> &'n ParameterNodeFields<'n>;
+pub trait ParameterNode {
+    fn parameter_data(&self) -> &ParameterNodeFields;
 
-    fn repeatable(&'n self) -> bool {
+    fn repeatable(&self) -> bool {
         self.parameter_data().repeatable.repeatable
     }
 
-    fn repeat_marker(&'n self) -> Option<&'n Node<'n>> {
-        self.parameter_data().repeatable.repeat_marker
+    fn repeat_marker(&self) -> &Option<Rc<Node>> {
+        &self.parameter_data().repeatable.repeat_marker
     }
 
-    fn required(&'n self) -> bool {
+    fn required(&self) -> bool {
         self.parameter_data().required
     }
 }
 
-pub struct ParameterNodeFields<'n> {
-    node: NodeFields<'n>,
-    repeatable: RepeatableNodeFields<'n>,
-    help: &'n str,
+pub struct ParameterNodeFields {
+    node: NodeFields,
+    repeatable: RepeatableNodeFields,
+    help: String,
     required: bool,
 }
 
-impl<'n> Node<'n> for ParameterNode<'n> {
-    fn node_data(&'n self) -> &'n NodeFields<'n> {
+impl Node for ParameterNode {
+    fn node_data(&self) -> &NodeFields {
         &self.parameter_data().node
     }
 
-    fn help_symbol(&'n self) -> String {
-        String::from("<") + self.node_data().name +
+    fn help_symbol(&self) -> String {
+        String::from("<") + self.node_data().name.as_str() +
         if self.repeatable() {
             ">..."
         } else {
@@ -179,37 +181,37 @@ impl<'n> Node<'n> for ParameterNode<'n> {
         }
     }
 
-    fn help_text(&'n self) -> String {
-        self.parameter_data().help.to_string()
+    fn help_text(&self) -> &String {
+        &self.parameter_data().help
     }
 }
 
-pub struct FlagParameterNode<'n> {
-    fields: ParameterNodeFields<'n>,
+pub struct FlagParameterNode {
+    fields: ParameterNodeFields,
 }
 
-impl<'n> ParameterNode<'n> for FlagParameterNode<'n> {
-    fn parameter_data(&'n self) -> &'n ParameterNodeFields<'n> {
+impl ParameterNode for FlagParameterNode {
+    fn parameter_data(&self) -> &ParameterNodeFields {
         &self.fields
     }
 }
 
-pub struct NamedParameterNode<'n> {
-    fields: ParameterNodeFields<'n>,
+pub struct NamedParameterNode {
+    fields: ParameterNodeFields,
 }
 
-impl<'n> ParameterNode<'n> for NamedParameterNode<'n> {
-    fn parameter_data(&'n self) -> &'n ParameterNodeFields<'n> {
+impl ParameterNode for NamedParameterNode {
+    fn parameter_data(&self) -> &ParameterNodeFields {
         &self.fields
     }
 }
 
-pub struct SimpleParameterNode<'n> {
-    fields: ParameterNodeFields<'n>,
+pub struct SimpleParameterNode {
+    fields: ParameterNodeFields,
 }
 
-impl<'n> ParameterNode<'n> for SimpleParameterNode<'n> {
-    fn parameter_data(&'n self) -> &'n ParameterNodeFields<'n> {
+impl ParameterNode for SimpleParameterNode {
+    fn parameter_data(&self) -> &ParameterNodeFields {
         &self.fields
     }
 }

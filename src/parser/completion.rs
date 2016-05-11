@@ -12,19 +12,16 @@ use util::longest_common_prefix;
 /// An option may be `complete`, which means that it represents
 /// a syntactically complete parameter value which can be used
 /// as-is, whereas incomplete options are not valid values.
-///
-/// The lifetime parameter `'c` refers to the lifetime of the
-/// owning `Completion`.
-pub struct CompletionOption<'c> {
+pub struct CompletionOption {
     /// String for this option.
-    pub option_string: &'c str,
+    pub option_string: String,
     /// True if this option is complete and a valid value.
     pub complete: bool,
 }
 
-impl<'c> CompletionOption<'c> {
+impl CompletionOption {
     /// CompletionOption constructor
-    pub fn new(option_string: &'c str, complete: bool) -> CompletionOption {
+    pub fn new(option_string: String, complete: bool) -> CompletionOption {
         CompletionOption {
             option_string: option_string,
             complete: complete,
@@ -39,12 +36,9 @@ impl<'c> CompletionOption<'c> {
 /// If a completion is exhaustive, then only the `CompletionOption`s
 /// provided are valid.
 ///
-/// The lifetime parameter `'c` refers to the lifetime of
-/// this `Completion`. The lifetime parameter `'t` refers to
-/// the lifetime of the body of text which generated the
-/// `Token`. The lifetime parameter `'n` refers to the lifetime
-/// of the node which generated the completion.
-pub struct Completion<'c, 't> {
+/// The lifetime parameter `'t` refers to the lifetime of the
+/// body of text which generated the `Token`.
+pub struct Completion<'t> {
     /// Value placeholder for help.
     pub help_symbol: String,
     /// Main help text.
@@ -55,19 +49,20 @@ pub struct Completion<'c, 't> {
     /// the given completion options are valid.
     pub exhaustive: bool,
     /// The actual completion options.
-    pub options: Vec<CompletionOption<'c>>,
+    pub options: Vec<CompletionOption>,
 }
 
-impl<'c, 'n, 't> Completion<'c, 't> {
-    pub fn new(node: &'n Node<'n>,
+impl<'t> Completion<'t> {
+    pub fn new(help_symbol: String,
+               help_text: String,
                token: Option<&'t Token<'t>>,
                exhaustive: bool,
                complete_options: Vec<&str>,
                other_options: Vec<&str>)
-               -> Completion<'c, 't> {
+               -> Completion<'t> {
         Completion {
-            help_symbol: node.help_symbol(),
-            help_text: node.help_text(),
+            help_symbol: help_symbol,
+            help_text: help_text,
             token: token,
             exhaustive: exhaustive,
             options: vec![],
@@ -76,31 +71,46 @@ impl<'c, 'n, 't> Completion<'c, 't> {
 }
 
 /// Trait for nodes that support completion.
-pub trait Complete<'c, 'n, 't> {
+pub trait Complete<'t> {
     /// Given a node and an optional token, provide the completion options.
-    fn complete(&'n self, token: Option<&'t Token<'t>>) -> Completion<'c, 't>;
+    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t>;
 }
 
-impl<'c, 'n, 't> Complete<'c, 'n, 't> for Node<'n> {
-    fn complete(&'n self, token: Option<&'t Token<'t>>) -> Completion<'c, 't> {
-        Completion::new(self, token, true, vec![], vec![])
+impl<'t> Complete<'t> for Node {
+    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![],
+                        vec![])
     }
 }
 
-impl<'c, 'n, 't> Complete<'c, 'n, 't> for RootNode<'n> {
-    fn complete(&'n self, token: Option<&'t Token<'t>>) -> Completion<'c, 't> {
+impl<'t> Complete<'t> for RootNode {
+    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t> {
         panic!("BUG: Can not complete a root node.");
     }
 }
 
-impl<'c, 'n, 't> Complete<'c, 'n, 't> for CommandNode<'n> {
-    fn complete(&'n self, token: Option<&'t Token<'t>>) -> Completion<'c, 't> {
-        Completion::new(self, token, true, vec![self.name()], vec![])
+impl<'t> Complete<'t> for CommandNode {
+    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![self.name()],
+                        vec![])
     }
 }
 
-impl<'c, 'n, 't> Complete<'c, 'n, 't> for ParameterNameNode<'n> {
-    fn complete(&'n self, token: Option<&'t Token<'t>>) -> Completion<'c, 't> {
-        Completion::new(self, token, true, vec![self.name()], vec![])
+impl<'t> Complete<'t> for ParameterNameNode {
+    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![self.name()],
+                        vec![])
     }
 }

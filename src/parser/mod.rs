@@ -16,30 +16,31 @@ pub mod nodes;
 pub mod completion;
 
 use std::collections::HashMap;
+use std::rc::Rc;
 use parser::nodes::*;
 use tokenizer::{Token, TokenType};
 
 /// Command parser
 ///
-/// The lifetime parameter `'r` refers to the lifetime of the
+/// The lifetime parameter `'p` refers to the lifetime of the
 /// root node of the command tree that was used to create this
 /// parser.
 ///
 /// The lifetime parameter `'p` refers to the lifetime of the parser
 /// and of the tokens passed into this parser.
-pub struct Parser<'r, 'p> {
-    current_node: &'r Node<'r>,
+pub struct Parser<'p> {
+    current_node: &'p Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
-    pub nodes: Vec<&'r Node<'r>>,
+    pub nodes: Vec<&'p Rc<Node>>,
     /// The tokens which have been accepted during `parse` or `advance`.
     pub tokens: Vec<&'p Token<'p>>,
-    commands: Vec<&'r CommandNode<'r>>,
+    commands: Vec<Rc<CommandNode>>,
     parameters: HashMap<String, String>,
 }
 
-impl<'r, 'p> Parser<'r, 'p> {
+impl<'p> Parser<'p> {
     /// Construct a parser with a root node.
-    pub fn new(initial_node: &'r RootNode<'r>) -> Parser<'r, 'p> {
+    pub fn new(initial_node: &'p Rc<Node>) -> Parser<'p> {
         Parser {
             current_node: initial_node,
             nodes: vec![],
@@ -49,14 +50,8 @@ impl<'r, 'p> Parser<'r, 'p> {
         }
     }
 
-    fn push_node(&mut self, token: &'p Token, node: &'r Node<'r>) {
-        self.current_node = node;
-        self.nodes.push(node);
-        self.tokens.push(token);
-    }
-
     /// XXX: Temporarily public.
-    pub fn push_command(&mut self, command: &'r CommandNode<'r>) {
+    pub fn push_command(&mut self, command: Rc<CommandNode>) {
         self.commands.push(command);
     }
 
@@ -72,7 +67,7 @@ impl<'r, 'p> Parser<'r, 'p> {
 
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: &'p Token<'p>) {
-        self.push_node(token, self.current_node);
+        unimplemented!();
     }
 
     /// Execute the command that has been accepted by the parser.
