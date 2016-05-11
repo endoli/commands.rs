@@ -53,6 +53,7 @@ pub struct Completion<'t> {
 }
 
 impl<'t> Completion<'t> {
+    /// Construct a new Completion.
     pub fn new(help_symbol: String,
                help_text: String,
                token: Option<&'t Token<'t>>,
