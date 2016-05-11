@@ -70,6 +70,10 @@ impl Node for CommandNode {
     fn node_data(&self) -> &NodeFields {
         &self.fields.node
     }
+
+    fn help_text(&self) -> &String {
+        &self.fields.help
+    }
 }
 
 impl CommandNode {
