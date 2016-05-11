@@ -240,11 +240,7 @@ impl<'t> Tokenizer<'t> {
     fn initial(&mut self, offset: usize, c: char) {
         if c.is_whitespace() {
             self.shift(offset, State::Whitespace);
-        } else if c == ';' {
-            self.special(offset);
-        } else if c == '?' {
-            self.special(offset);
-        } else if c == '|' {
+        } else if c == ';' || c == '?' || c == '|' {
             self.special(offset);
         } else if c == '"' {
             self.shift(offset, State::Doublequote);
@@ -272,10 +268,7 @@ impl<'t> Tokenizer<'t> {
                     if c.is_whitespace() {
                         self.reduce();
                         self.shift(offset, State::Whitespace);
-                    } else if c == ';' {
-                        self.reduce();
-                        self.special(offset);
-                    } else if c == '|' {
+                    } else if c == ';' || c == '|' {
                         self.reduce();
                         self.special(offset);
                     } else if c == '"' {
@@ -321,8 +314,7 @@ impl<'t> Tokenizer<'t> {
         // Now for the end of the text...
         match self.state {
             State::Initial => {}
-            State::Word => self.reduce(),
-            State::Whitespace => self.reduce(),
+            State::Word | State::Whitespace => self.reduce(),
             State::WordBackslash => return Err(TokenizerError::EscapingBackslashAtEndOfInput),
             State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput),
             State::DoublequoteBackslash => {

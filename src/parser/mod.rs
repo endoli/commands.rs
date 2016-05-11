@@ -1,10 +1,10 @@
 //! # Command Parser
 //!
-//! The ``commands::parser`` module provides:
+//! The `commands::parser` module provides:
 //!
 //! * Functionality for building a tree of commands based on their names.
 //! * Parsing tokenized input to select a command. Input tokenization can
-//!   be performed by the ``commands::tokenizer`` module.
+//!   be performed by the `commands::tokenizer` module.
 //! * Validating parameters.
 //! * Performing completion on commands and parameters.
 //!
@@ -124,10 +124,8 @@ impl<'p> Parser<'p> {
             return false;
         } else {
             for expected in self.commands[0].parameters() {
-                if expected.required() {
-                    if !self.parameters.contains_key(expected.name()) {
-                        return false;
-                    }
+                if expected.required() && !self.parameters.contains_key(expected.name()) {
+                    return false;
                 }
             }
         }
@@ -162,9 +160,8 @@ impl Accept for Node {
 
 impl Accept for Rc<CommandNode> {
     fn accept<'p>(&'p self, parser: &mut Parser<'p>, _token: &Token) {
-        match self.handler() {
-            Some(_) => parser.commands.push(self),
-            _ => {}
+        if let Some(_) = self.handler() {
+            parser.commands.push(self)
         }
     }
 }

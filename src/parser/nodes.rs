@@ -102,7 +102,7 @@ impl Node for WrapperNode {
     }
 
     fn successors(&self) -> &Vec<Rc<Node>> {
-        &self.fields.root.successors()
+        self.fields.root.successors()
     }
 }
 
