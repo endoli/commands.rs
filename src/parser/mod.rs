@@ -126,9 +126,9 @@ impl<'p> Parser<'p> {
         } else {
             for expected in self.commands[0].parameters() {
                 if expected.required() {
-                    // if !self.parameters.contains_key(expected.name()) {
-                    // return false;
-                    // }
+                    if !self.parameters.contains_key(expected.name()) {
+                        return false;
+                    }
                 }
             }
         }
