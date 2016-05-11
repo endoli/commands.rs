@@ -10,8 +10,6 @@
 //!
 //! The parser is still a work in progress but is rapidly advancing.
 
-#![allow(dead_code)]
-
 pub mod nodes;
 pub mod completion;
 
