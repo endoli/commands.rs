@@ -96,6 +96,10 @@ impl Node for WrapperNode {
     fn node_data(&self) -> &NodeFields {
         &self.fields.command.node
     }
+
+    fn successors(&self) -> &Vec<Rc<Node>> {
+        &self.fields.root.successors()
+    }
 }
 
 pub struct ParameterNameNode {
