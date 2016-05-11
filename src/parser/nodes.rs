@@ -55,16 +55,6 @@ pub struct NodeFields {
     pub hidden: bool,
 }
 
-pub struct RootNode {
-    fields: NodeFields,
-}
-
-impl Node for RootNode {
-    fn node_data(&self) -> &NodeFields {
-        &self.fields
-    }
-}
-
 pub struct CommandNode {
     fields: CommandNodeFields,
 }
