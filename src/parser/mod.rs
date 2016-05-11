@@ -34,7 +34,7 @@ pub struct Parser<'p> {
     pub nodes: Vec<&'p Rc<Node>>,
     /// The tokens which have been accepted during `parse` or `advance`.
     pub tokens: Vec<&'p Token<'p>>,
-    commands: Vec<Rc<CommandNode>>,
+    commands: Vec<&'p Rc<CommandNode>>,
     parameters: HashMap<String, String>,
 }
 
@@ -50,11 +50,6 @@ impl<'p> Parser<'p> {
         }
     }
 
-    /// XXX: Temporarily public.
-    pub fn push_command(&mut self, command: Rc<CommandNode>) {
-        self.commands.push(command);
-    }
-
     /// Parse a vector of tokens, advancing through the
     /// node hierarchy.
     pub fn parse(&mut self, tokens: Vec<&'p Token<'p>>) {
@@ -67,7 +62,22 @@ impl<'p> Parser<'p> {
 
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: &'p Token<'p>) {
-        unimplemented!();
+        let matches = self.current_node
+                          .successors()
+                          .into_iter()
+                          .filter(|n| n.acceptable(self) && n.matches(self, token))
+                          .collect::<Vec<_>>();
+        match matches.len() {
+            1 => {
+                let matching_node = &matches[0];
+                matching_node.accept(self, token);
+                self.current_node = matching_node.clone();
+                self.nodes.push(matching_node);
+                self.tokens.push(token);
+            }
+            0 => panic!("No matches for '{}'.", token.text),
+            _ => panic!("Ambiguous matches for '{}'.", token.text),
+        }
     }
 
     /// Execute the command that has been accepted by the parser.
@@ -101,5 +111,49 @@ impl<'p> Parser<'p> {
             }
         }
         true
+    }
+}
+
+trait Advance {
+    fn acceptable(&self, parser: &Parser) -> bool;
+
+    fn matches(&self, parser: &Parser, token: &Token) -> bool;
+}
+
+impl Advance for Node {
+    fn acceptable(&self, parser: &Parser) -> bool {
+        unimplemented!();
+        // !parser.nodes.contains(self)
+    }
+
+    fn matches(&self, parser: &Parser, token: &Token) -> bool {
+        self.name().starts_with(token.text)
+    }
+}
+
+trait Accept {
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token);
+}
+
+impl Accept for Node {
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token) {}
+}
+
+impl Accept for Rc<CommandNode> {
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token) {
+        match self.handler() {
+            Some(handler) => parser.commands.push(self),
+            _ => {}
+        }
+    }
+}
+
+impl Accept for Rc<ParameterNode> {
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token) {
+        if self.repeatable() {
+            unimplemented!();
+        } else {
+            parser.parameters.insert(self.name().clone(), token.text.to_string());
+        }
     }
 }
