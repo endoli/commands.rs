@@ -4,7 +4,7 @@
 //! by the currently permissible set of commands and their
 //! parameters.
 
-#![allow(dead_code, missing_docs, unused_variables)]
+#![allow(missing_docs)]
 
 use std::rc::Rc;
 

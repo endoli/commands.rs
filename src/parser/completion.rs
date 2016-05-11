@@ -1,7 +1,7 @@
 //! # Completion
 //!
 
-#![allow(dead_code, missing_docs, unused_variables)]
+#![allow(unused_variables)]
 
 use parser::nodes::*;
 use tokenizer::Token;
