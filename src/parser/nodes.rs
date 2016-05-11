@@ -62,7 +62,7 @@ pub struct CommandNode {
 pub struct CommandNodeFields {
     node: NodeFields,
     help: String,
-    handler: fn(&node: Node) -> (),
+    handler: Option<fn(&node: Node) -> ()>,
     parameters: Vec<Rc<ParameterNode>>,
 }
 
@@ -73,6 +73,10 @@ impl Node for CommandNode {
 }
 
 impl CommandNode {
+    pub fn handler(&self) -> Option<fn(&node: Node) -> ()> {
+        self.fields.handler
+    }
+
     /// Get the parameter nodes for this command
     pub fn parameters(&self) -> &Vec<Rc<ParameterNode>> {
         &self.fields.parameters
