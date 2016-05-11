@@ -104,10 +104,10 @@ impl<'p> Parser<'p> {
 
     /// Execute the command that has been accepted by the parser.
     ///
-    /// * XXX: This isn't implemented yet.
     /// * XXX: This should be returning a Result probably.
     pub fn execute(&self) {
         if !self.commands.is_empty() {
+            unimplemented!();
             // self.commands[0].execute(self)
         }
     }
@@ -116,7 +116,6 @@ impl<'p> Parser<'p> {
     /// respect to having accepted a command and all
     /// required parameters.
     ///
-    /// * XXX: This isn't implemented yet.
     /// * XXX: This should be returning Option or Result
     ///        with an enum for the various error conditions.
     pub fn verify(&self) -> bool {
