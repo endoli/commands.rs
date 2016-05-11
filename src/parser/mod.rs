@@ -150,6 +150,21 @@ impl Advance for Node {
     }
 }
 
+impl Advance for RepeatableNode {
+    fn acceptable(&self, _parser: &Parser) -> bool {
+        if self.repeatable() {
+            return true;
+        }
+        unimplemented!()
+        // This should check nodes.contains, but then go on to check
+        // for a repeat marker and whether or not that's been seen.
+    }
+
+    fn matches(&self, _parser: &Parser, token: &Token) -> bool {
+        self.name().starts_with(token.text)
+    }
+}
+
 trait Accept {
     fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token);
 }
