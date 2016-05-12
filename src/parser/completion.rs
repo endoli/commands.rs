@@ -42,7 +42,7 @@ pub struct Completion<'t> {
     /// Main help text.
     pub help_text: String,
     /// Token used to hint the completion, if provided.
-    pub token: Option<&'t Token<'t>>,
+    pub token: Option<Token<'t>>,
     /// Was this completion exhaustive? If yes, then only
     /// the given completion options are valid.
     pub exhaustive: bool,
@@ -54,7 +54,7 @@ impl<'t> Completion<'t> {
     /// Construct a new Completion.
     pub fn new(help_symbol: String,
                help_text: String,
-               token: Option<&'t Token<'t>>,
+               token: Option<Token<'t>>,
                exhaustive: bool,
                complete_options: Vec<&str>,
                other_options: Vec<&str>)
@@ -115,11 +115,11 @@ impl<'t> Completion<'t> {
 /// Trait for nodes that support completion.
 pub trait Complete<'t> {
     /// Given a node and an optional token, provide the completion options.
-    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t>;
+    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t>;
 }
 
 impl<'t> Complete<'t> for Node {
-    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t> {
+    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
                         token,
@@ -130,7 +130,7 @@ impl<'t> Complete<'t> for Node {
 }
 
 impl<'t> Complete<'t> for CommandNode {
-    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t> {
+    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
                         token,
@@ -141,7 +141,7 @@ impl<'t> Complete<'t> for CommandNode {
 }
 
 impl<'t> Complete<'t> for ParameterNameNode {
-    fn complete(&self, token: Option<&'t Token<'t>>) -> Completion<'t> {
+    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
                         token,

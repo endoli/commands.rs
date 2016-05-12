@@ -30,7 +30,7 @@ pub struct Parser<'p> {
     /// The nodes which have been accepted during `parse` or `advance`.
     pub nodes: Vec<&'p Rc<Node>>,
     /// The tokens which have been accepted during `parse` or `advance`.
-    pub tokens: Vec<&'p Token<'p>>,
+    pub tokens: Vec<Token<'p>>,
     commands: Vec<&'p Rc<CommandNode>>,
     parameters: HashMap<String, String>,
 }
@@ -49,7 +49,7 @@ impl<'p> Parser<'p> {
 
     /// Given an optional token, get the possible valid completions
     /// for the current parser state.
-    pub fn complete(&self, token: Option<&'p Token<'p>>) -> Vec<Completion> {
+    pub fn complete(&self, token: Option<Token<'p>>) -> Vec<Completion> {
         self.current_node
             .successors()
             .into_iter()
@@ -58,9 +58,10 @@ impl<'p> Parser<'p> {
                 // hidden, it should be acceptable, and if there's a token,
                 // it should be a valid match for the node.
                 !n.hidden() && n.acceptable(self) &&
-                match token {
-                    Some(t) => n.matches(self, t),
-                    _ => true,
+                if let Some(t) = token {
+                    n.matches(self, t)
+                } else {
+                    true
                 }
             })
             .map(|n| n.complete(token))
@@ -69,7 +70,7 @@ impl<'p> Parser<'p> {
 
     /// Parse a vector of tokens, advancing through the
     /// node hierarchy.
-    pub fn parse(&mut self, tokens: Vec<&'p Token<'p>>) {
+    pub fn parse(&mut self, tokens: Vec<Token<'p>>) {
         for token in tokens {
             match token.token_type {
                 TokenType::Invalid => unreachable!(),
@@ -80,7 +81,7 @@ impl<'p> Parser<'p> {
     }
 
     /// Parse a single token, advancing through the node hierarchy.
-    pub fn advance(&mut self, token: &'p Token<'p>) {
+    pub fn advance(&mut self, token: Token<'p>) {
         let matches = self.current_node
                           .successors()
                           .into_iter()
@@ -152,25 +153,25 @@ impl Acceptable for RepeatableNode {
 }
 
 trait Matches {
-    fn matches(&self, parser: &Parser, token: &Token) -> bool;
+    fn matches(&self, parser: &Parser, token: Token) -> bool;
 }
 
 impl Matches for Node {
-    fn matches(&self, _parser: &Parser, token: &Token) -> bool {
+    fn matches(&self, _parser: &Parser, token: Token) -> bool {
         self.name().starts_with(token.text)
     }
 }
 
 trait Accept {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token);
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: Token);
 }
 
 impl Accept for Node {
-    fn accept<'p>(&'p self, _parser: &mut Parser<'p>, _token: &Token) {}
+    fn accept<'p>(&'p self, _parser: &mut Parser<'p>, _token: Token) {}
 }
 
 impl Accept for Rc<CommandNode> {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, _token: &Token) {
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, _token: Token) {
         if let Some(_) = self.handler() {
             parser.commands.push(self)
         }
@@ -178,7 +179,7 @@ impl Accept for Rc<CommandNode> {
 }
 
 impl Accept for Rc<ParameterNode> {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: &Token) {
+    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: Token) {
         if self.repeatable() {
             unimplemented!();
         } else {

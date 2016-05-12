@@ -49,7 +49,7 @@ use std::error::Error;
 /// The `SourceOffset` is typically used as a pair of offsets
 /// indicating the start and end of a range of text as used
 /// by the `SourceLocation`.
-#[derive(Debug,PartialEq)]
+#[derive(Clone,Copy,Debug,PartialEq)]
 pub struct SourceOffset {
     /// The index of this character within the body of text.
     pub char: usize,
@@ -71,7 +71,7 @@ impl SourceOffset {
 }
 
 /// A range within a body of text.
-#[derive(Debug,PartialEq)]
+#[derive(Clone,Copy,Debug,PartialEq)]
 pub struct SourceLocation {
     /// The start of the range.
     pub start: SourceOffset,
@@ -140,7 +140,7 @@ pub enum TokenType {
 ///
 /// The lifetime parameter `'t` refers to the lifetime
 /// of the body of text that was tokenized, creating this token.
-#[derive(Debug,PartialEq)]
+#[derive(Clone,Copy,Debug,PartialEq)]
 pub struct Token<'t> {
     /// The text of the token.
     pub text: &'t str,
