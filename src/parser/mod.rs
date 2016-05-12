@@ -52,20 +52,19 @@ impl<'p> Parser<'p> {
     /// Given an optional token, get the possible valid completions
     /// for the current parser state.
     pub fn complete(&self, token: Option<&'p Token<'p>>) -> Vec<Completion> {
-        fn possible_completion(node: &Rc<Node>, parser: &Parser, token: Option<&Token>) -> bool {
-            // To be a possible completion, the node should not be
-            // hidden, it should be acceptable, and if there's a token,
-            // it should be a valid match for the node.
-            !node.hidden() && node.acceptable(parser) &&
-            match token {
-                Some(t) => node.matches(parser, t),
-                _ => true,
-            }
-        }
         self.current_node
             .successors()
             .into_iter()
-            .filter(|n| possible_completion(n, self, token))
+            .filter(|n| {
+                // To be a possible completion, the node should not be
+                // hidden, it should be acceptable, and if there's a token,
+                // it should be a valid match for the node.
+                !n.hidden() && n.acceptable(self) &&
+                match token {
+                    Some(t) => n.matches(self, t),
+                    _ => true,
+                }
+            })
             .map(|n| n.complete(token))
             .collect::<Vec<_>>()
     }
