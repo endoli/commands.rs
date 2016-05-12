@@ -46,20 +46,20 @@ pub trait Node {
 /// A parse tree node.
 pub struct NodeFields {
     /// Possible successor nodes. Collected while building.
-    pub successors: Vec<Rc<Node>>,
+    successors: Vec<Rc<Node>>,
     /// The name of this node.
-    pub name: String,
+    name: String,
     /// Match and complete priority.
-    pub priority: i32,
+    priority: i32,
     /// Hidden nodes are not completed. This doesn't modify matching.
-    pub hidden: bool,
+    hidden: bool,
 }
 
 pub struct CommandNode {
     fields: CommandNodeFields,
 }
 
-pub struct CommandNodeFields {
+struct CommandNodeFields {
     node: NodeFields,
     help: String,
     handler: Option<fn(&node: Node) -> ()>,
@@ -91,7 +91,7 @@ pub struct WrapperNode {
     fields: WrapperNodeFields,
 }
 
-pub struct WrapperNodeFields {
+struct WrapperNodeFields {
     command: CommandNodeFields,
     root: Rc<Node>,
 }
@@ -127,7 +127,7 @@ pub struct ParameterNameNode {
     fields: ParameterNameNodeFields,
 }
 
-pub struct ParameterNameNodeFields {
+struct ParameterNameNodeFields {
     node: NodeFields,
     repeatable: RepeatableNodeFields,
     help: String,
