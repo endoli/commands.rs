@@ -26,7 +26,7 @@ use parser::completion::{Complete, Completion};
 /// used to create this parser, as well as the tokens passed
 /// into the parser.
 pub struct Parser<'p> {
-    current_node: &'p Rc<Node>,
+    current_node: Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
     pub nodes: Vec<Rc<Node>>,
     /// The tokens which have been accepted during `parse` or `advance`.
@@ -37,7 +37,7 @@ pub struct Parser<'p> {
 
 impl<'p> Parser<'p> {
     /// Construct a parser with a root node.
-    pub fn new(initial_node: &'p Rc<Node>) -> Parser<'p> {
+    pub fn new(initial_node: Rc<Node>) -> Parser<'p> {
         Parser {
             current_node: initial_node,
             nodes: vec![],
@@ -82,16 +82,18 @@ impl<'p> Parser<'p> {
 
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: Token<'p>) {
-        let matches = self.current_node
-                          .successors()
-                          .into_iter()
-                          .filter(|n| n.acceptable(self) && n.matches(self, token))
-                          .collect::<Vec<_>>();
+        // We clone the current node so that it doesn't stay borrowed
+        // and break things when we try to modify it below.
+        let cn = self.current_node.clone();
+        let matches = cn.successors()
+                        .into_iter()
+                        .filter(|n| n.acceptable(self) && n.matches(self, token))
+                        .collect::<Vec<_>>();
         match matches.len() {
             1 => {
                 let matching_node = matches[0];
                 matching_node.accept(self, token);
-                self.current_node = matching_node;
+                self.current_node = matching_node.clone();
                 self.nodes.push(matching_node.clone());
                 self.tokens.push(token);
             }
