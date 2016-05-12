@@ -33,7 +33,7 @@ pub trait Node {
     }
 
     /// Help text describing this node.
-    fn help_text(&self) -> &String {
+    fn help_text(&self) -> &Option<String> {
         unimplemented!();
     }
 
@@ -79,7 +79,7 @@ pub struct CommandNode {
 
 struct CommandNodeFields {
     node: NodeFields,
-    help: String,
+    help: Option<String>,
     handler: Option<fn(&node: Node) -> ()>,
     parameters: Vec<Rc<ParameterNode>>,
 }
@@ -89,7 +89,7 @@ impl Node for CommandNode {
         &self.fields.node
     }
 
-    fn help_text(&self) -> &String {
+    fn help_text(&self) -> &Option<String> {
         &self.fields.help
     }
 }
@@ -164,7 +164,7 @@ pub struct ParameterNameNode {
 struct ParameterNameNodeFields {
     node: NodeFields,
     repeatable: RepeatableNodeFields,
-    help: String,
+    help: Option<String>,
     parameter: Rc<Node>,
 }
 
@@ -177,7 +177,7 @@ impl Node for ParameterNameNode {
         self.fields.node.name.clone() + " " + self.fields.parameter.help_symbol().as_str()
     }
 
-    fn help_text(&self) -> &String {
+    fn help_text(&self) -> &Option<String> {
         &self.fields.help
     }
 }
@@ -210,7 +210,7 @@ impl RepeatableNode for ParameterNode {
 pub struct ParameterNodeFields {
     node: NodeFields,
     repeatable: RepeatableNodeFields,
-    help: String,
+    help: Option<String>,
     required: bool,
 }
 
@@ -228,7 +228,7 @@ impl Node for ParameterNode {
         }
     }
 
-    fn help_text(&self) -> &String {
+    fn help_text(&self) -> &Option<String> {
         &self.parameter_data().help
     }
 }

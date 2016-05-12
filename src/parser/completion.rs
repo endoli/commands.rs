@@ -40,7 +40,7 @@ pub struct Completion<'t> {
     /// Value placeholder for help.
     pub help_symbol: String,
     /// Main help text.
-    pub help_text: String,
+    pub help_text: Option<String>,
     /// Token used to hint the completion, if provided.
     pub token: Option<Token<'t>>,
     /// Was this completion exhaustive? If yes, then only
@@ -53,7 +53,7 @@ pub struct Completion<'t> {
 impl<'t> Completion<'t> {
     /// Construct a new Completion.
     pub fn new(help_symbol: String,
-               help_text: String,
+               help_text: Option<String>,
                token: Option<Token<'t>>,
                exhaustive: bool,
                complete_options: Vec<&str>,
