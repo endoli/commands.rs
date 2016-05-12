@@ -133,24 +133,18 @@ impl<'p> Parser<'p> {
     }
 }
 
-trait Advance {
+trait Acceptable {
     fn acceptable(&self, parser: &Parser) -> bool;
-
-    fn matches(&self, parser: &Parser, token: &Token) -> bool;
 }
 
-impl Advance for Node {
+impl Acceptable for Node {
     fn acceptable(&self, _parser: &Parser) -> bool {
         unimplemented!();
         // !parser.nodes.contains(self)
     }
-
-    fn matches(&self, _parser: &Parser, token: &Token) -> bool {
-        self.name().starts_with(token.text)
-    }
 }
 
-impl Advance for RepeatableNode {
+impl Acceptable for RepeatableNode {
     fn acceptable(&self, _parser: &Parser) -> bool {
         if self.repeatable() {
             return true;
@@ -159,7 +153,13 @@ impl Advance for RepeatableNode {
         // This should check nodes.contains, but then go on to check
         // for a repeat marker and whether or not that's been seen.
     }
+}
 
+trait Matches {
+    fn matches(&self, parser: &Parser, token: &Token) -> bool;
+}
+
+impl Matches for Node {
     fn matches(&self, _parser: &Parser, token: &Token) -> bool {
         self.name().starts_with(token.text)
     }
