@@ -22,11 +22,9 @@ use parser::completion::{Complete, Completion};
 /// Command parser
 ///
 /// The lifetime parameter `'p` refers to the lifetime of the
-/// root node of the command tree that was used to create this
-/// parser.
-///
-/// The lifetime parameter `'p` refers to the lifetime of the parser
-/// and of the tokens passed into this parser.
+/// parser itself, the root node of the command tree that was
+/// used to create this parser, as well as the tokens passed
+/// into the parser.
 pub struct Parser<'p> {
     current_node: &'p Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
