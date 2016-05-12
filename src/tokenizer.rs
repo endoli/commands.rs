@@ -103,9 +103,6 @@ pub enum TokenizerError {
 
     /// Unclosed double quote at end of input
     UnclosedDoubleQuoteAtEndOfInput,
-
-    /// Escaped double quote at end of input
-    EscapedDoubleQuoteAtEndOfInput,
 }
 
 impl Error for TokenizerError {
@@ -116,9 +113,6 @@ impl Error for TokenizerError {
             TokenizerError::EscapingBackslashAtEndOfInput => "Escaping backlash at end of input",
             TokenizerError::UnclosedDoubleQuoteAtEndOfInput => {
                 "Unclosed double quote at end of input"
-            }
-            TokenizerError::EscapedDoubleQuoteAtEndOfInput => {
-                "Escaped double quote at end of input"
             }
         }
     }
@@ -318,7 +312,7 @@ impl<'t> Tokenizer<'t> {
             State::WordBackslash => return Err(TokenizerError::EscapingBackslashAtEndOfInput),
             State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput),
             State::DoublequoteBackslash => {
-                return Err(TokenizerError::EscapedDoubleQuoteAtEndOfInput)
+                return Err(TokenizerError::EscapingBackslashAtEndOfInput)
             }
             State::Special => {
                 return Err(TokenizerError::SpecialNotYetImplemented(self.text.len() - 1))
@@ -446,7 +440,7 @@ mod test {
     #[should_panic]
     fn escaped_double_quote_at_end_of_input() {
         match tokenize("ab \"\\") {
-            Err(TokenizerError::EscapedDoubleQuoteAtEndOfInput) => panic!(),
+            Err(TokenizerError::EscapingBackslashAtEndOfInput) => panic!(),
             _ => {}
         }
     }
