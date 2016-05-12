@@ -54,6 +54,12 @@ pub trait Node {
     }
 }
 
+impl PartialEq for Node {
+    fn eq(&self, other: &Self) -> bool {
+        self as *const _ == other as *const _
+    }
+}
+
 /// A parse tree node.
 pub struct NodeFields {
     /// Possible successor nodes. Collected while building.

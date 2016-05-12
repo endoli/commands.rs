@@ -134,10 +134,9 @@ trait Acceptable {
     fn acceptable(&self, parser: &Parser) -> bool;
 }
 
-impl Acceptable for Node {
-    fn acceptable(&self, _parser: &Parser) -> bool {
-        unimplemented!();
-        // !parser.nodes.contains(self)
+impl Acceptable for Rc<Node> {
+    fn acceptable(&self, parser: &Parser) -> bool {
+        !parser.nodes.contains(&self)
     }
 }
 
