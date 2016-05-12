@@ -28,10 +28,10 @@ use parser::completion::{Complete, Completion};
 pub struct Parser<'p> {
     current_node: &'p Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
-    pub nodes: Vec<&'p Rc<Node>>,
+    pub nodes: Vec<Rc<Node>>,
     /// The tokens which have been accepted during `parse` or `advance`.
     pub tokens: Vec<Token<'p>>,
-    commands: Vec<&'p Rc<CommandNode>>,
+    commands: Vec<Rc<CommandNode>>,
     parameters: HashMap<String, String>,
 }
 
@@ -89,10 +89,10 @@ impl<'p> Parser<'p> {
                           .collect::<Vec<_>>();
         match matches.len() {
             1 => {
-                let matching_node = &matches[0];
+                let matching_node = matches[0];
                 matching_node.accept(self, token);
-                self.current_node = matching_node.clone();
-                self.nodes.push(matching_node);
+                self.current_node = matching_node;
+                self.nodes.push(matching_node.clone());
                 self.tokens.push(token);
             }
             0 => panic!("No matches for '{}'.", token.text),
@@ -137,7 +137,7 @@ trait Acceptable {
 
 impl Acceptable for Rc<Node> {
     fn acceptable(&self, parser: &Parser) -> bool {
-        !parser.nodes.contains(&self)
+        !parser.nodes.contains(self)
     }
 }
 
@@ -163,23 +163,23 @@ impl Matches for Node {
 }
 
 trait Accept {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: Token);
+    fn accept<'p>(&self, parser: &mut Parser<'p>, token: Token);
 }
 
 impl Accept for Node {
-    fn accept<'p>(&'p self, _parser: &mut Parser<'p>, _token: Token) {}
+    fn accept<'p>(&self, _parser: &mut Parser<'p>, _token: Token) {}
 }
 
 impl Accept for Rc<CommandNode> {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, _token: Token) {
+    fn accept<'p>(&self, parser: &mut Parser<'p>, _token: Token) {
         if let Some(_) = self.handler() {
-            parser.commands.push(self)
+            parser.commands.push(self.clone())
         }
     }
 }
 
 impl Accept for Rc<ParameterNode> {
-    fn accept<'p>(&'p self, parser: &mut Parser<'p>, token: Token) {
+    fn accept<'p>(&self, parser: &mut Parser<'p>, token: Token) {
         if self.repeatable() {
             unimplemented!();
         } else {
