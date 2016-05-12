@@ -1,8 +1,6 @@
 //! # Completion
 //!
 
-#![allow(unused_variables)]
-
 use parser::nodes::*;
 use tokenizer::Token;
 use util::longest_common_prefix;
