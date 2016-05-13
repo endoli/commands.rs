@@ -77,23 +77,23 @@ pub struct NodeFields {
 
 /// The root of a command tree.
 pub struct RootNode {
-    fields: NodeFields,
+    node_fields: NodeFields,
 }
 
 impl Node for RootNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
-        &self.fields
+        &self.node_fields
     }
 }
 
 /// A node representing a command.
 pub struct CommandNode {
-    fields: CommandNodeFields,
+    node_fields: NodeFields,
+    command_fields: CommandNodeFields,
 }
 
 struct CommandNodeFields {
-    node: NodeFields,
     help: Option<String>,
     handler: Option<fn(&node: Node) -> ()>,
     parameters: Vec<Rc<ParameterNode>>,
@@ -102,23 +102,23 @@ struct CommandNodeFields {
 impl Node for CommandNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
-        &self.fields.node
+        &self.node_fields
     }
 
     fn help_text(&self) -> &Option<String> {
-        &self.fields.help
+        &self.command_fields.help
     }
 }
 
 impl CommandNode {
     /// The handler which is executed once this node has been accepted.
     pub fn handler(&self) -> Option<fn(&node: Node) -> ()> {
-        self.fields.handler
+        self.command_fields.handler
     }
 
     /// Get the parameter nodes for this command.
     pub fn parameters(&self) -> &Vec<Rc<ParameterNode>> {
-        &self.fields.parameters
+        &self.command_fields.parameters
     }
 }
 
@@ -129,22 +129,20 @@ impl CommandNode {
 ///
 /// The `successors` will be those of the wrapped node.
 pub struct WrapperNode {
-    fields: WrapperNodeFields,
-}
-
-struct WrapperNodeFields {
-    command: CommandNodeFields,
+    node_fields: NodeFields,
+    #[allow(dead_code)]
+    command_fields: CommandNodeFields,
     root: Rc<Node>,
 }
 
 impl Node for WrapperNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
-        &self.fields.command.node
+        &self.node_fields
     }
 
     fn successors(&self) -> &Vec<Rc<Node>> {
-        self.fields.root.successors()
+        self.root.successors()
     }
 }
 
@@ -177,12 +175,8 @@ pub struct RepeatableNodeFields {
 /// A node that represented the name portion of a named
 /// parameter.
 pub struct ParameterNameNode {
-    fields: ParameterNameNodeFields,
-}
-
-struct ParameterNameNodeFields {
-    node: NodeFields,
-    repeatable: RepeatableNodeFields,
+    node_fields: NodeFields,
+    repeatable_fields: RepeatableNodeFields,
     help: Option<String>,
     parameter: Rc<Node>,
 }
@@ -190,22 +184,22 @@ struct ParameterNameNodeFields {
 impl Node for ParameterNameNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
-        &self.fields.node
+        &self.node_fields
     }
 
     fn help_symbol(&self) -> String {
-        self.fields.node.name.clone() + " " + self.fields.parameter.help_symbol().as_str()
+        self.node_fields.name.clone() + " " + self.parameter.help_symbol().as_str()
     }
 
     fn help_text(&self) -> &Option<String> {
-        &self.fields.help
+        &self.help
     }
 }
 
 impl RepeatableNode for ParameterNameNode {
     #[doc(hidden)]
     fn repeatable_data(&self) -> &RepeatableNodeFields {
-        &self.fields.repeatable
+        &self.repeatable_fields
     }
 }
 
@@ -263,37 +257,37 @@ impl Node for ParameterNode {
 /// When implemented, this will only have a value of
 /// true when it is present.
 pub struct FlagParameterNode {
-    fields: ParameterNodeFields,
+    parameter_fields: ParameterNodeFields,
 }
 
 impl ParameterNode for FlagParameterNode {
     #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields {
-        &self.fields
+        &self.parameter_fields
     }
 }
 
 /// A named parameter node.
 pub struct NamedParameterNode {
-    fields: ParameterNodeFields,
+    parameter_fields: ParameterNodeFields,
 }
 
 impl ParameterNode for NamedParameterNode {
     #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields {
-        &self.fields
+        &self.parameter_fields
     }
 }
 
 /// A simple parameter node. This is only present in a command
 /// line as a value.
 pub struct SimpleParameterNode {
-    fields: ParameterNodeFields,
+    parameter_fields: ParameterNodeFields,
 }
 
 impl ParameterNode for SimpleParameterNode {
     #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields {
-        &self.fields
+        &self.parameter_fields
     }
 }
