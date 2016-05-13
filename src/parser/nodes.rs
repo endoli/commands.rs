@@ -76,8 +76,28 @@ pub struct NodeFields {
 }
 
 /// The root of a command tree.
+///
+/// ```
+/// use commands::parser::nodes::RootNode;
+///
+/// let root = RootNode::new();
+/// ```
 pub struct RootNode {
     node_fields: NodeFields,
+}
+
+impl RootNode {
+    /// Create a new `RootNode`
+    pub fn new() -> Rc<Self> {
+        Rc::new(RootNode {
+            node_fields: NodeFields {
+                successors: vec![],
+                name: "__root__".to_string(),
+                priority: PRIORITY_DEFAULT,
+                hidden: false,
+            },
+        })
+    }
 }
 
 impl Node for RootNode {
@@ -99,6 +119,29 @@ struct CommandNodeFields {
     parameters: Vec<Rc<ParameterNode>>,
 }
 
+impl CommandNode {
+    /// Construct a new `CommandNode`.
+    pub fn new(name: &str,
+               priority: i32,
+               hidden: bool,
+               help: Option<String>,
+               handler: Option<fn(&node: Node) -> ()>)
+               -> Rc<Self> {
+        Rc::new(CommandNode {
+            node_fields: NodeFields {
+                successors: vec![],
+                name: name.to_string(),
+                priority: priority,
+                hidden: hidden,
+            },
+            command_fields: CommandNodeFields {
+                help: help,
+                handler: handler,
+                parameters: vec![],
+            },
+        })
+    }
+}
 impl Node for CommandNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
