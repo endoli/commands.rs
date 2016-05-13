@@ -51,6 +51,19 @@ impl<'p> Parser<'p> {
 
     /// Given an optional token, get the possible valid completions
     /// for the current parser state.
+    ///
+    /// Possible completions are successors of the current node which
+    /// are not `hidden`, are `acceptable`, and which match the token,
+    /// if one has been provided.
+    ///
+    /// Nodes may customize the `Complete` trait to customize the
+    /// `Completion` and `CompletionOption`s which are generated
+    /// for that node.
+    ///
+    /// Each valid successor node will have one `Completion` in the
+    /// result vector. Each `Completion` will have one or more
+    /// `CompletionOption` for each valid way that the value may be
+    /// entered.
     pub fn complete(&self, token: Option<Token<'p>>) -> Vec<Completion> {
         self.current_node
             .successors()
