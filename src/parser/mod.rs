@@ -14,6 +14,8 @@ pub mod nodes;
 pub mod completion;
 
 use std::collections::HashMap;
+use std::error::Error;
+use std::fmt;
 use std::rc::Rc;
 use parser::nodes::*;
 use tokenizer::{Token, TokenType};
@@ -70,18 +72,19 @@ impl<'p> Parser<'p> {
 
     /// Parse a vector of tokens, advancing through the
     /// node hierarchy.
-    pub fn parse(&mut self, tokens: Vec<Token<'p>>) {
+    pub fn parse(&mut self, tokens: Vec<Token<'p>>) -> Result<(), ParserError<'p>> {
         for token in tokens {
             match token.token_type {
                 TokenType::Invalid => unreachable!(),
                 TokenType::Whitespace => {}
-                TokenType::Word => self.advance(token),
+                TokenType::Word => try!(self.advance(token)),
             }
         }
+        Ok(())
     }
 
     /// Parse a single token, advancing through the node hierarchy.
-    pub fn advance(&mut self, token: Token<'p>) {
+    pub fn advance(&mut self, token: Token<'p>) -> Result<(), ParserError<'p>> {
         // We clone the current node so that it doesn't stay borrowed
         // and break things when we try to modify it below.
         let cn = self.current_node.clone();
@@ -96,9 +99,10 @@ impl<'p> Parser<'p> {
                 self.current_node = matching_node.clone();
                 self.nodes.push(matching_node.clone());
                 self.tokens.push(token);
+                Ok(())
             }
-            0 => panic!("No matches for '{}'.", token.text),
-            _ => panic!("Ambiguous matches for '{}'.", token.text),
+            0 => Err(ParserError::NoMatches(token)),
+            _ => Err(ParserError::AmbiguousMatch(token)),
         }
     }
 
@@ -130,6 +134,33 @@ impl<'p> Parser<'p> {
             }
         }
         true
+    }
+}
+
+/// Errors that the `Parser` can raise.
+#[derive(Clone,Debug)]
+pub enum ParserError<'t> {
+    /// The parser is in an invalid state.
+    InvalidState,
+    /// There were no matches for the token.
+    NoMatches(Token<'t>),
+    /// There was more than 1 possible match for the token.
+    AmbiguousMatch(Token<'t>), // XXX: One day, add: Vec<&'p Rc<Node>>),
+}
+
+impl<'t> Error for ParserError<'t> {
+    fn description(&self) -> &str {
+        match *self {
+            ParserError::InvalidState => "Invalid state.",
+            ParserError::NoMatches(_) => "No match.",
+            ParserError::AmbiguousMatch(_) => "Ambiguous match.",
+        }
+    }
+}
+
+impl<'t> fmt::Display for ParserError<'t> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        self.description().fmt(f)
     }
 }
 
