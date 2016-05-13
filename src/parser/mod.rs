@@ -177,17 +177,21 @@ impl<'t> fmt::Display for ParserError<'t> {
     }
 }
 
-trait Acceptable {
+/// Can this node be accepted in the current parser state?
+pub trait Acceptable {
+    /// Can this node be accepted in the current parser state?
     fn acceptable(&self, parser: &Parser) -> bool;
 }
 
 impl Acceptable for Rc<Node> {
+    /// By default, a node can be accepted when it hasn't been seen yet.
     fn acceptable(&self, parser: &Parser) -> bool {
         !parser.nodes.contains(self)
     }
 }
 
 impl Acceptable for RepeatableNode {
+    /// A repeatable node can be accepted.
     fn acceptable(&self, _parser: &Parser) -> bool {
         if self.repeatable() {
             return true;
@@ -198,25 +202,35 @@ impl Acceptable for RepeatableNode {
     }
 }
 
-trait Matches {
+/// Define whether or not a node matches a token.
+pub trait Matches {
+    /// Does this node match the specified `token`?
     fn matches(&self, parser: &Parser, token: Token) -> bool;
 }
 
 impl Matches for Node {
+    /// By default, a node matches a `token` when the name of the
+    /// node starts with the `token`.
     fn matches(&self, _parser: &Parser, token: Token) -> bool {
         self.name().starts_with(token.text)
     }
 }
 
-trait Accept {
+/// Define the behavior of a node when it is accepted by the parser.
+pub trait Accept {
+    /// Accept this node with the given `token` as data.
+    ///
+    /// This is where parameters are stored, commands added.
     fn accept<'p>(&self, parser: &mut Parser<'p>, token: Token);
 }
 
 impl Accept for Node {
+    /// By default, nothing needs to happen for `accept`.
     fn accept<'p>(&self, _parser: &mut Parser<'p>, _token: Token) {}
 }
 
 impl Accept for Rc<CommandNode> {
+    /// Record this command.
     fn accept<'p>(&self, parser: &mut Parser<'p>, _token: Token) {
         if let Some(_) = self.handler() {
             parser.commands.push(self.clone())
@@ -225,6 +239,7 @@ impl Accept for Rc<CommandNode> {
 }
 
 impl Accept for Rc<ParameterNode> {
+    /// Record this parameter value.
     fn accept<'p>(&self, parser: &mut Parser<'p>, token: Token) {
         if self.repeatable() {
             unimplemented!();

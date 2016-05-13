@@ -17,6 +17,7 @@ pub const PRIORITY_DEFAULT: i32 = 0;
 /// used by the `Parser`.
 pub trait Node {
     /// The data describing this node.
+    #[doc(hidden)]
     fn node_data(&self) -> &NodeFields;
 
     /// Nodes that are children of this node. Used to
@@ -55,12 +56,14 @@ pub trait Node {
 }
 
 impl PartialEq for Node {
+    /// Nodes are equal based on pointer equality.
     fn eq(&self, other: &Self) -> bool {
         self as *const _ == other as *const _
     }
 }
 
 /// A parse tree node.
+#[doc(hidden)]
 pub struct NodeFields {
     /// Possible successor nodes. Collected while building.
     successors: Vec<Rc<Node>>,
@@ -85,6 +88,7 @@ struct CommandNodeFields {
 }
 
 impl Node for CommandNode {
+    #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.fields.node
     }
@@ -122,6 +126,7 @@ struct WrapperNodeFields {
 }
 
 impl Node for WrapperNode {
+    #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.fields.command.node
     }
@@ -135,6 +140,7 @@ impl Node for WrapperNode {
 /// nodes that can be repeated, like some parameters.
 pub trait RepeatableNode: Node {
     /// Internal data for a repeatable node.
+    #[doc(hidden)]
     fn repeatable_data(&self) -> &RepeatableNodeFields;
 
     /// Whether or not this node can be repeated. A repeated
@@ -150,6 +156,7 @@ pub trait RepeatableNode: Node {
 }
 
 /// The data for a repeatable node.
+#[doc(hidden)]
 pub struct RepeatableNodeFields {
     repeatable: bool,
     repeat_marker: Option<Rc<Node>>,
@@ -169,6 +176,7 @@ struct ParameterNameNodeFields {
 }
 
 impl Node for ParameterNameNode {
+    #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.fields.node
     }
@@ -183,6 +191,7 @@ impl Node for ParameterNameNode {
 }
 
 impl RepeatableNode for ParameterNameNode {
+    #[doc(hidden)]
     fn repeatable_data(&self) -> &RepeatableNodeFields {
         &self.fields.repeatable
     }
@@ -191,6 +200,7 @@ impl RepeatableNode for ParameterNameNode {
 /// Parameter nodes.
 pub trait ParameterNode {
     /// Internal data for a parameter node.
+    #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields;
 
     /// A `required` parameter must be supplied for the
@@ -201,12 +211,14 @@ pub trait ParameterNode {
 }
 
 impl RepeatableNode for ParameterNode {
+    #[doc(hidden)]
     fn repeatable_data(&self) -> &RepeatableNodeFields {
         &self.parameter_data().repeatable
     }
 }
 
 /// Data for parameter nodes.
+#[doc(hidden)]
 pub struct ParameterNodeFields {
     node: NodeFields,
     repeatable: RepeatableNodeFields,
@@ -215,6 +227,7 @@ pub struct ParameterNodeFields {
 }
 
 impl Node for ParameterNode {
+    #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.parameter_data().node
     }
@@ -242,6 +255,7 @@ pub struct FlagParameterNode {
 }
 
 impl ParameterNode for FlagParameterNode {
+    #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields {
         &self.fields
     }
@@ -253,6 +267,7 @@ pub struct NamedParameterNode {
 }
 
 impl ParameterNode for NamedParameterNode {
+    #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields {
         &self.fields
     }
@@ -265,6 +280,7 @@ pub struct SimpleParameterNode {
 }
 
 impl ParameterNode for SimpleParameterNode {
+    #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields {
         &self.fields
     }
