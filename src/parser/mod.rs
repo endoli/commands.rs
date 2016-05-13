@@ -238,7 +238,7 @@ impl Accept for Rc<CommandNode> {
     }
 }
 
-impl Accept for Rc<ParameterNode> {
+impl Accept for ParameterNode {
     /// Record this parameter value.
     fn accept<'p>(&self, parser: &mut Parser<'p>, token: Token) {
         if self.repeatable() {
