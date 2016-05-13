@@ -75,6 +75,18 @@ pub struct NodeFields {
     hidden: bool,
 }
 
+/// The root of a command tree.
+pub struct RootNode {
+    fields: NodeFields,
+}
+
+impl Node for RootNode {
+    #[doc(hidden)]
+    fn node_data(&self) -> &NodeFields {
+        &self.fields
+    }
+}
+
 /// A node representing a command.
 pub struct CommandNode {
     fields: CommandNodeFields,

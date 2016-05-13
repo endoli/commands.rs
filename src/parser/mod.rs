@@ -39,7 +39,7 @@ pub struct Parser<'p> {
 
 impl<'p> Parser<'p> {
     /// Construct a parser with a root node.
-    pub fn new(initial_node: Rc<Node>) -> Parser<'p> {
+    pub fn new(initial_node: Rc<RootNode>) -> Parser<'p> {
         Parser {
             current_node: initial_node,
             nodes: vec![],

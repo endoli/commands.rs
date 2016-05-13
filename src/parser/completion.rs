@@ -129,6 +129,12 @@ impl<'t> Complete<'t> for Node {
     }
 }
 
+impl<'t> Complete<'t> for RootNode {
+    fn complete(&self, _token: Option<Token<'t>>) -> Completion<'t> {
+        panic!("BUG: Can not complete a root node.");
+    }
+}
+
 impl<'t> Complete<'t> for CommandNode {
     fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
         Completion::new(self.help_symbol().clone(),
