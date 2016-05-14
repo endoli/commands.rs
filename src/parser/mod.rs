@@ -156,21 +156,17 @@ impl<'p> Parser<'p> {
     /// Verify that the parser is in a valid state with
     /// respect to having accepted a command and all
     /// required parameters.
-    ///
-    /// * XXX: This should be returning Option or Result
-    ///        with an enum for the various error conditions.
-    pub fn verify(&self) -> bool {
+    pub fn verify(&self) -> Result<(), VerifyError> {
         if self.commands.is_empty() {
-            // XXX: We'll want an enum error here with a Result.
-            return false;
+            return Err(VerifyError::NoCommandAccepted);
         } else {
             for expected in self.commands[0].parameters() {
                 if expected.required() && !self.parameters.contains_key(expected.name()) {
-                    return false;
+                    return Err(VerifyError::MissingParameter(expected.name().clone()));
                 }
             }
         }
-        true
+        Ok(())
     }
 }
 
@@ -196,6 +192,30 @@ impl<'t> Error for ParseError<'t> {
 }
 
 impl<'t> fmt::Display for ParseError<'t> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        self.description().fmt(f)
+    }
+}
+
+/// Errors that calling `verify` on the `Parser` can raise.
+#[derive(Clone,Debug)]
+pub enum VerifyError {
+    /// No command has been accepted by the parser.
+    NoCommandAccepted,
+    /// A required parameter is missing.
+    MissingParameter(String),
+}
+
+impl Error for VerifyError {
+    fn description(&self) -> &str {
+        match *self {
+            VerifyError::NoCommandAccepted => "No command has been accepted by the parser.",
+            VerifyError::MissingParameter(_) => "A required parameter is missing.",
+        }
+    }
+}
+
+impl fmt::Display for VerifyError {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         self.description().fmt(f)
     }
