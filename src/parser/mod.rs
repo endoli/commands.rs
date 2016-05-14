@@ -27,6 +27,17 @@ use parser::completion::{Complete, Completion};
 /// parser itself, the root node of the command tree that was
 /// used to create this parser, as well as the tokens passed
 /// into the parser.
+///
+/// ```
+/// use commands::parser::nodes::RootNode;
+/// use commands::parser::Parser;
+///
+/// let mut root = RootNode::new();
+/// let mut parser = Parser::new(root);
+/// ```
+///
+/// The parser is constructed as a `mut`able object as most of
+/// the methods on it will modify its state.
 pub struct Parser<'p> {
     current_node: Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
@@ -85,6 +96,19 @@ impl<'p> Parser<'p> {
 
     /// Parse a vector of tokens, advancing through the
     /// node hierarchy.
+    ///
+    /// ```
+    /// use commands::parser::nodes::RootNode;
+    /// use commands::parser::Parser;
+    /// use commands::tokenizer::tokenize;
+    ///
+    /// let mut root = RootNode::new();
+    /// let mut parser = Parser::new(root);
+    ///
+    /// if let Ok(tokens) = tokenize("show interface") {
+    ///     parser.parse(tokens);
+    /// }
+    /// ```
     pub fn parse(&mut self, tokens: Vec<Token<'p>>) -> Result<(), ParserError<'p>> {
         for token in tokens {
             match token.token_type {
