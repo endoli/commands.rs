@@ -109,7 +109,7 @@ impl<'p> Parser<'p> {
     ///     parser.parse(tokens);
     /// }
     /// ```
-    pub fn parse(&mut self, tokens: Vec<Token<'p>>) -> Result<(), ParserError<'p>> {
+    pub fn parse(&mut self, tokens: Vec<Token<'p>>) -> Result<(), ParseError<'p>> {
         for token in tokens {
             match token.token_type {
                 TokenType::Invalid => unreachable!(),
@@ -121,7 +121,7 @@ impl<'p> Parser<'p> {
     }
 
     /// Parse a single token, advancing through the node hierarchy.
-    pub fn advance(&mut self, token: Token<'p>) -> Result<(), ParserError<'p>> {
+    pub fn advance(&mut self, token: Token<'p>) -> Result<(), ParseError<'p>> {
         // We clone the current node so that it doesn't stay borrowed
         // and break things when we try to modify it below.
         let cn = self.current_node.clone();
@@ -138,8 +138,8 @@ impl<'p> Parser<'p> {
                 self.tokens.push(token);
                 Ok(())
             }
-            0 => Err(ParserError::NoMatches(token)),
-            _ => Err(ParserError::AmbiguousMatch(token)),
+            0 => Err(ParseError::NoMatches(token)),
+            _ => Err(ParseError::AmbiguousMatch(token)),
         }
     }
 
@@ -174,9 +174,9 @@ impl<'p> Parser<'p> {
     }
 }
 
-/// Errors that the `Parser` can raise.
+/// Errors that calling `parse` on the `Parser` can raise.
 #[derive(Clone,Debug)]
-pub enum ParserError<'t> {
+pub enum ParseError<'t> {
     /// The parser is in an invalid state.
     InvalidState,
     /// There were no matches for the token.
@@ -185,17 +185,17 @@ pub enum ParserError<'t> {
     AmbiguousMatch(Token<'t>), // XXX: One day, add: Vec<&'p Rc<Node>>),
 }
 
-impl<'t> Error for ParserError<'t> {
+impl<'t> Error for ParseError<'t> {
     fn description(&self) -> &str {
         match *self {
-            ParserError::InvalidState => "Invalid state.",
-            ParserError::NoMatches(_) => "No match.",
-            ParserError::AmbiguousMatch(_) => "Ambiguous match.",
+            ParseError::InvalidState => "Invalid state.",
+            ParseError::NoMatches(_) => "No match.",
+            ParseError::AmbiguousMatch(_) => "Ambiguous match.",
         }
     }
 }
 
-impl<'t> fmt::Display for ParserError<'t> {
+impl<'t> fmt::Display for ParseError<'t> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         self.description().fmt(f)
     }
