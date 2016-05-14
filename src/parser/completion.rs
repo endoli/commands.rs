@@ -119,40 +119,40 @@ pub trait Complete<'t> {
 }
 
 impl<'t> Complete<'t> for Node {
+    /// By default, completion should complete for the name of the given
+    /// node.
+    ///
+    /// This is the expected behavior for `CommandNode` as well as
+    /// `ParameterNameNode`.
+    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![self.name()],
+                        vec![])
+    }
+}
+
+impl<'t> Complete<'t> for RootNode {
+    /// A `RootNode` can not be completed.
+    fn complete(&self, _token: Option<Token<'t>>) -> Completion<'t> {
+        panic!("BUG: Can not complete a root node.");
+    }
+}
+
+impl<'t> Complete<'t> for ParameterNode {
+    /// By default a `ParameterNode` completes only to itself.
+    ///
+    /// Implementations of `ParameterNode` may wish to override this
+    /// so that they can provide custom completion for their valid
+    /// values.
     fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
                         token,
                         true,
                         vec![],
-                        vec![])
-    }
-}
-
-impl<'t> Complete<'t> for RootNode {
-    fn complete(&self, _token: Option<Token<'t>>) -> Completion<'t> {
-        panic!("BUG: Can not complete a root node.");
-    }
-}
-
-impl<'t> Complete<'t> for CommandNode {
-    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
-        Completion::new(self.help_symbol().clone(),
-                        self.help_text().clone(),
-                        token,
-                        true,
-                        vec![self.name()],
-                        vec![])
-    }
-}
-
-impl<'t> Complete<'t> for ParameterNameNode {
-    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
-        Completion::new(self.help_symbol().clone(),
-                        self.help_text().clone(),
-                        token,
-                        true,
-                        vec![self.name()],
                         vec![])
     }
 }
