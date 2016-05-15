@@ -292,3 +292,20 @@ impl Accept for ParameterNode {
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::nodes::*;
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn verify_signals_no_command() {
+        let root = RootNode::new();
+        let parser = Parser::new(root);
+        match parser.verify() {
+            Err(VerifyError::NoCommandAccepted) => panic!(),
+            _ => {}
+        }
+    }
+}
