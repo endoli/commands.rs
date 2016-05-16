@@ -2,7 +2,7 @@
 name = "commands"
 version = "0.0.2"
 authors = ["Bruce Mitchener <bruce.mitchener@gmail.com>"]
-license = "MIT"
+license = "MIT/Apache-2.0"
 readme = "README.md"
 description = "A command system for Rust. This provides a general command system which can be used in a variety of environments, including GUI applications and command line utilities. This is inspired by elements of the Lisp Machine, the Common Lisp Interface Manager (CLIM), router command line interfaces, and the TOPS-20 command line among other things."
 keywords = ["argument", "cli", "command"]
