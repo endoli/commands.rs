@@ -38,7 +38,7 @@ use parser::completion::{Complete, Completion};
 /// use commands::parser::nodes::RootNode;
 /// use commands::parser::Parser;
 ///
-/// let mut root = RootNode::new();
+/// let root = RootNode::new();
 /// let mut parser = Parser::new(root);
 /// ```
 ///
@@ -108,7 +108,7 @@ impl<'p> Parser<'p> {
     /// use commands::parser::Parser;
     /// use commands::tokenizer::tokenize;
     ///
-    /// let mut root = RootNode::new();
+    /// let root = RootNode::new();
     /// let mut parser = Parser::new(root);
     ///
     /// if let Ok(tokens) = tokenize("show interface") {
