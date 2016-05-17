@@ -276,6 +276,21 @@ impl Matches for Node {
     }
 }
 
+impl Matches for ParameterNode {
+    /// Parameters can match any token by default.
+    fn matches(&self, _parser: &Parser, _token: Token) -> bool {
+        true
+    }
+}
+
+impl Matches for FlagParameterNode {
+    /// A flag parameter is just looking for the token matching
+    /// its name.
+    fn matches(&self, _parser: &Parser, token: Token) -> bool {
+        self.name().starts_with(token.text)
+    }
+}
+
 /// Define the behavior of a node when it is accepted by the parser.
 pub trait Accept {
     /// Accept this node with the given `token` as data.

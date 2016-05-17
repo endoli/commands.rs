@@ -162,3 +162,15 @@ impl<'t> Complete<'t> for ParameterNode {
                         vec![])
     }
 }
+
+impl<'t> Complete<'t> for FlagParameterNode {
+    /// Flag parameters complete to the name of their node.
+    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![self.name()],
+                        vec![])
+    }
+}
