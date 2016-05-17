@@ -14,7 +14,16 @@
 //! * Validating parameters.
 //! * Performing completion on commands and parameters.
 //!
-//! The parser is still a work in progress but is rapidly advancing.
+//! The command parser consists of two important things:
+//!
+//! * A tree that represents the available commands and their arguments.
+//!   This tree consists of instances of `Nodes` from the
+//!   `commands::parser::nodes` module. Construction of this tree
+//!   is done with the help of the `commands::parser::builder` module.
+//! * A `Parser` that handles input and matches it against the command
+//!   tree. This parser is intended to be short-lived and to just live
+//!   for the duration of parsing and evaluating a single command line
+//!   input.
 
 pub mod nodes;
 pub mod completion;
