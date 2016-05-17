@@ -18,6 +18,7 @@
 
 pub mod nodes;
 pub mod completion;
+pub mod builder;
 
 use std::collections::HashMap;
 use std::error::Error;
