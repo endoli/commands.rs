@@ -26,22 +26,17 @@ pub trait Node {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields;
 
-    /// Nodes that are children of this node. Used to
-    /// by the `Parser` during `advance`, `complete`, etc.
-    fn successors(&self) -> &Vec<Rc<Node>> {
-        &self.node_data().successors
-    }
-
     /// The text used to identify this node in help text.
     /// This is typically the node name, either in plain
     /// form or decorated for parameters.
     fn help_symbol(&self) -> String {
-        self.node_data().name.to_string()
+        // XXX:Make this return a &String.
+        self.node_data().help_symbol.clone()
     }
 
     /// Help text describing this node.
     fn help_text(&self) -> &Option<String> {
-        unimplemented!();
+        &self.node_data().help_text
     }
 
     /// Hidden nodes are still found for matching, but are
@@ -59,6 +54,12 @@ pub trait Node {
     fn priority(&self) -> i32 {
         self.node_data().priority
     }
+
+    /// Nodes that are children of this node. Used to
+    /// by the `Parser` during `advance`, `complete`, etc.
+    fn successors(&self) -> &Vec<Rc<Node>> {
+        &self.node_data().successors
+    }
 }
 
 impl PartialEq for Node {
@@ -71,14 +72,20 @@ impl PartialEq for Node {
 /// A parse tree node.
 #[doc(hidden)]
 pub struct NodeFields {
-    /// Possible successor nodes. Collected while building.
-    successors: Vec<Rc<Node>>,
     /// The name of this node.
     name: String,
-    /// Match and complete priority.
-    priority: i32,
+    /// The text used to identify this node in help text.
+    /// This is typically the node name, either in plain
+    /// form or decorated for parameters.
+    help_symbol: String,
+    /// Help text describing this node.
+    help_text: Option<String>,
     /// Hidden nodes are not completed. This doesn't modify matching.
     hidden: bool,
+    /// Match and complete priority.
+    priority: i32,
+    /// Possible successor nodes. Collected while building.
+    successors: Vec<Rc<Node>>,
 }
 
 /// The root of a command tree.
@@ -97,10 +104,12 @@ impl RootNode {
     pub fn new() -> Rc<Self> {
         Rc::new(RootNode {
             node_fields: NodeFields {
-                successors: vec![],
                 name: "__root__".to_string(),
-                priority: PRIORITY_DEFAULT,
+                help_symbol: "".to_string(),
+                help_text: None,
                 hidden: false,
+                priority: PRIORITY_DEFAULT,
+                successors: vec![],
             },
         })
     }
@@ -120,7 +129,6 @@ pub struct CommandNode {
 }
 
 struct CommandNodeFields {
-    help: Option<String>,
     handler: Option<fn(&node: Node) -> ()>,
     parameters: Vec<Rc<ParameterNode>>,
 }
@@ -130,7 +138,7 @@ impl CommandNode {
     pub fn new(name: &str,
                priority: i32,
                hidden: bool,
-               help: Option<String>,
+               help_text: Option<String>,
                handler: Option<fn(&node: Node) -> ()>)
                -> Rc<Self> {
         Rc::new(CommandNode {
@@ -138,10 +146,11 @@ impl CommandNode {
                 successors: vec![],
                 name: name.to_string(),
                 priority: priority,
+                help_symbol: name.to_string(),
+                help_text: help_text,
                 hidden: hidden,
             },
             command_fields: CommandNodeFields {
-                help: help,
                 handler: handler,
                 parameters: vec![],
             },
@@ -152,10 +161,6 @@ impl Node for CommandNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
-    }
-
-    fn help_text(&self) -> &Option<String> {
-        &self.command_fields.help
     }
 }
 
@@ -226,7 +231,6 @@ pub struct RepeatableNodeFields {
 pub struct ParameterNameNode {
     node_fields: NodeFields,
     repeatable_fields: RepeatableNodeFields,
-    help: Option<String>,
     parameter: Rc<Node>,
 }
 
@@ -239,10 +243,6 @@ impl Node for ParameterNameNode {
     fn help_symbol(&self) -> String {
         self.node_fields.name.clone() + " " + self.parameter.help_symbol().as_str()
     }
-
-    fn help_text(&self) -> &Option<String> {
-        &self.help
-    }
 }
 
 impl RepeatableNode for ParameterNameNode {
@@ -253,7 +253,7 @@ impl RepeatableNode for ParameterNameNode {
 }
 
 /// Parameter nodes.
-pub trait ParameterNode {
+pub trait ParameterNode: Node + RepeatableNode {
     /// Internal data for a parameter node.
     #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields;
@@ -265,40 +265,10 @@ pub trait ParameterNode {
     }
 }
 
-impl RepeatableNode for ParameterNode {
-    #[doc(hidden)]
-    fn repeatable_data(&self) -> &RepeatableNodeFields {
-        &self.parameter_data().repeatable
-    }
-}
-
 /// Data for parameter nodes.
 #[doc(hidden)]
 pub struct ParameterNodeFields {
-    node: NodeFields,
-    repeatable: RepeatableNodeFields,
-    help: Option<String>,
     required: bool,
-}
-
-impl Node for ParameterNode {
-    #[doc(hidden)]
-    fn node_data(&self) -> &NodeFields {
-        &self.parameter_data().node
-    }
-
-    fn help_symbol(&self) -> String {
-        String::from("<") + self.node_data().name.as_str() +
-        if self.repeatable() {
-            ">..."
-        } else {
-            ">"
-        }
-    }
-
-    fn help_text(&self) -> &Option<String> {
-        &self.parameter_data().help
-    }
 }
 
 /// A flag parameter node.
@@ -306,7 +276,22 @@ impl Node for ParameterNode {
 /// When implemented, this will only have a value of
 /// true when it is present.
 pub struct FlagParameterNode {
+    node_fields: NodeFields,
+    repeatable_fields: RepeatableNodeFields,
     parameter_fields: ParameterNodeFields,
+}
+
+impl Node for FlagParameterNode {
+    fn node_data(&self) -> &NodeFields {
+        &self.node_fields
+    }
+}
+
+impl RepeatableNode for FlagParameterNode {
+    #[doc(hidden)]
+    fn repeatable_data(&self) -> &RepeatableNodeFields {
+        &self.repeatable_fields
+    }
 }
 
 impl ParameterNode for FlagParameterNode {
@@ -316,9 +301,59 @@ impl ParameterNode for FlagParameterNode {
     }
 }
 
+impl FlagParameterNode {
+    /// Construct a new `FlagParameterNode`.
+    pub fn new(name: &str,
+               help_text: Option<String>,
+               hidden: bool,
+               priority: i32,
+               successors: Vec<Rc<Node>>,
+               repeatable: bool,
+               repeat_marker: Option<Rc<Node>>,
+               required: bool)
+               -> Self {
+        let help_symbol = String::from("<") + name +
+                          if repeatable {
+            ">..."
+        } else {
+            ">"
+        };
+        FlagParameterNode {
+            node_fields: NodeFields {
+                name: name.to_string(),
+                help_symbol: help_symbol,
+                help_text: help_text,
+                hidden: hidden,
+                priority: priority,
+                successors: successors,
+            },
+            repeatable_fields: RepeatableNodeFields {
+                repeatable: repeatable,
+                repeat_marker: repeat_marker,
+            },
+            parameter_fields: ParameterNodeFields { required: required },
+        }
+    }
+}
+
 /// A named parameter node.
 pub struct NamedParameterNode {
+    node_fields: NodeFields,
+    repeatable_fields: RepeatableNodeFields,
     parameter_fields: ParameterNodeFields,
+}
+
+impl Node for NamedParameterNode {
+    fn node_data(&self) -> &NodeFields {
+        &self.node_fields
+    }
+}
+
+impl RepeatableNode for NamedParameterNode {
+    #[doc(hidden)]
+    fn repeatable_data(&self) -> &RepeatableNodeFields {
+        &self.repeatable_fields
+    }
 }
 
 impl ParameterNode for NamedParameterNode {
@@ -328,15 +363,88 @@ impl ParameterNode for NamedParameterNode {
     }
 }
 
+impl NamedParameterNode {
+    /// Construct a new `NamedParameterNode`.
+    pub fn new(name: &str,
+               help_text: Option<String>,
+               hidden: bool,
+               priority: i32,
+               successors: Vec<Rc<Node>>,
+               repeatable: bool,
+               repeat_marker: Option<Rc<Node>>,
+               required: bool)
+               -> Self {
+        NamedParameterNode {
+            node_fields: NodeFields {
+                name: name.to_string(),
+                help_symbol: name.to_string(),
+                help_text: help_text,
+                hidden: hidden,
+                priority: priority,
+                successors: successors,
+            },
+            repeatable_fields: RepeatableNodeFields {
+                repeatable: repeatable,
+                repeat_marker: repeat_marker,
+            },
+            parameter_fields: ParameterNodeFields { required: required },
+        }
+    }
+}
+
 /// A simple parameter node. This is only present in a command
 /// line as a value.
 pub struct SimpleParameterNode {
+    node_fields: NodeFields,
+    repeatable_fields: RepeatableNodeFields,
     parameter_fields: ParameterNodeFields,
+}
+
+impl Node for SimpleParameterNode {
+    fn node_data(&self) -> &NodeFields {
+        &self.node_fields
+    }
+}
+
+impl RepeatableNode for SimpleParameterNode {
+    #[doc(hidden)]
+    fn repeatable_data(&self) -> &RepeatableNodeFields {
+        &self.repeatable_fields
+    }
 }
 
 impl ParameterNode for SimpleParameterNode {
     #[doc(hidden)]
     fn parameter_data(&self) -> &ParameterNodeFields {
         &self.parameter_fields
+    }
+}
+
+impl SimpleParameterNode {
+    /// Construct a new `SimpleParameterNode`.
+    pub fn new(name: &str,
+               help_text: Option<String>,
+               hidden: bool,
+               priority: i32,
+               successors: Vec<Rc<Node>>,
+               repeatable: bool,
+               repeat_marker: Option<Rc<Node>>,
+               required: bool)
+               -> Self {
+        SimpleParameterNode {
+            node_fields: NodeFields {
+                name: name.to_string(),
+                help_symbol: name.to_string(),
+                help_text: help_text,
+                hidden: hidden,
+                priority: priority,
+                successors: successors,
+            },
+            repeatable_fields: RepeatableNodeFields {
+                repeatable: repeatable,
+                repeat_marker: repeat_marker,
+            },
+            parameter_fields: ParameterNodeFields { required: required },
+        }
     }
 }
