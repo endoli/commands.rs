@@ -48,7 +48,7 @@ use parser::completion::{Complete, Completion};
 /// use commands::parser::nodes::RootNode;
 /// use commands::parser::Parser;
 ///
-/// let root = RootNode::new();
+/// let root = RootNode::new(vec![]);
 /// let mut parser = Parser::new(root);
 /// ```
 ///
@@ -118,7 +118,7 @@ impl<'p> Parser<'p> {
     /// use commands::parser::Parser;
     /// use commands::tokenizer::tokenize;
     ///
-    /// let root = RootNode::new();
+    /// let root = RootNode::new(vec![]);
     /// let mut parser = Parser::new(root);
     ///
     /// if let Ok(tokens) = tokenize("show interface") {
@@ -332,7 +332,7 @@ mod test {
     #[test]
     #[should_panic]
     fn verify_signals_no_command() {
-        let root = RootNode::new();
+        let root = RootNode::new(vec![]);
         let parser = Parser::new(root);
         match parser.verify() {
             Err(VerifyError::NoCommandAccepted) => panic!(),

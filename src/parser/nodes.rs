@@ -93,7 +93,7 @@ pub struct NodeFields {
 /// ```
 /// use commands::parser::nodes::RootNode;
 ///
-/// let root = RootNode::new();
+/// let root = RootNode::new(vec![]);
 /// ```
 pub struct RootNode {
     node_fields: NodeFields,
@@ -101,7 +101,7 @@ pub struct RootNode {
 
 impl RootNode {
     /// Create a new `RootNode`
-    pub fn new() -> Rc<Self> {
+    pub fn new(successors: Vec<Rc<Node>>) -> Rc<Self> {
         Rc::new(RootNode {
             node_fields: NodeFields {
                 name: "__root__".to_string(),
@@ -109,7 +109,7 @@ impl RootNode {
                 help_text: None,
                 hidden: false,
                 priority: PRIORITY_DEFAULT,
-                successors: vec![],
+                successors: successors,
             },
         })
     }
