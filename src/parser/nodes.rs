@@ -139,20 +139,22 @@ impl CommandNode {
                help_text: Option<String>,
                hidden: bool,
                priority: i32,
-               handler: Option<fn(&node: Node) -> ()>)
+               successors: Vec<Rc<Node>>,
+               handler: Option<fn(&node: Node) -> ()>,
+               parameters: Vec<Rc<ParameterNode>>)
                -> Self {
         CommandNode {
             node_fields: NodeFields {
-                successors: vec![],
                 name: name.to_string(),
-                priority: priority,
                 help_symbol: name.to_string(),
                 help_text: help_text,
                 hidden: hidden,
+                priority: priority,
+                successors: successors,
             },
             command_fields: CommandNodeFields {
                 handler: handler,
-                parameters: vec![],
+                parameters: parameters,
             },
         }
     }
