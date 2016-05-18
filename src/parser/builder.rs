@@ -229,8 +229,16 @@ impl Parameter {
 
     /// Set which type of `ParameterNode` is supposed to be created
     /// to represent this parameter.
+    ///
+    /// If `kind` is `ParameterKind::Flag`, then the `priority` of
+    /// this parameter is altered to be `PRIORITY_DEFAULT` due to
+    /// how conflicts must be resolved in parsing flag and simple
+    /// parameters.
     pub fn kind(&mut self, kind: ParameterKind) -> &mut Self {
         self.parameter_kind = kind;
+        if kind == ParameterKind::Flag {
+            self.priority = PRIORITY_DEFAULT;
+        }
         self
     }
 
