@@ -29,9 +29,8 @@ pub trait Node {
     /// The text used to identify this node in help text.
     /// This is typically the node name, either in plain
     /// form or decorated for parameters.
-    fn help_symbol(&self) -> String {
-        // XXX:Make this return a &String.
-        self.node_data().help_symbol.clone()
+    fn help_symbol(&self) -> &String {
+        &self.node_data().help_symbol
     }
 
     /// Help text describing this node.
