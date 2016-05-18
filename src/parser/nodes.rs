@@ -158,15 +158,7 @@ impl CommandNode {
             },
         }
     }
-}
-impl Node for CommandNode {
-    #[doc(hidden)]
-    fn node_data(&self) -> &NodeFields {
-        &self.node_fields
-    }
-}
 
-impl CommandNode {
     /// The handler which is executed once this node has been accepted.
     pub fn handler(&self) -> Option<fn(&node: Node) -> ()> {
         self.command_fields.handler
@@ -175,6 +167,13 @@ impl CommandNode {
     /// Get the parameter nodes for this command.
     pub fn parameters(&self) -> &Vec<Rc<ParameterNode>> {
         &self.command_fields.parameters
+    }
+}
+
+impl Node for CommandNode {
+    #[doc(hidden)]
+    fn node_data(&self) -> &NodeFields {
+        &self.node_fields
     }
 }
 
