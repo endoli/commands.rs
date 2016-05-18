@@ -136,12 +136,12 @@ struct CommandNodeFields {
 impl CommandNode {
     /// Construct a new `CommandNode`.
     pub fn new(name: &str,
-               priority: i32,
-               hidden: bool,
                help_text: Option<String>,
+               hidden: bool,
+               priority: i32,
                handler: Option<fn(&node: Node) -> ()>)
-               -> Rc<Self> {
-        Rc::new(CommandNode {
+               -> Self {
+        CommandNode {
             node_fields: NodeFields {
                 successors: vec![],
                 name: name.to_string(),
@@ -154,7 +154,7 @@ impl CommandNode {
                 handler: handler,
                 parameters: vec![],
             },
-        })
+        }
     }
 }
 impl Node for CommandNode {
