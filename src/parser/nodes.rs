@@ -146,7 +146,7 @@ impl CommandNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text,
+                help_text: help_text.or(Some("Command".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -238,7 +238,6 @@ pub struct ParameterNameNode {
 impl ParameterNameNode {
     /// Construct a new `ParameterNameNode`.
     pub fn new(name: &str,
-               help_text: Option<String>,
                hidden: bool,
                priority: i32,
                successors: Vec<Rc<Node>>,
@@ -246,6 +245,7 @@ impl ParameterNameNode {
                repeat_marker: Option<Rc<Node>>,
                parameter: Rc<ParameterNode>)
                -> Self {
+        let help_text = parameter.help_text().clone();
         let help_symbol = name.to_string() + " " + parameter.help_symbol().as_str();
         ParameterNameNode {
             node_fields: NodeFields {
@@ -349,7 +349,7 @@ impl FlagParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: help_symbol,
-                help_text: help_text,
+                help_text: help_text.or(Some("Flag".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -405,7 +405,7 @@ impl NamedParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text,
+                help_text: help_text.or(Some("Parameter".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -462,7 +462,7 @@ impl SimpleParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text,
+                help_text: help_text.or(Some("Parameter".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
