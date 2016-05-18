@@ -109,6 +109,9 @@ pub enum TokenizerError {
 
     /// Unclosed double quote at end of input
     UnclosedDoubleQuoteAtEndOfInput,
+
+    /// Unclosed single quote at end of input
+    UnclosedSingleQuoteAtEndOfInput,
 }
 
 impl Error for TokenizerError {
@@ -119,6 +122,9 @@ impl Error for TokenizerError {
             TokenizerError::EscapingBackslashAtEndOfInput => "Escaping backlash at end of input",
             TokenizerError::UnclosedDoubleQuoteAtEndOfInput => {
                 "Unclosed double quote at end of input"
+            },
+            TokenizerError::UnclosedSingleQuoteAtEndOfInput => {
+                "Unclosed single quote at end of input"
             }
         }
     }
@@ -175,6 +181,8 @@ enum State {
     Whitespace,
     Doublequote,
     DoublequoteBackslash,
+    Singlequote,
+    SinglequoteBackslash,
     Word,
     WordBackslash,
 }
@@ -244,6 +252,8 @@ impl<'t> Tokenizer<'t> {
             self.special(offset);
         } else if c == '"' {
             self.shift(offset, State::Doublequote);
+        } else if c == '\'' {
+            self.shift(offset, State::Singlequote);
         } else if c == '\\' {
             self.recognize(offset, State::Word);
             self.shift(offset, State::WordBackslash);
@@ -274,6 +284,9 @@ impl<'t> Tokenizer<'t> {
                     } else if c == '"' {
                         self.reduce();
                         self.shift(offset, State::Doublequote);
+                    } else if c == '\'' {
+                        self.reduce();
+                        self.shift(offset, State::Singlequote);
                     } else if c == '\\' {
                         self.shift(offset, State::WordBackslash);
                     } else {
@@ -305,6 +318,23 @@ impl<'t> Tokenizer<'t> {
                         return Err(TokenizerError::CharacterNotAllowedHere(offset));
                     };
                 }
+                State::Singlequote => {
+                    if c == '\'' {
+                        self.shift(offset, State::Singlequote);
+                        self.reduce();
+                    } else if c == '\\' {
+                        self.shift(offset, State::SinglequoteBackslash);
+                    } else {
+                        self.shift(offset, State::Singlequote);
+                    };
+                }
+                State::SinglequoteBackslash => {
+                    if !c.is_whitespace() {
+                        self.shift(offset, State::Singlequote);
+                    } else {
+                        return Err(TokenizerError::CharacterNotAllowedHere(offset));
+                    };
+                }
                 State::Special => {
                     return Err(TokenizerError::SpecialNotYetImplemented(offset));
                 }
@@ -317,7 +347,8 @@ impl<'t> Tokenizer<'t> {
             State::Word | State::Whitespace => self.reduce(),
             State::WordBackslash => return Err(TokenizerError::EscapingBackslashAtEndOfInput),
             State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput),
-            State::DoublequoteBackslash => {
+            State::Singlequote => return Err(TokenizerError::UnclosedSingleQuoteAtEndOfInput),
+            State::DoublequoteBackslash | State::SinglequoteBackslash => {
                 return Err(TokenizerError::EscapingBackslashAtEndOfInput)
             }
             State::Special => {
@@ -386,13 +417,26 @@ mod test {
     }
 
     #[test]
-    fn quoted_text() {
+    fn double_quoted_text() {
         match tokenize("a \"b c\"") {
             Ok(ts) => {
                 assert_eq!(ts.len(), 3);
                 assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
                 assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
                 assert_eq!(ts[2], mk_token("\"b c\"", TokenType::Word, 2, 6));
+            }
+            _ => {}
+        };
+    }
+
+    #[test]
+    fn single_quoted_text() {
+        match tokenize("a '\"b c\"'") {
+            Ok(ts) => {
+                assert_eq!(ts.len(), 3);
+                assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
+                assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
+                assert_eq!(ts[2], mk_token("\'\"b c\"\'", TokenType::Word, 2, 8));
             }
             _ => {}
         };
