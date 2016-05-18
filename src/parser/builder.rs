@@ -51,45 +51,90 @@ impl CommandTree {
         self.commands.push(command);
     }
 
-    fn build_parameter(self, parameter: Parameter) -> Rc<Node> {
-        match parameter.parameter_kind {
-            ParameterKind::Flag => Rc::new(self.build_flag_parameter(parameter)),
-            ParameterKind::Named => Rc::new(self.build_named_parameter(parameter)),
-            ParameterKind::Simple => Rc::new(self.build_simple_parameter(parameter)),
+    /// Construct the `CommandTree` and produce a `RootNode`.
+    pub fn finalize(&self) -> Rc<RootNode> {
+        let mut successors: Vec<Rc<Node>> = vec![];
+        for c in &self.commands {
+            successors.push(self.build_command(c));
         }
+        RootNode::new(successors)
     }
 
-    fn build_flag_parameter(self, parameter: Parameter) -> FlagParameterNode {
-        FlagParameterNode::new(&*parameter.name,
-                               parameter.help_text,
-                               parameter.hidden,
-                               parameter.priority,
-                               vec![],
-                               parameter.repeatable,
-                               None,
-                               parameter.required)
-    }
-
-    fn build_named_parameter(self, parameter: Parameter) -> NamedParameterNode {
-        NamedParameterNode::new(&*parameter.name,
-                                parameter.help_text,
-                                parameter.hidden,
-                                parameter.priority,
-                                vec![],
-                                parameter.repeatable,
-                                None,
-                                parameter.required)
-    }
-
-    fn build_simple_parameter(self, parameter: Parameter) -> SimpleParameterNode {
-        SimpleParameterNode::new(&*parameter.name,
-                                 parameter.help_text,
-                                 parameter.hidden,
-                                 parameter.priority,
-                                 vec![],
-                                 parameter.repeatable,
+    fn build_command(&self, command: &Command) -> Rc<Node> {
+        let mut parameters: Vec<Rc<ParameterNode>> = vec![];
+        let mut successors: Vec<Rc<Node>> = vec![];
+        for parameter in &command.parameters {
+            match parameter.parameter_kind {
+                ParameterKind::Flag => {
+                    self.build_flag_parameter(parameter, &mut parameters, &mut successors);
+                }
+                ParameterKind::Named => {
+                    self.build_named_parameter(parameter, &mut parameters, &mut successors);
+                }
+                ParameterKind::Simple => {
+                    self.build_simple_parameter(parameter, &mut parameters, &mut successors);
+                }
+            };
+        }
+        let c = CommandNode::new(&*command.name,
+                                 command.help_text.clone(),
+                                 command.hidden,
+                                 command.priority,
+                                 successors,
                                  None,
-                                 parameter.required)
+                                 parameters);
+        Rc::new(c)
+    }
+
+    fn build_flag_parameter(&self,
+                            parameter: &Parameter,
+                            parameters: &mut Vec<Rc<ParameterNode>>,
+                            successors: &mut Vec<Rc<Node>>) {
+        let p = FlagParameterNode::new(&*parameter.name,
+                                       parameter.help_text.clone(),
+                                       parameter.hidden,
+                                       parameter.priority.unwrap_or(PRIORITY_DEFAULT),
+                                       vec![],
+                                       parameter.repeatable,
+                                       None,
+                                       parameter.required);
+        let fp = Rc::new(p);
+        parameters.push(fp.clone());
+        successors.push(fp);
+    }
+
+    fn build_named_parameter(&self,
+                             parameter: &Parameter,
+                             parameters: &mut Vec<Rc<ParameterNode>>,
+                             successors: &mut Vec<Rc<Node>>) {
+        let p = NamedParameterNode::new(&*parameter.name,
+                                        parameter.help_text.clone(),
+                                        parameter.hidden,
+                                        parameter.priority.unwrap_or(PRIORITY_PARAMETER),
+                                        vec![],
+                                        parameter.repeatable,
+                                        None,
+                                        parameter.required);
+        let np = Rc::new(p);
+        parameters.push(np.clone());
+        successors.push(np);
+    }
+
+    fn build_simple_parameter(&self,
+                              parameter: &Parameter,
+                              parameters: &mut Vec<Rc<ParameterNode>>,
+                              successors: &mut Vec<Rc<Node>>) {
+        let p = SimpleParameterNode::new(&*parameter.name,
+                                         parameter.help_text.clone(),
+                                         parameter.hidden,
+                                         parameter.priority.unwrap_or(PRIORITY_PARAMETER),
+                                         vec![],
+                                         parameter.repeatable,
+                                         None,
+                                         parameter.required);
+        let sp = Rc::new(p);
+        parameters.push(sp.clone());
+        successors.push(sp);
     }
 }
 
@@ -163,7 +208,7 @@ impl Command {
 #[derive(Clone)]
 pub struct Parameter {
     hidden: bool,
-    priority: i32,
+    priority: Option<i32>,
     name: String,
     repeatable: bool,
     aliases: Vec<String>,
@@ -177,7 +222,7 @@ impl Parameter {
     pub fn new(name: &str) -> Self {
         Parameter {
             hidden: false,
-            priority: PRIORITY_PARAMETER,
+            priority: None,
             name: name.to_string(),
             repeatable: false,
             aliases: vec![],
@@ -196,8 +241,12 @@ impl Parameter {
 
     /// Give the parameter a priority. This is used when sorting
     /// out conflicts during matching and completion.
+    ///
+    /// The `priority` of a `Parameter` defaults to `PRIORITY_PARAMETER`
+    /// except for when the `kind` is `ParameterKind::Flag` in which
+    /// case, the default will be `PRIORITY_DEFAULT`.
     pub fn priority(&mut self, priority: i32) -> &mut Self {
-        self.priority = priority;
+        self.priority = Some(priority);
         self
     }
 
@@ -229,16 +278,8 @@ impl Parameter {
 
     /// Set which type of `ParameterNode` is supposed to be created
     /// to represent this parameter.
-    ///
-    /// If `kind` is `ParameterKind::Flag`, then the `priority` of
-    /// this parameter is altered to be `PRIORITY_DEFAULT` due to
-    /// how conflicts must be resolved in parsing flag and simple
-    /// parameters.
     pub fn kind(&mut self, kind: ParameterKind) -> &mut Self {
         self.parameter_kind = kind;
-        if kind == ParameterKind::Flag {
-            self.priority = PRIORITY_DEFAULT;
-        }
         self
     }
 
