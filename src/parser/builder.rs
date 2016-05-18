@@ -76,14 +76,18 @@ impl CommandTree {
                 }
             };
         }
-        let c = CommandNode::new(&*command.name,
-                                 command.help_text.clone(),
-                                 command.hidden,
-                                 command.priority,
-                                 successors,
-                                 None,
-                                 parameters);
-        Rc::new(c)
+        if let Some(_) = command.wrapped_root {
+            // XXX: This should be a WrapperNode.
+            unimplemented!()
+        } else {
+            Rc::new(CommandNode::new(&*command.name,
+                                     command.help_text.clone(),
+                                     command.hidden,
+                                     command.priority,
+                                     successors,
+                                     None,
+                                     parameters))
+        }
     }
 
     fn build_flag_parameter(&self,
