@@ -107,17 +107,33 @@ impl CommandTree {
                              parameter: &Parameter,
                              parameters: &mut Vec<Rc<ParameterNode>>,
                              successors: &mut Vec<Rc<Node>>) {
-        let p = NamedParameterNode::new(&*parameter.name,
-                                        parameter.help_text.clone(),
-                                        parameter.hidden,
-                                        parameter.priority.unwrap_or(PRIORITY_PARAMETER),
-                                        vec![],
-                                        parameter.repeatable,
-                                        None,
-                                        parameter.required);
-        let np = Rc::new(p);
-        parameters.push(np.clone());
-        successors.push(np);
+        let p = Rc::new(NamedParameterNode::new(&*parameter.name,
+                                                parameter.help_text.clone(),
+                                                parameter.hidden,
+                                                parameter.priority.unwrap_or(PRIORITY_PARAMETER),
+                                                vec![],
+                                                parameter.repeatable,
+                                                None,
+                                                parameter.required));
+        parameters.push(p.clone());
+        let n = Rc::new(ParameterNameNode::new(&*parameter.name,
+                                               parameter.hidden,
+                                               PRIORITY_DEFAULT,
+                                               vec![p.clone()],
+                                               parameter.repeatable,
+                                               Some(p.clone()),
+                                               p.clone()));
+        successors.push(n);
+        for alias in &parameter.aliases {
+            let a = Rc::new(ParameterNameNode::new(&*alias,
+                                                   parameter.hidden,
+                                                   PRIORITY_DEFAULT,
+                                                   vec![p.clone()],
+                                                   parameter.repeatable,
+                                                   Some(p.clone()),
+                                                   p.clone()));
+            successors.push(a);
+        }
     }
 
     fn build_simple_parameter(&self,
