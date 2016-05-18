@@ -419,12 +419,12 @@ mod test {
 
     #[test]
     fn double_quoted_text() {
-        match tokenize("a \"b c\"") {
+        match tokenize(r#"a "b c""#) {
             Ok(ts) => {
                 assert_eq!(ts.len(), 3);
                 assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
                 assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
-                assert_eq!(ts[2], mk_token("\"b c\"", TokenType::Word, 2, 6));
+                assert_eq!(ts[2], mk_token(r#""b c""#, TokenType::Word, 2, 6));
             }
             _ => {}
         };
@@ -432,12 +432,12 @@ mod test {
 
     #[test]
     fn single_quoted_text() {
-        match tokenize("a '\"b c\"'") {
+        match tokenize(r#"a '"b c"'"#) {
             Ok(ts) => {
                 assert_eq!(ts.len(), 3);
                 assert_eq!(ts[0], mk_token("a", TokenType::Word, 0, 0));
                 assert_eq!(ts[1], mk_token(" ", TokenType::Whitespace, 1, 1));
-                assert_eq!(ts[2], mk_token("\'\"b c\"\'", TokenType::Word, 2, 8));
+                assert_eq!(ts[2], mk_token(r#"'"b c"'"#, TokenType::Word, 2, 8));
             }
             _ => {}
         };
@@ -445,10 +445,10 @@ mod test {
 
     #[test]
     fn escaped_whitespace_in_word() {
-        match tokenize("a\\ b") {
+        match tokenize(r#"a\ b"#) {
             Ok(ts) => {
                 assert_eq!(ts.len(), 1);
-                assert_eq!(ts[0], mk_token("a\\ b", TokenType::Word, 0, 3));
+                assert_eq!(ts[0], mk_token(r#"a\ b"#, TokenType::Word, 0, 3));
             }
             _ => {}
         };
@@ -456,12 +456,12 @@ mod test {
 
     #[test]
     fn character_not_allowed_here() {
-        match tokenize("ab \\!") {
+        match tokenize(r#"ab \!"#) {
             Err(TokenizerError::CharacterNotAllowedHere(_)) => {}
             _ => panic!(),
         };
 
-        match tokenize("ab \"\\ ab") {
+        match tokenize(r#"ab "\ ab"#) {
             Err(TokenizerError::CharacterNotAllowedHere(_)) => {}
             _ => panic!(),
         };
@@ -472,7 +472,7 @@ mod test {
     #[test]
     #[should_panic]
     fn escaping_backslash_at_end_of_input() {
-        match tokenize("ab \\") {
+        match tokenize(r#"ab \"#) {
             Err(TokenizerError::EscapingBackslashAtEndOfInput) => panic!(),
             _ => {}
         }
@@ -481,7 +481,7 @@ mod test {
     #[test]
     #[should_panic]
     fn unclosed_double_quote_at_end_of_input() {
-        match tokenize("ab \"") {
+        match tokenize(r#"ab ""#) {
             Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput) => panic!(),
             _ => {}
         }
@@ -490,7 +490,7 @@ mod test {
     #[test]
     #[should_panic]
     fn escaped_double_quote_at_end_of_input() {
-        match tokenize("ab \"\\") {
+        match tokenize(r#"ab "\"#) {
             Err(TokenizerError::EscapingBackslashAtEndOfInput) => panic!(),
             _ => {}
         }
