@@ -232,17 +232,44 @@ pub struct RepeatableNodeFields {
 pub struct ParameterNameNode {
     node_fields: NodeFields,
     repeatable_fields: RepeatableNodeFields,
-    parameter: Rc<Node>,
+    /// The `parameter` named by this node.
+    pub parameter: Rc<ParameterNode>,
+}
+
+impl ParameterNameNode {
+    /// Construct a new `ParameterNameNode`.
+    pub fn new(name: &str,
+               help_text: Option<String>,
+               hidden: bool,
+               priority: i32,
+               successors: Vec<Rc<Node>>,
+               repeatable: bool,
+               repeat_marker: Option<Rc<Node>>,
+               parameter: Rc<ParameterNode>)
+               -> Self {
+        let help_symbol = name.to_string() + " " + parameter.help_symbol().as_str();
+        ParameterNameNode {
+            node_fields: NodeFields {
+                name: name.to_string(),
+                help_symbol: help_symbol,
+                help_text: help_text,
+                hidden: hidden,
+                priority: priority,
+                successors: successors,
+            },
+            repeatable_fields: RepeatableNodeFields {
+                repeatable: repeatable,
+                repeat_marker: repeat_marker,
+            },
+            parameter: parameter,
+        }
+    }
 }
 
 impl Node for ParameterNameNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
-    }
-
-    fn help_symbol(&self) -> String {
-        self.node_fields.name.clone() + " " + self.parameter.help_symbol().as_str()
     }
 }
 
