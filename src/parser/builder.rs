@@ -24,7 +24,7 @@ use super::nodes::*;
 
 /// Indicate the type of parameter, so that the correct class and node
 /// structures are created.
-#[derive(Clone)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum ParameterKind {
     /// This parameter is a `FlagParameter`.
     Flag,
