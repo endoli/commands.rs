@@ -275,6 +275,9 @@ impl Parameter {
     }
 
     /// Add an alias that this parameter can use.
+    ///
+    /// Aliases are currently only valid for parameters of `kind`
+    /// `ParameterKind::Named`.
     pub fn alias(&mut self, alias: &str) -> &mut Self {
         self.aliases.push(alias.to_string());
         self
