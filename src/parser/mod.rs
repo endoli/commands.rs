@@ -91,6 +91,41 @@ impl<'p> Parser<'p> {
     /// result vector. Each `Completion` will have one or more
     /// `CompletionOption` for each valid way that the value may be
     /// entered.
+    ///
+    /// ```
+    /// use commands::parser::builder::{Command, CommandTree};
+    /// use commands::parser::Parser;
+    /// use commands::tokenizer::{Token, tokenize};
+    ///
+    /// let mut tree = CommandTree::new();
+    /// tree.command(Command::new("show").finalize());
+    /// tree.command(Command::new("set").finalize());
+    /// tree.command(Command::new("help").finalize());
+    ///
+    /// let mut parser = Parser::new(tree.finalize());
+    ///
+    /// // Completing now should have 3 options, 1 for each command.
+    /// let comps = parser.complete(None);
+    /// assert_eq!(comps.len(), 3);
+    ///
+    /// // But completing with a token for 'h' should have 1 option.
+    /// if let Ok(tokens) = tokenize("h") {
+    ///   let comps = parser.complete(Some(tokens[0]));
+    ///   assert_eq!(comps.len(), 1);
+    ///   assert_eq!(comps[0].options.len(), 1);
+    ///   assert_eq!(comps[0].options[0].option_string, "help");
+    /// } else {
+    ///   panic!("Tokenize failed.");
+    /// }
+    ///
+    /// // And completing for 's' should have 2 options.
+    /// if let Ok(tokens) = tokenize("s") {
+    ///   let comps = parser.complete(Some(tokens[0]));
+    ///   assert_eq!(comps.len(), 2);
+    /// } else {
+    ///   panic!("Tokenize failed.");
+    /// }
+    /// ```
     pub fn complete(&self, token: Option<Token<'p>>) -> Vec<Completion> {
         self.current_node
             .successors()
