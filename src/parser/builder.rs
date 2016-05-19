@@ -40,10 +40,16 @@ pub struct CommandTree {
     commands: Vec<Command>,
 }
 
+impl Default for CommandTree {
+    fn default() -> Self {
+        CommandTree { commands: vec![] }
+    }
+}
+
 impl CommandTree {
     /// Create a new `CommandTree`.
     pub fn new() -> Self {
-        CommandTree { commands: vec![] }
+        Default::default()
     }
 
     /// Add a `Command` to the `CommandTree`.
