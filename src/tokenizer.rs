@@ -21,23 +21,37 @@
 //! # Examples
 //!
 //! ```
-//! use commands::tokenizer::tokenize;
+//! use commands::tokenizer::{tokenize, TokenType};
 //!
 //! if let Ok(tokens) = tokenize("word") {
 //!     assert_eq!(tokens.len(), 1);
 //! }
 //!
+//! // This is 3 tokens due to the whitespace token
+//! // between the 2 words.
 //! if let Ok(tokens) = tokenize("show interface") {
 //!     assert_eq!(tokens.len(), 3);
+//!     assert_eq!(tokens[1].token_type, TokenType::Whitespace);
 //! }
 //!
-//! if let Ok(tokens) = tokenize("echo -n \"a b c\"") {
+//! // Double quoted strings are treated as a single token.
+//! if let Ok(tokens) = tokenize(r#"echo -n "a b c""#) {
 //!     assert_eq!(tokens.len(), 5);
+//!     assert_eq!(tokens[0].text, "echo");
+//!     assert_eq!(tokens[2].text, "-n");
+//!     assert_eq!(tokens[4].text, r#""a b c""#);
 //! }
 //!
-//! if let Ok(tokens) = tokenize("ls My\\ Documents") {
+//! // Single quoted strings are treated as a single token
+//! // as well.
+//! if let Ok(tokens) = tokenize(r#"'"One token"' 'and another'"#) {
 //!     assert_eq!(tokens.len(), 3);
-//!     assert_eq!(tokens[2].text, "My\\ Documents");
+//! }
+//!
+//! // Or you can use a \ to escape a space.
+//! if let Ok(tokens) = tokenize(r#"ls My\ Documents"#) {
+//!     assert_eq!(tokens.len(), 3);
+//!     assert_eq!(tokens[2].text, r#"My\ Documents"#);
 //! }
 //! ```
 
