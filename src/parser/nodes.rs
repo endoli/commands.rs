@@ -146,7 +146,7 @@ impl CommandNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.or(Some("Command".to_string())),
+                help_text: help_text.or_else(|| Some("Command".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -349,7 +349,7 @@ impl FlagParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: help_symbol,
-                help_text: help_text.or(Some("Flag".to_string())),
+                help_text: help_text.or_else(|| Some("Flag".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -405,7 +405,7 @@ impl NamedParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.or(Some("Parameter".to_string())),
+                help_text: help_text.or_else(|| Some("Parameter".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -462,7 +462,7 @@ impl SimpleParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.or(Some("Parameter".to_string())),
+                help_text: help_text.or_else(|| Some("Parameter".to_string())),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
