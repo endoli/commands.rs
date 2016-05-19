@@ -7,6 +7,7 @@
 //! # Command Tables
 
 use std::rc::Rc;
+use menu_definition::MenuDefinition;
 
 /// A command
 pub trait Command {
@@ -20,19 +21,6 @@ pub struct CommandTableEntry {
     pub name: String,
     /// The underlying command that can be executed.
     pub command: Rc<Command>,
-}
-
-/// Types of menu items.
-pub enum MenuItem {
-    /// A separator item in a menu.
-    Separator,
-}
-
-/// The definition to be used to generate a menu or
-/// toolbar in whatever GUI framework is being used.
-pub struct MenuDefinition {
-    /// The items in the menu. Ordered vector.
-    pub items: Vec<MenuItem>,
 }
 
 /// A group of related commands

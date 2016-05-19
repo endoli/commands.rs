@@ -28,6 +28,7 @@
         unused_import_braces, unused_qualifications)]
 
 pub mod command_table;
+pub mod menu_definition;
 pub mod parser;
 pub mod tokenizer;
 pub mod util;
