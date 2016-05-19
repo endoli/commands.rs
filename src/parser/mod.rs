@@ -44,12 +44,20 @@ use parser::completion::{Complete, Completion};
 /// used to create this parser, as well as the tokens passed
 /// into the parser.
 ///
+/// When creating a `Parser`, you must give it an `Rc<RootNode>`.
+/// The easiest and best way to get a root node is to use the
+/// `commands::parser::builder` module.
+///
 /// ```
-/// use commands::parser::nodes::RootNode;
+/// use commands::parser::builder::{Command, CommandTree};
 /// use commands::parser::Parser;
 ///
-/// let root = RootNode::new(vec![]);
-/// let mut parser = Parser::new(root);
+/// let mut tree = CommandTree::new();
+/// tree.command(Command::new("show").finalize());
+/// tree.command(Command::new("set").finalize());
+/// tree.command(Command::new("help").finalize());
+///
+/// let mut parser = Parser::new(tree.finalize());
 /// ```
 ///
 /// The parser is constructed as a `mut`able object as most of
@@ -149,12 +157,14 @@ impl<'p> Parser<'p> {
     /// node hierarchy.
     ///
     /// ```
-    /// use commands::parser::nodes::RootNode;
+    /// use commands::parser::builder::{Command, CommandTree};
     /// use commands::parser::Parser;
     /// use commands::tokenizer::tokenize;
     ///
-    /// let root = RootNode::new(vec![]);
-    /// let mut parser = Parser::new(root);
+    /// let mut tree = CommandTree::new();
+    /// tree.command(Command::new("show interface").finalize());
+    ///
+    /// let mut parser = Parser::new(tree.finalize());
     ///
     /// if let Ok(tokens) = tokenize("show interface") {
     ///     parser.parse(tokens);
