@@ -10,4 +10,11 @@ homepage = "https://github.com/waywardmonkeys/commands.rs"
 repository = "https://github.com/waywardmonkeys/commands.rs"
 documentation = "http://waywardmonkeys.github.io/commands.rs/commands/"
 
+[[example]]
+name = "readline"
+path = "examples/readline/main.rs"
+
 [dependencies]
+
+[dev-dependencies]
+readline = "0.0.11"
