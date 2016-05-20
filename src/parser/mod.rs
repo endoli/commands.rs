@@ -185,11 +185,16 @@ impl<'text> Parser<'text> {
         // We clone the current node so that it doesn't stay borrowed
         // and break things when we try to modify it below.
         let cn = self.current_node.clone();
-        let matches = cn.successors()
-                        .into_iter()
-                        .filter(|n| n.acceptable(self) && n.matches(self, token))
-                        .map(|n| n.clone())
-                        .collect::<Vec<_>>();
+        let acceptable = cn.successors()
+                           .into_iter()
+                           .filter(|n| n.acceptable(self))
+                           .map(|n| n.clone())
+                           .collect::<Vec<_>>();
+        let matches = acceptable.clone()
+                                .into_iter()
+                                .filter(|n| n.matches(self, token))
+                                .map(|n| n.clone())
+                                .collect::<Vec<_>>();
         match matches.len() {
             1 => {
                 let ref matching_node = matches[0];
@@ -199,7 +204,7 @@ impl<'text> Parser<'text> {
                 self.tokens.push(token);
                 Ok(())
             }
-            0 => Err(ParseError::NoMatches(token)),
+            0 => Err(ParseError::NoMatches(token, acceptable)),
             _ => Err(ParseError::AmbiguousMatch(token, matches)),
         }
     }
@@ -237,7 +242,7 @@ pub enum ParseError<'text> {
     /// The parser is in an invalid state.
     InvalidState,
     /// There were no matches for the token.
-    NoMatches(Token<'text>),
+    NoMatches(Token<'text>, Vec<Rc<Node>>),
     /// There was more than 1 possible match for the token.
     AmbiguousMatch(Token<'text>, Vec<Rc<Node>>),
 }
@@ -246,7 +251,7 @@ impl<'text> fmt::Debug for ParseError<'text> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             ParseError::InvalidState => write!(f, "InvalidState"),
-            ParseError::NoMatches(token) => write!(f, "NoMatches({:?})", token),
+            ParseError::NoMatches(token, _) => write!(f, "NoMatches({:?}, ...)", token),
             ParseError::AmbiguousMatch(token, _) => write!(f, "AmbiguousMatch({:?}, ...)", token),
         }
     }
@@ -256,7 +261,7 @@ impl<'text> Error for ParseError<'text> {
     fn description(&self) -> &str {
         match *self {
             ParseError::InvalidState => "Invalid state.",
-            ParseError::NoMatches(_) => "No match.",
+            ParseError::NoMatches(_, _) => "No match.",
             ParseError::AmbiguousMatch(_, _) => "Ambiguous match.",
         }
     }
@@ -405,7 +410,7 @@ mod test {
         let mut parser = Parser::new(tree.finalize());
         if let Ok(tokens) = tokenize("h") {
             match parser.parse(tokens) {
-                Err(ParseError::NoMatches(_)) => panic!(),
+                Err(ParseError::NoMatches(_, _)) => panic!(),
                 _ => {}
             }
         }
