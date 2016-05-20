@@ -188,10 +188,11 @@ impl<'text> Parser<'text> {
         let matches = cn.successors()
                         .into_iter()
                         .filter(|n| n.acceptable(self) && n.matches(self, token))
+                        .map(|n| n.clone())
                         .collect::<Vec<_>>();
         match matches.len() {
             1 => {
-                let matching_node = matches[0];
+                let ref matching_node = matches[0];
                 matching_node.accept(self, token);
                 self.current_node = matching_node.clone();
                 self.nodes.push(matching_node.clone());
@@ -199,7 +200,7 @@ impl<'text> Parser<'text> {
                 Ok(())
             }
             0 => Err(ParseError::NoMatches(token)),
-            _ => Err(ParseError::AmbiguousMatch(token)),
+            _ => Err(ParseError::AmbiguousMatch(token, matches)),
         }
     }
 
@@ -231,14 +232,24 @@ impl<'text> Parser<'text> {
 }
 
 /// Errors that calling `parse` on the `Parser` can raise.
-#[derive(Clone,Debug)]
+#[derive(Clone)]
 pub enum ParseError<'text> {
     /// The parser is in an invalid state.
     InvalidState,
     /// There were no matches for the token.
     NoMatches(Token<'text>),
     /// There was more than 1 possible match for the token.
-    AmbiguousMatch(Token<'text>), // XXX: One day, add: Vec<&'text Rc<Node>>),
+    AmbiguousMatch(Token<'text>, Vec<Rc<Node>>),
+}
+
+impl<'text> fmt::Debug for ParseError<'text> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            ParseError::InvalidState => write!(f, "InvalidState"),
+            ParseError::NoMatches(token) => write!(f, "NoMatches({:?})", token),
+            ParseError::AmbiguousMatch(token, _) => write!(f, "AmbiguousMatch({:?}, ...)", token),
+        }
+    }
 }
 
 impl<'text> Error for ParseError<'text> {
@@ -246,7 +257,7 @@ impl<'text> Error for ParseError<'text> {
         match *self {
             ParseError::InvalidState => "Invalid state.",
             ParseError::NoMatches(_) => "No match.",
-            ParseError::AmbiguousMatch(_) => "Ambiguous match.",
+            ParseError::AmbiguousMatch(_, _) => "Ambiguous match.",
         }
     }
 }
