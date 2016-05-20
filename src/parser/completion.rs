@@ -40,15 +40,15 @@ impl CompletionOption {
 /// If a completion is exhaustive, then only the `CompletionOption`s
 /// provided are valid.
 ///
-/// The lifetime parameter `'t` refers to the lifetime of the
+/// The lifetime parameter `'text` refers to the lifetime of the
 /// body of text which generated the `Token`.
-pub struct Completion<'t> {
+pub struct Completion<'text> {
     /// Value placeholder for help.
     pub help_symbol: String,
     /// Main help text.
     pub help_text: Option<String>,
     /// Token used to hint the completion, if provided.
-    pub token: Option<Token<'t>>,
+    pub token: Option<Token<'text>>,
     /// Was this completion exhaustive? If yes, then only
     /// the given completion options are valid.
     pub exhaustive: bool,
@@ -56,15 +56,15 @@ pub struct Completion<'t> {
     pub options: Vec<CompletionOption>,
 }
 
-impl<'t> Completion<'t> {
+impl<'text> Completion<'text> {
     /// Construct a new Completion.
     pub fn new(help_symbol: String,
                help_text: Option<String>,
-               token: Option<Token<'t>>,
+               token: Option<Token<'text>>,
                exhaustive: bool,
                complete_options: Vec<&str>,
                other_options: Vec<&str>)
-               -> Completion<'t> {
+               -> Completion<'text> {
         // Preserve all of the options while still &str so that
         // we can use this with longest_common_prefix later.
         let mut all_options = complete_options.clone();
@@ -119,18 +119,18 @@ impl<'t> Completion<'t> {
 }
 
 /// Trait for nodes that support completion.
-pub trait Complete<'t> {
+pub trait Complete<'text> {
     /// Given a node and an optional token, provide the completion options.
-    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t>;
+    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text>;
 }
 
-impl<'t> Complete<'t> for Node {
+impl<'text> Complete<'text> for Node {
     /// By default, completion should complete for the name of the given
     /// node.
     ///
     /// This is the expected behavior for `CommandNode` as well as
     /// `ParameterNameNode`.
-    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
+    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
                         token,
@@ -140,20 +140,20 @@ impl<'t> Complete<'t> for Node {
     }
 }
 
-impl<'t> Complete<'t> for RootNode {
+impl<'text> Complete<'text> for RootNode {
     /// A `RootNode` can not be completed.
-    fn complete(&self, _token: Option<Token<'t>>) -> Completion<'t> {
+    fn complete(&self, _token: Option<Token<'text>>) -> Completion<'text> {
         panic!("BUG: Can not complete a root node.");
     }
 }
 
-impl<'t> Complete<'t> for ParameterNode {
+impl<'text> Complete<'text> for ParameterNode {
     /// By default a `ParameterNode` completes only to itself.
     ///
     /// Implementations of `ParameterNode` may wish to override this
     /// so that they can provide custom completion for their valid
     /// values.
-    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
+    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
                         token,
@@ -163,9 +163,9 @@ impl<'t> Complete<'t> for ParameterNode {
     }
 }
 
-impl<'t> Complete<'t> for FlagParameterNode {
+impl<'text> Complete<'text> for FlagParameterNode {
     /// Flag parameters complete to the name of their node.
-    fn complete(&self, token: Option<Token<'t>>) -> Completion<'t> {
+    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
                         token,

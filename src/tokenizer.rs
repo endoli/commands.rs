@@ -164,22 +164,22 @@ pub enum TokenType {
 
 /// A token from a body of text.
 ///
-/// The lifetime parameter `'t` refers to the lifetime
+/// The lifetime parameter `'text` refers to the lifetime
 /// of the body of text that was tokenized, creating this token.
 #[derive(Clone,Copy,Debug,PartialEq)]
-pub struct Token<'t> {
+pub struct Token<'text> {
     /// The text of the token.
-    pub text: &'t str,
+    pub text: &'text str,
     /// The type of the token (`Whitespace` or `Word`).
     pub token_type: TokenType,
     /// The location of the token in the source body of text.
     pub location: SourceLocation,
 }
 
-impl<'t> Token<'t> {
-    /// Construct a `Token`. The lifetime parameter `'t` refers to the lifetime of the
-    /// text being tokenized.
-    pub fn new(text: &'t str, token_type: TokenType, location: SourceLocation) -> Token {
+impl<'text> Token<'text> {
+    /// Construct a `Token`. The lifetime parameter `'text` refers
+    /// to the lifetime of the text being tokenized.
+    pub fn new(text: &'text str, token_type: TokenType, location: SourceLocation) -> Token {
         Token {
             text: text,
             token_type: token_type,
@@ -201,17 +201,17 @@ enum State {
     WordBackslash,
 }
 
-struct Tokenizer<'t> {
-    text: &'t str,
+struct Tokenizer<'text> {
+    text: &'text str,
     state: State,
     token_type: TokenType,
     token_start: usize,
     token_end: usize,
-    tokens: Vec<Token<'t>>,
+    tokens: Vec<Token<'text>>,
 }
 
-impl<'t> Tokenizer<'t> {
-    fn new(text: &'t str) -> Tokenizer {
+impl<'text> Tokenizer<'text> {
+    fn new(text: &'text str) -> Tokenizer {
         Tokenizer {
             text: text,
             state: State::Initial,

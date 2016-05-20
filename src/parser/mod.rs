@@ -39,10 +39,9 @@ use parser::completion::{Complete, Completion};
 
 /// Command parser
 ///
-/// The lifetime parameter `'p` refers to the lifetime of the
-/// parser itself, the root node of the command tree that was
-/// used to create this parser, as well as the tokens passed
-/// into the parser.
+/// The lifetime parameter `'text` refers to the lifetime of the
+/// tokens passed into the parser. This is the same as the lifetime
+/// of the text used to create the tokens.
 ///
 /// When creating a `Parser`, you must give it an `Rc<RootNode>`.
 /// The easiest and best way to get a root node is to use the
@@ -62,19 +61,19 @@ use parser::completion::{Complete, Completion};
 ///
 /// The parser is constructed as a `mut`able object as most of
 /// the methods on it will modify its state.
-pub struct Parser<'p> {
+pub struct Parser<'text> {
     current_node: Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
     pub nodes: Vec<Rc<Node>>,
     /// The tokens which have been accepted during `parse` or `advance`.
-    pub tokens: Vec<Token<'p>>,
+    pub tokens: Vec<Token<'text>>,
     commands: Vec<Rc<CommandNode>>,
     parameters: HashMap<String, String>,
 }
 
-impl<'p> Parser<'p> {
+impl<'text> Parser<'text> {
     /// Construct a parser with a root node.
-    pub fn new(initial_node: Rc<RootNode>) -> Parser<'p> {
+    pub fn new(initial_node: Rc<RootNode>) -> Parser<'text> {
         Parser {
             current_node: initial_node,
             nodes: vec![],
@@ -134,7 +133,7 @@ impl<'p> Parser<'p> {
     ///   panic!("Tokenize failed.");
     /// }
     /// ```
-    pub fn complete(&self, token: Option<Token<'p>>) -> Vec<Completion> {
+    pub fn complete(&self, token: Option<Token<'text>>) -> Vec<Completion> {
         self.current_node
             .successors()
             .into_iter()
@@ -170,7 +169,7 @@ impl<'p> Parser<'p> {
     ///     parser.parse(tokens);
     /// }
     /// ```
-    pub fn parse(&mut self, tokens: Vec<Token<'p>>) -> Result<(), ParseError<'p>> {
+    pub fn parse(&mut self, tokens: Vec<Token<'text>>) -> Result<(), ParseError<'text>> {
         for token in tokens {
             match token.token_type {
                 TokenType::Invalid => unreachable!(),
@@ -182,7 +181,7 @@ impl<'p> Parser<'p> {
     }
 
     /// Parse a single token, advancing through the node hierarchy.
-    pub fn advance(&mut self, token: Token<'p>) -> Result<(), ParseError<'p>> {
+    pub fn advance(&mut self, token: Token<'text>) -> Result<(), ParseError<'text>> {
         // We clone the current node so that it doesn't stay borrowed
         // and break things when we try to modify it below.
         let cn = self.current_node.clone();
@@ -233,16 +232,16 @@ impl<'p> Parser<'p> {
 
 /// Errors that calling `parse` on the `Parser` can raise.
 #[derive(Clone,Debug)]
-pub enum ParseError<'t> {
+pub enum ParseError<'text> {
     /// The parser is in an invalid state.
     InvalidState,
     /// There were no matches for the token.
-    NoMatches(Token<'t>),
+    NoMatches(Token<'text>),
     /// There was more than 1 possible match for the token.
-    AmbiguousMatch(Token<'t>), // XXX: One day, add: Vec<&'p Rc<Node>>),
+    AmbiguousMatch(Token<'text>), // XXX: One day, add: Vec<&'text Rc<Node>>),
 }
 
-impl<'t> Error for ParseError<'t> {
+impl<'text> Error for ParseError<'text> {
     fn description(&self) -> &str {
         match *self {
             ParseError::InvalidState => "Invalid state.",
@@ -252,7 +251,7 @@ impl<'t> Error for ParseError<'t> {
     }
 }
 
-impl<'t> fmt::Display for ParseError<'t> {
+impl<'text> fmt::Display for ParseError<'text> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         self.description().fmt(f)
     }
@@ -341,17 +340,17 @@ pub trait Accept {
     /// Accept this node with the given `token` as data.
     ///
     /// This is where parameters are stored, commands added.
-    fn accept<'p>(&self, parser: &mut Parser<'p>, token: Token);
+    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token);
 }
 
 impl Accept for Node {
     /// By default, nothing needs to happen for `accept`.
-    fn accept<'p>(&self, _parser: &mut Parser<'p>, _token: Token) {}
+    fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token) {}
 }
 
 impl Accept for Rc<CommandNode> {
     /// Record this command.
-    fn accept<'p>(&self, parser: &mut Parser<'p>, _token: Token) {
+    fn accept<'text>(&self, parser: &mut Parser<'text>, _token: Token) {
         if let Some(_) = self.handler() {
             parser.commands.push(self.clone())
         }
@@ -360,7 +359,7 @@ impl Accept for Rc<CommandNode> {
 
 impl Accept for ParameterNode {
     /// Record this parameter value.
-    fn accept<'p>(&self, parser: &mut Parser<'p>, token: Token) {
+    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token) {
         if self.repeatable() {
             unimplemented!();
         } else {
