@@ -382,7 +382,9 @@ impl Accept for ParameterNode {
 #[cfg(test)]
 mod test {
     use super::nodes::*;
+    use super::builder::{Command, CommandTree};
     use super::*;
+    use tokenizer::tokenize;
 
     #[test]
     #[should_panic]
@@ -392,6 +394,35 @@ mod test {
         match parser.verify() {
             Err(VerifyError::NoCommandAccepted) => panic!(),
             _ => {}
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn parse_signals_no_matches() {
+        let mut tree = CommandTree::new();
+        tree.command(Command::new("show").finalize());
+        let mut parser = Parser::new(tree.finalize());
+        if let Ok(tokens) = tokenize("h") {
+            match parser.parse(tokens) {
+                Err(ParseError::NoMatches(_)) => panic!(),
+                _ => {}
+            }
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn parse_signals_ambiguous_match() {
+        let mut tree = CommandTree::new();
+        tree.command(Command::new("show").finalize());
+        tree.command(Command::new("set").finalize());
+        let mut parser = Parser::new(tree.finalize());
+        if let Ok(tokens) = tokenize("s") {
+            match parser.parse(tokens) {
+                Err(ParseError::AmbiguousMatch(_, _)) => panic!(),
+                _ => {}
+            }
         }
     }
 }
