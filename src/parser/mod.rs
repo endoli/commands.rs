@@ -239,8 +239,6 @@ impl<'text> Parser<'text> {
 /// Errors that calling `parse` on the `Parser` can raise.
 #[derive(Clone)]
 pub enum ParseError<'text> {
-    /// The parser is in an invalid state.
-    InvalidState,
     /// There were no matches for the token.
     NoMatches(Token<'text>, Vec<Rc<Node>>),
     /// There was more than 1 possible match for the token.
@@ -250,7 +248,6 @@ pub enum ParseError<'text> {
 impl<'text> fmt::Debug for ParseError<'text> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            ParseError::InvalidState => write!(f, "InvalidState"),
             ParseError::NoMatches(token, _) => write!(f, "NoMatches({:?}, ...)", token),
             ParseError::AmbiguousMatch(token, _) => write!(f, "AmbiguousMatch({:?}, ...)", token),
         }
@@ -260,7 +257,6 @@ impl<'text> fmt::Debug for ParseError<'text> {
 impl<'text> Error for ParseError<'text> {
     fn description(&self) -> &str {
         match *self {
-            ParseError::InvalidState => "Invalid state.",
             ParseError::NoMatches(_, _) => "No match.",
             ParseError::AmbiguousMatch(_, _) => "Ambiguous match.",
         }
