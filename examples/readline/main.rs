@@ -13,9 +13,6 @@ use commands::parser::{ParseError, Parser};
 use commands::tokenizer::tokenize;
 use readline::readline;
 
-use std::io::Write;
-use std::io;
-
 fn main() {
     let mut tree = CommandTree::new();
     tree.command(Command::new("show").finalize());
@@ -40,7 +37,7 @@ fn main() {
                 }
             }
         }
-        io::stdout().write_all(b"\n").unwrap();
+        print!("\n");
     }
-    io::stdout().write_all(b"\nExiting.\n").unwrap();
+    print!("\nExiting.\n");
 }
