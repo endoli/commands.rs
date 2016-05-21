@@ -363,7 +363,7 @@ impl Accept for Node {
 impl Accept for Rc<CommandNode> {
     /// Record this command.
     fn accept<'text>(&self, parser: &mut Parser<'text>, _token: Token) {
-        if let Some(_) = self.handler() {
+        if self.handler().is_some() {
             parser.commands.push(self.clone())
         }
     }
