@@ -8,7 +8,8 @@ extern crate commands;
 extern crate readline;
 
 use commands::parser::builder::{Command, CommandTree};
-use commands::parser::Parser;
+use commands::parser::nodes::Node;
+use commands::parser::{ParseError, Parser};
 use commands::tokenizer::tokenize;
 use readline::readline;
 
@@ -30,7 +31,18 @@ fn main() {
             let mut parser = Parser::new(root.clone());
             match parser.parse(tokens) {
                 Ok(_) => {}
-                Err(_) => panic!(),
+                Err(ParseError::NoMatches(_, acceptable)) => {
+                    print!("\nPossible options:\n");
+                    for ref option in acceptable {
+                        print!("  {} - {}\n", option.help_symbol(), option.help_text());
+                    }
+                }
+                Err(ParseError::AmbiguousMatch(_, matches)) => {
+                    print!("\nCan be interpreted as:\n");
+                    for ref option in matches {
+                        print!("  {} - {}\n", option.help_symbol(), option.help_text());
+                    }
+                }
             }
         }
         io::stdout().write_all(b"\n").unwrap();
