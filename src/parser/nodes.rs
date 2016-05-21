@@ -34,7 +34,7 @@ pub trait Node {
     }
 
     /// Help text describing this node.
-    fn help_text(&self) -> &Option<String> {
+    fn help_text(&self) -> &String {
         &self.node_data().help_text
     }
 
@@ -78,7 +78,7 @@ pub struct NodeFields {
     /// form or decorated for parameters.
     help_symbol: String,
     /// Help text describing this node.
-    help_text: Option<String>,
+    help_text: String,
     /// Hidden nodes are not completed. This doesn't modify matching.
     hidden: bool,
     /// Match and complete priority.
@@ -105,7 +105,7 @@ impl RootNode {
             node_fields: NodeFields {
                 name: "__root__".to_string(),
                 help_symbol: "".to_string(),
-                help_text: None,
+                help_text: "".to_string(),
                 hidden: false,
                 priority: PRIORITY_DEFAULT,
                 successors: successors,
@@ -146,7 +146,7 @@ impl CommandNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.or_else(|| Some("Command".to_string())),
+                help_text: help_text.unwrap_or_else(|| "Command".to_string()),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -349,7 +349,7 @@ impl FlagParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: help_symbol,
-                help_text: help_text.or_else(|| Some("Flag".to_string())),
+                help_text: help_text.unwrap_or_else(|| "Flag".to_string()),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -405,7 +405,7 @@ impl NamedParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.or_else(|| Some("Parameter".to_string())),
+                help_text: help_text.unwrap_or_else(|| "Parameter".to_string()),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -462,7 +462,7 @@ impl SimpleParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.or_else(|| Some("Parameter".to_string())),
+                help_text: help_text.unwrap_or_else(|| "Parameter".to_string()),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
