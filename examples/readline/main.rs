@@ -15,7 +15,7 @@ use readline::readline;
 
 fn main() {
     let mut tree = CommandTree::new();
-    tree.command(Command::new("show").finalize());
+    tree.command(Command::new("show"));
     let root = tree.finalize();
 
     while let Ok(s) = readline(">> ") {

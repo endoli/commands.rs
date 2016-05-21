@@ -52,9 +52,9 @@ use parser::completion::{Complete, Completion};
 /// use commands::parser::Parser;
 ///
 /// let mut tree = CommandTree::new();
-/// tree.command(Command::new("show").finalize());
-/// tree.command(Command::new("set").finalize());
-/// tree.command(Command::new("help").finalize());
+/// tree.command(Command::new("show"));
+/// tree.command(Command::new("set"));
+/// tree.command(Command::new("help"));
 ///
 /// let mut parser = Parser::new(tree.finalize());
 /// ```
@@ -105,9 +105,9 @@ impl<'text> Parser<'text> {
     /// use commands::tokenizer::{Token, tokenize};
     ///
     /// let mut tree = CommandTree::new();
-    /// tree.command(Command::new("show").finalize());
-    /// tree.command(Command::new("set").finalize());
-    /// tree.command(Command::new("help").finalize());
+    /// tree.command(Command::new("show"));
+    /// tree.command(Command::new("set"));
+    /// tree.command(Command::new("help"));
     ///
     /// let mut parser = Parser::new(tree.finalize());
     ///
@@ -161,7 +161,7 @@ impl<'text> Parser<'text> {
     /// use commands::tokenizer::tokenize;
     ///
     /// let mut tree = CommandTree::new();
-    /// tree.command(Command::new("show interface").finalize());
+    /// tree.command(Command::new("show interface"));
     ///
     /// let mut parser = Parser::new(tree.finalize());
     ///
@@ -402,7 +402,7 @@ mod test {
     #[should_panic]
     fn parse_signals_no_matches() {
         let mut tree = CommandTree::new();
-        tree.command(Command::new("show").finalize());
+        tree.command(Command::new("show"));
         let mut parser = Parser::new(tree.finalize());
         if let Ok(tokens) = tokenize("h") {
             match parser.parse(tokens) {
@@ -416,8 +416,8 @@ mod test {
     #[should_panic]
     fn parse_signals_ambiguous_match() {
         let mut tree = CommandTree::new();
-        tree.command(Command::new("show").finalize());
-        tree.command(Command::new("set").finalize());
+        tree.command(Command::new("show"));
+        tree.command(Command::new("set"));
         let mut parser = Parser::new(tree.finalize());
         if let Ok(tokens) = tokenize("s") {
             match parser.parse(tokens) {
