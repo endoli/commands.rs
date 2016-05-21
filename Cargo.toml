@@ -17,4 +17,4 @@ path = "examples/readline/main.rs"
 [dependencies]
 
 [dev-dependencies]
-readline = "0.0.11"
+readline = "0.0.12"

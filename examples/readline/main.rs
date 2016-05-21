@@ -13,21 +13,16 @@ use commands::parser::{ParseError, Parser};
 use commands::tokenizer::tokenize;
 use readline::readline;
 
-use std::ffi::CString;
 use std::io::Write;
 use std::io;
-
-// This will be a lot nicer once readline 0.0.12 is published
-// to crates.io and I can use it.
 
 fn main() {
     let mut tree = CommandTree::new();
     tree.command(Command::new("show").finalize());
     let root = tree.finalize();
 
-    let prompt = CString::new(">> ").unwrap();
-    while let Ok(s) = readline(&prompt) {
-        if let Ok(tokens) = tokenize(s.to_str().unwrap()) {
+    while let Ok(s) = readline(">> ") {
+        if let Ok(tokens) = tokenize(&*s) {
             let mut parser = Parser::new(root.clone());
             match parser.parse(tokens) {
                 Ok(_) => {}
