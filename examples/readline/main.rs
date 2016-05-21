@@ -21,20 +21,25 @@ fn main() {
     while let Ok(s) = readline(">> ") {
         if let Ok(tokens) = tokenize(&*s) {
             let mut parser = Parser::new(root.clone());
-            match parser.parse(tokens) {
-                Ok(_) => {}
-                Err(ParseError::NoMatches(_, acceptable)) => {
-                    print!("\nPossible options:\n");
-                    for ref option in acceptable {
-                        print!("  {} - {}\n", option.help_symbol(), option.help_text());
+            if let Err(err) = parser.parse(tokens) {
+                match err {
+                    ParseError::NoMatches(_, acceptable) => {
+                        print!("\nPossible options:\n");
+                        for ref option in acceptable {
+                            print!("  {} - {}\n", option.help_symbol(), option.help_text());
+                        }
+                    }
+                    ParseError::AmbiguousMatch(_, matches) => {
+                        print!("\nCan be interpreted as:\n");
+                        for ref option in matches {
+                            print!("  {} - {}\n", option.help_symbol(), option.help_text());
+                        }
                     }
                 }
-                Err(ParseError::AmbiguousMatch(_, matches)) => {
-                    print!("\nCan be interpreted as:\n");
-                    for ref option in matches {
-                        print!("  {} - {}\n", option.help_symbol(), option.help_text());
-                    }
-                }
+            } else if let Err(err) = parser.verify() {
+                print!("{}\n", err);
+            } else {
+                parser.execute();
             }
         }
         print!("\n");
