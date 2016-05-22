@@ -17,9 +17,10 @@
 //! The command parser consists of two important things:
 //!
 //! * A tree that represents the available commands and their arguments.
-//!   This tree consists of instances of `Nodes` from the
-//!   `commands::parser::nodes` module. Construction of this tree
-//!   is done with the help of `CommandTree`, `Command` and `Parameter`.
+//!   This tree consists of instances of implementations of `Node` like
+//!   `CommandNode`, `ParameterNode` and `RootNode`. Construction of this
+//!   tree is done with the help of `CommandTree`, `Command` and
+//!   `Parameter`.
 //! * A `Parser` that handles input and matches it against the command
 //!   tree. This parser is intended to be short-lived and to just live
 //!   for the duration of parsing and evaluating a single command line
@@ -55,19 +56,21 @@
 //! let mut parser = Parser::new(root);
 //! ```
 
-pub mod nodes;
-mod completion;
 mod builder;
+mod completion;
+mod nodes;
 
 // Re-export public API
-pub use self::completion::{Complete, Completion, CompletionOption};
 pub use self::builder::{Command, CommandTree, Parameter};
+pub use self::completion::{Complete, Completion, CompletionOption};
+pub use self::nodes::{CommandNode, FlagParameterNode, NamedParameterNode, Node, ParameterNameNode,
+                      ParameterNode, RepeatableNode, RootNode, SimpleParameterNode, WrapperNode};
+pub use self::nodes::{PRIORITY_DEFAULT, PRIORITY_MINIMUM, PRIORITY_PARAMETER};
 
 use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use std::rc::Rc;
-use parser::nodes::*;
 use tokenizer::{Token, TokenType};
 
 /// Command parser
@@ -411,7 +414,6 @@ impl Accept for ParameterNode {
 
 #[cfg(test)]
 mod test {
-    use super::nodes::*;
     use super::*;
     use tokenizer::tokenize;
 

@@ -90,7 +90,7 @@ pub struct NodeFields {
 /// The root of a command tree.
 ///
 /// ```
-/// use commands::parser::nodes::RootNode;
+/// use commands::parser::RootNode;
 ///
 /// let root = RootNode::new(vec![]);
 /// ```
