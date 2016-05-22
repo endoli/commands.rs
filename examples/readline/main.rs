@@ -7,9 +7,8 @@
 extern crate commands;
 extern crate readline;
 
-use commands::parser::builder::{Command, CommandTree};
 use commands::parser::nodes::Node;
-use commands::parser::{ParseError, Parser};
+use commands::parser::{Command, CommandTree, ParseError, Parser};
 use commands::tokenizer::tokenize;
 use readline::readline;
 

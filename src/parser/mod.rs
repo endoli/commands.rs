@@ -19,15 +19,49 @@
 //! * A tree that represents the available commands and their arguments.
 //!   This tree consists of instances of `Nodes` from the
 //!   `commands::parser::nodes` module. Construction of this tree
-//!   is done with the help of the `commands::parser::builder` module.
+//!   is done with the help of `CommandTree`, `Command` and `Parameter`.
 //! * A `Parser` that handles input and matches it against the command
 //!   tree. This parser is intended to be short-lived and to just live
 //!   for the duration of parsing and evaluating a single command line
 //!   input.
+//!
+//! ## Building Nodes
+//!
+//! Building a tree of nodes for use with the parser is best done with
+//! the `CommandTree` in conjunction with `Command` and `Parameter`.
+//!
+//! Start by creating a mutable `CommandTree` instance:
+//!
+//! ```
+//! use commands::parser::{CommandTree, Parser};
+//!
+//! let mut tree = CommandTree::new();
+//! ```
+//!
+//! Then, add your commands and arguments, and finally,
+//! call `finalize` on the tree to get back a `RootNode`
+//! that can use be used with a `Parser`.
+//!
+//! ```
+//! use commands::parser::{Command, CommandTree, Parameter, Parser};
+//!
+//! let mut tree = CommandTree::new();
+//! tree.command(Command::new("again")
+//!                  .hidden(false)
+//!                  .parameter(Parameter::new("test")
+//!                                 .required(false)
+//!                                 .help("This is just a test parameter.")));
+//! let root = tree.finalize();
+//! let mut parser = Parser::new(root);
+//! ```
 
 pub mod nodes;
-pub mod completion;
-pub mod builder;
+mod completion;
+mod builder;
+
+// Re-export public API
+pub use self::completion::{Complete, Completion, CompletionOption};
+pub use self::builder::{Command, CommandTree, Parameter};
 
 use std::collections::HashMap;
 use std::error::Error;
@@ -35,7 +69,6 @@ use std::fmt;
 use std::rc::Rc;
 use parser::nodes::*;
 use tokenizer::{Token, TokenType};
-use parser::completion::{Complete, Completion};
 
 /// Command parser
 ///
@@ -44,12 +77,10 @@ use parser::completion::{Complete, Completion};
 /// of the text used to create the tokens.
 ///
 /// When creating a `Parser`, you must give it an `Rc<RootNode>`.
-/// The easiest and best way to get a root node is to use the
-/// `commands::parser::builder` module.
+/// `RootNode` instances should be created using a `CommandTree`.
 ///
 /// ```
-/// use commands::parser::builder::{Command, CommandTree};
-/// use commands::parser::Parser;
+/// use commands::parser::{Command, CommandTree, Parser};
 ///
 /// let mut tree = CommandTree::new();
 /// tree.command(Command::new("show"));
@@ -100,8 +131,7 @@ impl<'text> Parser<'text> {
     /// entered.
     ///
     /// ```
-    /// use commands::parser::builder::{Command, CommandTree};
-    /// use commands::parser::Parser;
+    /// use commands::parser::{Command, CommandTree, Parser};
     /// use commands::tokenizer::{Token, tokenize};
     ///
     /// let mut tree = CommandTree::new();
@@ -156,8 +186,7 @@ impl<'text> Parser<'text> {
     /// node hierarchy.
     ///
     /// ```
-    /// use commands::parser::builder::{Command, CommandTree};
-    /// use commands::parser::Parser;
+    /// use commands::parser::{Command, CommandTree, Parser};
     /// use commands::tokenizer::tokenize;
     ///
     /// let mut tree = CommandTree::new();
@@ -383,7 +412,6 @@ impl Accept for ParameterNode {
 #[cfg(test)]
 mod test {
     use super::nodes::*;
-    use super::builder::{Command, CommandTree};
     use super::*;
     use tokenizer::tokenize;
 

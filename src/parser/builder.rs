@@ -4,38 +4,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! # Node Builder
-//!
-//! This module provides facilities for constructing the node
-//! hierarchy needed to use the `Parser`.
-//!
-//! Start by creating a mutable `CommandTree` instance:
-//!
-//! ```
-//! use commands::parser::Parser;
-//! use commands::parser::builder::*;
-//!
-//! let mut tree = CommandTree::new();
-//! ```
-//!
-//! Then, add your commands and arguments, and finally,
-//! call `finalize` on the tree to get back a `RootNode`
-//! that can use be used with a `Parser`.
-//!
-//! ```
-//! use commands::parser::Parser;
-//! use commands::parser::builder::*;
-//!
-//! let mut tree = CommandTree::new();
-//! tree.command(Command::new("again")
-//!                  .hidden(false)
-//!                  .parameter(Parameter::new("test")
-//!                                 .required(false)
-//!                                 .help("This is just a test parameter.")));
-//! let root = tree.finalize();
-//! let mut parser = Parser::new(root);
-//! ```
-
 use std::rc::Rc;
 use super::nodes::*;
 

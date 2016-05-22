@@ -4,9 +4,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! # Completion
-//!
-
 use parser::nodes::*;
 use tokenizer::Token;
 use util::longest_common_prefix;
