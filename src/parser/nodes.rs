@@ -140,7 +140,7 @@ struct CommandNodeFields {
 impl CommandNode {
     /// Construct a new `CommandNode`.
     pub fn new(name: &str,
-               help_text: Option<String>,
+               help_text: Option<&str>,
                hidden: bool,
                priority: i32,
                successors: Vec<Rc<Node>>,
@@ -151,7 +151,7 @@ impl CommandNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.unwrap_or_else(|| "Command".to_string()),
+                help_text: help_text.unwrap_or("Command").to_string(),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -333,7 +333,7 @@ impl ParameterNode for FlagParameterNode {
 impl FlagParameterNode {
     /// Construct a new `FlagParameterNode`.
     pub fn new(name: &str,
-               help_text: Option<String>,
+               help_text: Option<&str>,
                hidden: bool,
                priority: i32,
                successors: Vec<Rc<Node>>,
@@ -351,7 +351,7 @@ impl FlagParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: help_symbol,
-                help_text: help_text.unwrap_or_else(|| "Flag".to_string()),
+                help_text: help_text.unwrap_or("Flag").to_string(),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -395,7 +395,7 @@ impl ParameterNode for NamedParameterNode {
 impl NamedParameterNode {
     /// Construct a new `NamedParameterNode`.
     pub fn new(name: &str,
-               help_text: Option<String>,
+               help_text: Option<&str>,
                hidden: bool,
                priority: i32,
                successors: Vec<Rc<Node>>,
@@ -407,7 +407,7 @@ impl NamedParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.unwrap_or_else(|| "Parameter".to_string()),
+                help_text: help_text.unwrap_or("Parameter").to_string(),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,
@@ -452,7 +452,7 @@ impl ParameterNode for SimpleParameterNode {
 impl SimpleParameterNode {
     /// Construct a new `SimpleParameterNode`.
     pub fn new(name: &str,
-               help_text: Option<String>,
+               help_text: Option<&str>,
                hidden: bool,
                priority: i32,
                successors: Vec<Rc<Node>>,
@@ -464,7 +464,7 @@ impl SimpleParameterNode {
             node_fields: NodeFields {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
-                help_text: help_text.unwrap_or_else(|| "Parameter".to_string()),
+                help_text: help_text.unwrap_or("Parameter").to_string(),
                 hidden: hidden,
                 priority: priority,
                 successors: successors,

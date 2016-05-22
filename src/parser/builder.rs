@@ -22,26 +22,32 @@ pub enum ParameterKind {
 /// Store a command tree while populating it. This is used
 /// to construct a [`RootNode`] to be used with the [`Parser`].
 ///
-/// [`RootNode`]: struct.RootNode.html
+/// The lifetime parameter `'a` refers to the lifetime
+/// of the strings used for [command] and [parameter] names and
+/// help text.
+///
+/// [command]: struct.Command.html
+/// [parameter]: struct.Parameter.html
 /// [`Parser`]: struct.Parser.html
-pub struct CommandTree {
-    commands: Vec<Command>,
+/// [`RootNode`]: struct.RootNode.html
+pub struct CommandTree<'a> {
+    commands: Vec<Command<'a>>,
 }
 
-impl Default for CommandTree {
+impl<'a> Default for CommandTree<'a> {
     fn default() -> Self {
         CommandTree { commands: vec![] }
     }
 }
 
-impl CommandTree {
+impl<'a> CommandTree<'a> {
     /// Create a new `CommandTree`.
     pub fn new() -> Self {
         Default::default()
     }
 
     /// Add a `Command` to the `CommandTree`.
-    pub fn command(&mut self, command: Command) {
+    pub fn command(&mut self, command: Command<'a>) {
         self.commands.push(command);
     }
 
@@ -74,8 +80,8 @@ impl CommandTree {
             // XXX: This should be a WrapperNode.
             unimplemented!()
         } else {
-            Rc::new(CommandNode::new(&*command.name,
-                                     command.help_text.clone(),
+            Rc::new(CommandNode::new(command.name,
+                                     command.help_text,
                                      command.hidden,
                                      command.priority,
                                      successors,
@@ -88,8 +94,8 @@ impl CommandTree {
                             parameter: &Parameter,
                             parameters: &mut Vec<Rc<ParameterNode>>,
                             successors: &mut Vec<Rc<Node>>) {
-        let p = FlagParameterNode::new(&*parameter.name,
-                                       parameter.help_text.clone(),
+        let p = FlagParameterNode::new(parameter.name,
+                                       parameter.help_text,
                                        parameter.hidden,
                                        parameter.priority.unwrap_or(PRIORITY_DEFAULT),
                                        vec![],
@@ -105,8 +111,8 @@ impl CommandTree {
                              parameter: &Parameter,
                              parameters: &mut Vec<Rc<ParameterNode>>,
                              successors: &mut Vec<Rc<Node>>) {
-        let p = Rc::new(NamedParameterNode::new(&*parameter.name,
-                                                parameter.help_text.clone(),
+        let p = Rc::new(NamedParameterNode::new(parameter.name,
+                                                parameter.help_text,
                                                 parameter.hidden,
                                                 parameter.priority.unwrap_or(PRIORITY_PARAMETER),
                                                 vec![],
@@ -114,7 +120,7 @@ impl CommandTree {
                                                 None,
                                                 parameter.required));
         parameters.push(p.clone());
-        let n = Rc::new(ParameterNameNode::new(&*parameter.name,
+        let n = Rc::new(ParameterNameNode::new(parameter.name,
                                                parameter.hidden,
                                                PRIORITY_DEFAULT,
                                                vec![p.clone()],
@@ -123,7 +129,7 @@ impl CommandTree {
                                                p.clone()));
         successors.push(n);
         for alias in &parameter.aliases {
-            let a = Rc::new(ParameterNameNode::new(&*alias,
+            let a = Rc::new(ParameterNameNode::new(alias,
                                                    parameter.hidden,
                                                    PRIORITY_DEFAULT,
                                                    vec![p.clone()],
@@ -138,8 +144,8 @@ impl CommandTree {
                               parameter: &Parameter,
                               parameters: &mut Vec<Rc<ParameterNode>>,
                               successors: &mut Vec<Rc<Node>>) {
-        let p = SimpleParameterNode::new(&*parameter.name,
-                                         parameter.help_text.clone(),
+        let p = SimpleParameterNode::new(parameter.name,
+                                         parameter.help_text,
                                          parameter.hidden,
                                          parameter.priority.unwrap_or(PRIORITY_PARAMETER),
                                          vec![],
@@ -154,23 +160,26 @@ impl CommandTree {
 
 /// Description of a command to be added to the [`CommandTree`].
 ///
+/// The lifetime parameter `'a` refers to the lifetime
+/// of the strings used for command names and help text.
+///
 /// [`CommandTree`]: struct.CommandTree.html
-pub struct Command {
+pub struct Command<'a> {
     hidden: bool,
     priority: i32,
-    name: String,
-    help_text: Option<String>,
-    parameters: Vec<Parameter>,
+    name: &'a str,
+    help_text: Option<&'a str>,
+    parameters: Vec<Parameter<'a>>,
     wrapped_root: Option<String>,
 }
 
-impl Command {
+impl<'a> Command<'a> {
     /// Construct a default (blank) command with the given `name`.
-    pub fn new(name: &str) -> Self {
+    pub fn new(name: &'a str) -> Self {
         Command {
             hidden: false,
             priority: PRIORITY_DEFAULT,
-            name: name.to_string(),
+            name: name,
             help_text: None,
             parameters: vec![],
             wrapped_root: None,
@@ -192,15 +201,15 @@ impl Command {
     }
 
     /// Supply help text for the command.
-    pub fn help(mut self, help_text: &str) -> Self {
-        self.help_text = Some(help_text.to_string());
+    pub fn help(mut self, help_text: &'a str) -> Self {
+        self.help_text = Some(help_text);
         self
     }
 
     /// Add a [`Parameter`] to the command.
     ///
     /// [`Parameter`]: struct.Parameter.html
-    pub fn parameter(mut self, parameter: Parameter) -> Self {
+    pub fn parameter(mut self, parameter: Parameter<'a>) -> Self {
         self.parameters.push(parameter);
         self
     }
@@ -219,25 +228,29 @@ impl Command {
 
 /// Description of a parameter to be added to the [`Command`].
 ///
+/// The lifetime parameter `'a` refers to the lifetime
+/// of the strings used for parameter names, aliases and
+/// help text.
+///
 /// [`Command`]: struct.Command.html
-pub struct Parameter {
+pub struct Parameter<'a> {
     hidden: bool,
     priority: Option<i32>,
-    name: String,
+    name: &'a str,
     repeatable: bool,
-    aliases: Vec<String>,
-    help_text: Option<String>,
+    aliases: Vec<&'a str>,
+    help_text: Option<&'a str>,
     required: bool,
     parameter_kind: ParameterKind,
 }
 
-impl Parameter {
+impl<'a> Parameter<'a> {
     /// Construct a default (blank) parameter with the given `name`.
-    pub fn new(name: &str) -> Self {
+    pub fn new(name: &'a str) -> Self {
         Parameter {
             hidden: false,
             priority: None,
-            name: name.to_string(),
+            name: name,
             repeatable: false,
             aliases: vec![],
             help_text: None,
@@ -276,14 +289,14 @@ impl Parameter {
     ///
     /// Aliases are currently only valid for parameters of `kind`
     /// `ParameterKind::Named`.
-    pub fn alias(mut self, alias: &str) -> Self {
-        self.aliases.push(alias.to_string());
+    pub fn alias(mut self, alias: &'a str) -> Self {
+        self.aliases.push(alias);
         self
     }
 
     /// Supply the help text for the parameter.
-    pub fn help(mut self, help_text: &str) -> Self {
-        self.help_text = Some(help_text.to_string());
+    pub fn help(mut self, help_text: &'a str) -> Self {
+        self.help_text = Some(help_text);
         self
     }
 
