@@ -244,7 +244,7 @@ impl<'text> Parser<'text> {
                                 .collect::<Vec<_>>();
         match matches.len() {
             1 => {
-                let ref matching_node = matches[0];
+                let matching_node = &matches[0];
                 matching_node.accept(self, token);
                 self.current_node = matching_node.clone();
                 self.nodes.push(matching_node.clone());
