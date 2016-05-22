@@ -10,18 +10,18 @@
 //!
 //! * Functionality for building a tree of commands based on their names.
 //! * Parsing tokenized input to select a command. Input tokenization can
-//!   be performed by the `commands::tokenizer` module.
+//!   be performed by the [`commands::tokenizer`] module.
 //! * Validating parameters.
 //! * Performing completion on commands and parameters.
 //!
 //! The command parser consists of two important things:
 //!
 //! * A tree that represents the available commands and their arguments.
-//!   This tree consists of instances of implementations of `Node` like
-//!   `CommandNode`, `ParameterNode` and `RootNode`. Construction of this
-//!   tree is done with the help of `CommandTree`, `Command` and
-//!   `Parameter`.
-//! * A `Parser` that handles input and matches it against the command
+//!   This tree consists of instances of implementations of [`Node`] like
+//!   [`CommandNode`], [`ParameterNode`] and [`RootNode`]. Construction of this
+//!   tree is done with the help of [`CommandTree`], [`Command`] and
+//!   [`Parameter`].
+//! * A [`Parser`] that handles input and matches it against the command
 //!   tree. This parser is intended to be short-lived and to just live
 //!   for the duration of parsing and evaluating a single command line
 //!   input.
@@ -29,9 +29,9 @@
 //! ## Building Nodes
 //!
 //! Building a tree of nodes for use with the parser is best done with
-//! the `CommandTree` in conjunction with `Command` and `Parameter`.
+//! the [`CommandTree`] in conjunction with [`Command`] and [`Parameter`].
 //!
-//! Start by creating a mutable `CommandTree` instance:
+//! Start by creating a mutable [`CommandTree`] instance:
 //!
 //! ```
 //! use commands::parser::{CommandTree, Parser};
@@ -40,8 +40,8 @@
 //! ```
 //!
 //! Then, add your commands and arguments, and finally,
-//! call `finalize` on the tree to get back a `RootNode`
-//! that can use be used with a `Parser`.
+//! call `finalize` on the tree to get back a [`RootNode`]
+//! that can use be used with a [`Parser`].
 //!
 //! ```
 //! use commands::parser::{Command, CommandTree, Parameter, Parser};
@@ -55,6 +55,16 @@
 //! let root = tree.finalize();
 //! let mut parser = Parser::new(root);
 //! ```
+//!
+//! [`commands::tokenizer`]: ../tokenizer/index.html
+//! [`Command`]: struct.Command.html
+//! [`CommandNode`]: struct.CommandNode.html
+//! [`CommandTree`]: struct.CommandTree.html
+//! [`Node`]: trait.Node.html
+//! [`Parameter`]: struct.Parameter.html
+//! [`ParameterNode`]: trait.ParameterNode.html
+//! [`Parser`]: struct.Parser.html
+//! [`RootNode`]: struct.RootNode.html
 
 mod builder;
 mod completion;
@@ -80,7 +90,7 @@ use tokenizer::{Token, TokenType};
 /// of the text used to create the tokens.
 ///
 /// When creating a `Parser`, you must give it an `Rc<RootNode>`.
-/// `RootNode` instances should be created using a `CommandTree`.
+/// [`RootNode`] instances should be created using a [`CommandTree`].
 ///
 /// ```
 /// use commands::parser::{Command, CommandTree, Parser};
@@ -95,6 +105,9 @@ use tokenizer::{Token, TokenType};
 ///
 /// The parser is constructed as a `mut`able object as most of
 /// the methods on it will modify its state.
+///
+/// [`CommandTree`]: struct.CommandTree.html
+/// ['RootNode`]: struct.RootNode.html
 pub struct Parser<'text> {
     current_node: Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
@@ -125,12 +138,12 @@ impl<'text> Parser<'text> {
     /// if one has been provided.
     ///
     /// Nodes may customize the `Complete` trait to customize the
-    /// `Completion` and `CompletionOption`s which are generated
+    /// [`Completion`] and [`CompletionOption`]s which are generated
     /// for that node.
     ///
-    /// Each valid successor node will have one `Completion` in the
-    /// result vector. Each `Completion` will have one or more
-    /// `CompletionOption` for each valid way that the value may be
+    /// Each valid successor node will have one [`Completion`] in the
+    /// result vector. Each [`Completion`] will have one or more
+    /// [`CompletionOption`] for each valid way that the value may be
     /// entered.
     ///
     /// ```
@@ -166,6 +179,9 @@ impl<'text> Parser<'text> {
     ///   panic!("Tokenize failed.");
     /// }
     /// ```
+    ///
+    /// [`Completion`]: struct.Completion.html
+    /// [`CompletionOption`]: struct.CompletionOption.html
     pub fn complete(&self, token: Option<Token<'text>>) -> Vec<Completion> {
         self.current_node
             .successors()

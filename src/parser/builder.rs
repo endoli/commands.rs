@@ -19,8 +19,11 @@ pub enum ParameterKind {
     Simple,
 }
 
-/// Store a command tree while populating it. This can be used
-/// to construct a `RootNode` to be used with the `Parser`.
+/// Store a command tree while populating it. This is used
+/// to construct a [`RootNode`] to be used with the [`Parser`].
+///
+/// [`RootNode`]: struct.RootNode.html
+/// [`Parser`]: struct.Parser.html
 pub struct CommandTree {
     commands: Vec<Command>,
 }
@@ -149,7 +152,9 @@ impl CommandTree {
     }
 }
 
-/// Description of a command to be added to the `CommandTree`.
+/// Description of a command to be added to the [`CommandTree`].
+///
+/// [`CommandTree`]: struct.CommandTree.html
 pub struct Command {
     hidden: bool,
     priority: i32,
@@ -192,22 +197,29 @@ impl Command {
         self
     }
 
-    /// Add a `Parameter` to the command.
+    /// Add a [`Parameter`] to the command.
+    ///
+    /// [`Parameter`]: struct.Parameter.html
     pub fn parameter(mut self, parameter: Parameter) -> Self {
         self.parameters.push(parameter);
         self
     }
 
-    /// Create a `WrapperNode` instead of a `CommandNode`. The
+    /// Create a [`WrapperNode`] instead of a [`CommandNode`]. The
     /// `wrapped_root` signifies the path to the command that should
     /// be wrapped by this command.
+    ///
+    /// [`CommandNode`]: struct.CommandNode.html
+    /// [`WrapperNode`]: struct.WrapperNode.html
     pub fn wraps(mut self, wrapped_root: String) -> Self {
         self.wrapped_root = Some(wrapped_root);
         self
     }
 }
 
-/// Description of a parameter to be added to the `Command`.
+/// Description of a parameter to be added to the [`Command`].
+///
+/// [`Command`]: struct.Command.html
 pub struct Parameter {
     hidden: bool,
     priority: Option<i32>,
@@ -281,8 +293,10 @@ impl Parameter {
         self
     }
 
-    /// Set which type of `ParameterNode` is supposed to be created
+    /// Set which type of [`ParameterNode`] is supposed to be created
     /// to represent this parameter.
+    ///
+    /// [`ParameterNode`]: trait.ParameterNode.html
     pub fn kind(mut self, kind: ParameterKind) -> Self {
         self.parameter_kind = kind;
         self

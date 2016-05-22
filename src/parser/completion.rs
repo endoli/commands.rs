@@ -30,15 +30,19 @@ impl CompletionOption {
     }
 }
 
-/// Represents the result of completing a node.
+/// Represents the result of completing a node. Each valid completion
+/// is represented by a [`CompletionOption`].
 ///
 /// This may be hinted by a pre-existing token.
 ///
-/// If a completion is exhaustive, then only the `CompletionOption`s
+/// If a completion is exhaustive, then only the [`CompletionOption`]s
 /// provided are valid.
 ///
 /// The lifetime parameter `'text` refers to the lifetime of the
-/// body of text which generated the `Token`.
+/// body of text which generated the [`Token`].
+///
+/// [`CompletionOption`]: struct.CompletionOption.html
+/// [`Token`]: ../tokenizer/struct.Token.html
 pub struct Completion<'text> {
     /// Value placeholder for help.
     pub help_symbol: String,
@@ -125,8 +129,11 @@ impl<'text> Complete<'text> for Node {
     /// By default, completion should complete for the name of the given
     /// node.
     ///
-    /// This is the expected behavior for `CommandNode` as well as
-    /// `ParameterNameNode`.
+    /// This is the expected behavior for [`CommandNode`] as well as
+    /// [`ParameterNameNode`].
+    ///
+    /// [`CommandNode`]: struct.CommandNode.html
+    /// [`ParameterNameNode`]: struct.ParameterNameNode.html
     fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),
@@ -139,6 +146,8 @@ impl<'text> Complete<'text> for Node {
 
 impl<'text> Complete<'text> for RootNode {
     /// A `RootNode` can not be completed.
+    ///
+    /// [`RootNode`]: struct.RootNode.html
     fn complete(&self, _token: Option<Token<'text>>) -> Completion<'text> {
         panic!("BUG: Can not complete a root node.");
     }
@@ -150,6 +159,8 @@ impl<'text> Complete<'text> for ParameterNode {
     /// Implementations of `ParameterNode` may wish to override this
     /// so that they can provide custom completion for their valid
     /// values.
+    ///
+    /// [`ParameterNode`]: trait.ParameterNode.html
     fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
         Completion::new(self.help_symbol().clone(),
                         self.help_text().clone(),

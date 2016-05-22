@@ -4,11 +4,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! # Parser Nodes
-//!
-//! Parser nodes represent the grammar that is defined
-//! by the currently permissible set of commands and their
-//! parameters.
+// Parser nodes represent the grammar that is defined
+// by the currently permissible set of commands and their
+// parameters.
 
 use std::rc::Rc;
 
@@ -20,7 +18,9 @@ pub const PRIORITY_PARAMETER: i32 = -10;
 pub const PRIORITY_DEFAULT: i32 = 0;
 
 /// A node in the tree of commands and their parameters
-/// used by the `Parser`.
+/// used by the [`Parser`].
+///
+/// [`Parser`]: struct.Parser.html
 pub trait Node {
     /// The data describing this node.
     #[doc(hidden)]
@@ -54,8 +54,10 @@ pub trait Node {
         self.node_data().priority
     }
 
-    /// Nodes that are children of this node. Used to
-    /// by the `Parser` during `advance`, `complete`, etc.
+    /// Nodes that are children of this node. Used by the
+    /// [`Parser`] during `advance`, `complete`, etc.
+    ///
+    /// [`Parser`]: struct.Parser.html
     fn successors(&self) -> &Vec<Rc<Node>> {
         &self.node_data().successors
     }
@@ -121,7 +123,10 @@ impl Node for RootNode {
     }
 }
 
-/// A node representing a command.
+/// A node representing a command. Constructed via [`Command`] and [`CommandTree`].
+///
+/// [`Command`]: struct.Command.html
+/// [`CommandNode`]: struct.CommandNode.html
 pub struct CommandNode {
     node_fields: NodeFields,
     command_fields: CommandNodeFields,
@@ -298,10 +303,7 @@ pub struct ParameterNodeFields {
     required: bool,
 }
 
-/// A flag parameter node.
-///
-/// When implemented, this will only have a value of
-/// true when it is present.
+/// A flag parameter node. When present, this has a value of `true`.
 pub struct FlagParameterNode {
     node_fields: NodeFields,
     repeatable_fields: RepeatableNodeFields,
@@ -363,7 +365,7 @@ impl FlagParameterNode {
     }
 }
 
-/// A named parameter node.
+/// A named parameter node. This has both a name and a value in the command line.
 pub struct NamedParameterNode {
     node_fields: NodeFields,
     repeatable_fields: RepeatableNodeFields,
