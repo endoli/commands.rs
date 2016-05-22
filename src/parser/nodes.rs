@@ -10,6 +10,10 @@
 
 use std::rc::Rc;
 
+use parser::Completion;
+use parser::Parser;
+use tokenizer::Token;
+
 /// Minimum priority.
 pub const PRIORITY_MINIMUM: i32 = -10000;
 /// The default priority for a parameter.
@@ -17,11 +21,11 @@ pub const PRIORITY_PARAMETER: i32 = -10;
 /// The default priority.
 pub const PRIORITY_DEFAULT: i32 = 0;
 
-/// A node in the tree of commands and their parameters
-/// used by the [`Parser`].
+/// Access the data for a node in the tree of commands and
+/// their parameters used by the [`Parser`].
 ///
 /// [`Parser`]: struct.Parser.html
-pub trait Node {
+pub trait NodeData {
     /// The data describing this node.
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields;
@@ -60,6 +64,52 @@ pub trait Node {
     /// [`Parser`]: struct.Parser.html
     fn successors(&self) -> &Vec<Rc<Node>> {
         &self.node_data().successors
+    }
+}
+
+/// The node in the tree of commands and parameters used in the
+/// parser.
+///
+/// This trait defines the core operations which a node must
+/// support.
+pub trait Node: NodeData {
+    /// Accept this node with the given `token` as data.
+    ///
+    /// By default, nothing needs to happen for `accept`.
+    fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token) {}
+
+    /// Can this node be accepted in the current parser state?
+    /// By default, a node can be accepted when it hasn't been seen yet.
+    fn acceptable(&self, _parser: &Parser) -> bool {
+        true
+        // !parser.nodes.contains(self)
+    }
+
+    /// Given a node and an optional token, provide the completion options.
+    ///
+    /// By default, completion should complete for the name of the given
+    /// node.
+    ///
+    /// This is the expected behavior for [`CommandNode`] as well as
+    /// [`ParameterNameNode`].
+    ///
+    /// [`CommandNode`]: struct.CommandNode.html
+    /// [`ParameterNameNode`]: struct.ParameterNameNode.html
+    fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![self.name()],
+                        vec![])
+    }
+
+    /// By default, a node matches a `token` when the name of the
+    /// node starts with the `token`.
+    ///
+    /// This is the desired behavior for ...
+    fn matches(&self, _parser: &Parser, token: Token) -> bool {
+        self.name().starts_with(token.text)
     }
 }
 
@@ -116,10 +166,17 @@ impl RootNode {
     }
 }
 
-impl Node for RootNode {
+impl NodeData for RootNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
+    }
+}
+
+impl Node for RootNode {
+    /// A `RootNode` can not be completed.
+    fn complete<'text>(&self, _token: Option<Token<'text>>) -> Completion<'text> {
+        panic!("BUG: Can not complete a root node.");
     }
 }
 
@@ -174,10 +231,25 @@ impl CommandNode {
     }
 }
 
-impl Node for CommandNode {
+impl NodeData for CommandNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
+    }
+}
+
+impl Node for CommandNode {
+    /// Record this command.
+    fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token) {
+        if self.handler().is_some() {
+            unimplemented!();
+            // parser.commands.push(Rc::new(self))
+        }
+    }
+
+    fn matches(&self, _parser: &Parser, token: Token) -> bool {
+        println!("MATCHES COMMAND!!!!");
+        self.name().starts_with(token.text)
     }
 }
 
@@ -194,7 +266,7 @@ pub struct WrapperNode {
     root: Rc<Node>,
 }
 
-impl Node for WrapperNode {
+impl NodeData for WrapperNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
@@ -221,6 +293,16 @@ pub trait RepeatableNode: Node {
     /// If present, this node will no longer be `acceptable`.
     fn repeat_marker(&self) -> &Option<Rc<Node>> {
         &self.repeatable_data().repeat_marker
+    }
+
+    /// A repeatable node can be accepted.
+    fn acceptable(&self, _parser: &Parser) -> bool {
+        if self.repeatable() {
+            return true;
+        }
+        unimplemented!()
+        // This should check nodes.contains, but then go on to check
+        // for a repeat marker and whether or not that's been seen.
     }
 }
 
@@ -270,12 +352,14 @@ impl ParameterNameNode {
     }
 }
 
-impl Node for ParameterNameNode {
+impl NodeData for ParameterNameNode {
     #[doc(hidden)]
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
     }
 }
+
+impl Node for ParameterNameNode {}
 
 impl RepeatableNode for ParameterNameNode {
     #[doc(hidden)]
@@ -310,9 +394,20 @@ pub struct FlagParameterNode {
     parameter_fields: ParameterNodeFields,
 }
 
-impl Node for FlagParameterNode {
+impl NodeData for FlagParameterNode {
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
+    }
+}
+
+impl Node for FlagParameterNode {
+    /// Record this parameter value.
+    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token) {
+        if self.repeatable() {
+            unimplemented!();
+        } else {
+            parser.parameters.insert(self.name().clone(), token.text.to_string());
+        }
     }
 }
 
@@ -372,9 +467,35 @@ pub struct NamedParameterNode {
     parameter_fields: ParameterNodeFields,
 }
 
-impl Node for NamedParameterNode {
+impl NodeData for NamedParameterNode {
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
+    }
+}
+
+impl Node for NamedParameterNode {
+    /// Record this parameter value.
+    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token) {
+        if self.repeatable() {
+            unimplemented!();
+        } else {
+            parser.parameters.insert(self.name().clone(), token.text.to_string());
+        }
+    }
+
+    /// By default a `NamedParameterNode` completes only to itself.
+    fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![],
+                        vec![])
+    }
+
+    /// Named parameters can match any token by default.
+    fn matches(&self, _parser: &Parser, _token: Token) -> bool {
+        true
     }
 }
 
@@ -429,9 +550,35 @@ pub struct SimpleParameterNode {
     parameter_fields: ParameterNodeFields,
 }
 
-impl Node for SimpleParameterNode {
+impl NodeData for SimpleParameterNode {
     fn node_data(&self) -> &NodeFields {
         &self.node_fields
+    }
+}
+
+impl Node for SimpleParameterNode {
+    /// Record this parameter value.
+    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token) {
+        if self.repeatable() {
+            unimplemented!();
+        } else {
+            parser.parameters.insert(self.name().clone(), token.text.to_string());
+        }
+    }
+
+    /// By default a `SimpleParameterNode` completes only to itself.
+    fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
+        Completion::new(self.help_symbol().clone(),
+                        self.help_text().clone(),
+                        token,
+                        true,
+                        vec![],
+                        vec![])
+    }
+
+    /// Simple parameters can match any token by default.
+    fn matches(&self, _parser: &Parser, _token: Token) -> bool {
+        true
     }
 }
 

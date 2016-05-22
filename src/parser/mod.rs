@@ -72,9 +72,10 @@ mod nodes;
 
 // Re-export public API
 pub use self::builder::{Command, CommandTree, Parameter};
-pub use self::completion::{Complete, Completion, CompletionOption};
-pub use self::nodes::{CommandNode, FlagParameterNode, NamedParameterNode, Node, ParameterNameNode,
-                      ParameterNode, RepeatableNode, RootNode, SimpleParameterNode, WrapperNode};
+pub use self::completion::{Completion, CompletionOption};
+pub use self::nodes::{CommandNode, FlagParameterNode, NamedParameterNode, Node, NodeData,
+                      ParameterNameNode, ParameterNode, RepeatableNode, RootNode,
+                      SimpleParameterNode, WrapperNode};
 pub use self::nodes::{PRIORITY_DEFAULT, PRIORITY_MINIMUM, PRIORITY_PARAMETER};
 
 use std::collections::HashMap;
@@ -337,93 +338,6 @@ impl Error for VerifyError {
 impl fmt::Display for VerifyError {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         self.description().fmt(f)
-    }
-}
-
-/// Can this node be accepted in the current parser state?
-pub trait Acceptable {
-    /// Can this node be accepted in the current parser state?
-    fn acceptable(&self, parser: &Parser) -> bool;
-}
-
-impl Acceptable for Rc<Node> {
-    /// By default, a node can be accepted when it hasn't been seen yet.
-    fn acceptable(&self, parser: &Parser) -> bool {
-        !parser.nodes.contains(self)
-    }
-}
-
-impl Acceptable for RepeatableNode {
-    /// A repeatable node can be accepted.
-    fn acceptable(&self, _parser: &Parser) -> bool {
-        if self.repeatable() {
-            return true;
-        }
-        unimplemented!()
-        // This should check nodes.contains, but then go on to check
-        // for a repeat marker and whether or not that's been seen.
-    }
-}
-
-/// Define whether or not a node matches a token.
-pub trait Matches {
-    /// Does this node match the specified `token`?
-    fn matches(&self, parser: &Parser, token: Token) -> bool;
-}
-
-impl Matches for Node {
-    /// By default, a node matches a `token` when the name of the
-    /// node starts with the `token`.
-    fn matches(&self, _parser: &Parser, token: Token) -> bool {
-        self.name().starts_with(token.text)
-    }
-}
-
-impl Matches for ParameterNode {
-    /// Parameters can match any token by default.
-    fn matches(&self, _parser: &Parser, _token: Token) -> bool {
-        true
-    }
-}
-
-impl Matches for FlagParameterNode {
-    /// A flag parameter is just looking for the token matching
-    /// its name.
-    fn matches(&self, _parser: &Parser, token: Token) -> bool {
-        self.name().starts_with(token.text)
-    }
-}
-
-/// Define the behavior of a node when it is accepted by the parser.
-pub trait Accept {
-    /// Accept this node with the given `token` as data.
-    ///
-    /// This is where parameters are stored, commands added.
-    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token);
-}
-
-impl Accept for Node {
-    /// By default, nothing needs to happen for `accept`.
-    fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token) {}
-}
-
-impl Accept for Rc<CommandNode> {
-    /// Record this command.
-    fn accept<'text>(&self, parser: &mut Parser<'text>, _token: Token) {
-        if self.handler().is_some() {
-            parser.commands.push(self.clone())
-        }
-    }
-}
-
-impl Accept for ParameterNode {
-    /// Record this parameter value.
-    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token) {
-        if self.repeatable() {
-            unimplemented!();
-        } else {
-            parser.parameters.insert(self.name().clone(), token.text.to_string());
-        }
     }
 }
 

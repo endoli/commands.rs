@@ -4,7 +4,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use parser::nodes::*;
 use tokenizer::Token;
 use util::longest_common_prefix;
 
@@ -116,69 +115,5 @@ impl<'text> Completion<'text> {
             exhaustive: exhaustive,
             options: options,
         }
-    }
-}
-
-/// Trait for nodes that support completion.
-pub trait Complete<'text> {
-    /// Given a node and an optional token, provide the completion options.
-    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text>;
-}
-
-impl<'text> Complete<'text> for Node {
-    /// By default, completion should complete for the name of the given
-    /// node.
-    ///
-    /// This is the expected behavior for [`CommandNode`] as well as
-    /// [`ParameterNameNode`].
-    ///
-    /// [`CommandNode`]: struct.CommandNode.html
-    /// [`ParameterNameNode`]: struct.ParameterNameNode.html
-    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
-        Completion::new(self.help_symbol().clone(),
-                        self.help_text().clone(),
-                        token,
-                        true,
-                        vec![self.name()],
-                        vec![])
-    }
-}
-
-impl<'text> Complete<'text> for RootNode {
-    /// A `RootNode` can not be completed.
-    ///
-    /// [`RootNode`]: struct.RootNode.html
-    fn complete(&self, _token: Option<Token<'text>>) -> Completion<'text> {
-        panic!("BUG: Can not complete a root node.");
-    }
-}
-
-impl<'text> Complete<'text> for ParameterNode {
-    /// By default a `ParameterNode` completes only to itself.
-    ///
-    /// Implementations of `ParameterNode` may wish to override this
-    /// so that they can provide custom completion for their valid
-    /// values.
-    ///
-    /// [`ParameterNode`]: trait.ParameterNode.html
-    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
-        Completion::new(self.help_symbol().clone(),
-                        self.help_text().clone(),
-                        token,
-                        true,
-                        vec![],
-                        vec![])
-    }
-}
-
-impl<'text> Complete<'text> for FlagParameterNode {
-    /// Flag parameters complete to the name of their node.
-    fn complete(&self, token: Option<Token<'text>>) -> Completion<'text> {
-        Completion::new(self.help_symbol().clone(),
-                        self.help_text().clone(),
-                        token,
-                        true,
-                        vec![self.name()],
-                        vec![])
     }
 }
