@@ -17,7 +17,7 @@ fn main() {
     let root = tree.finalize();
 
     while let Ok(s) = readline(">> ") {
-        if let Ok(tokens) = tokenize(&*s) {
+        if let Ok(tokens) = tokenize(&s) {
             let mut parser = Parser::new(root.clone());
             if let Err(err) = parser.parse(tokens) {
                 match err {
