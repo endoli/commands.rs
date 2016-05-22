@@ -220,7 +220,6 @@ impl<'text> Parser<'text> {
     pub fn parse(&mut self, tokens: Vec<Token<'text>>) -> Result<(), ParseError<'text>> {
         for token in tokens {
             match token.token_type {
-                TokenType::Invalid => unreachable!(),
                 TokenType::Whitespace => {}
                 TokenType::Word => try!(self.advance(token)),
             }

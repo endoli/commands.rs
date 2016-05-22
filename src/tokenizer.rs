@@ -161,8 +161,6 @@ impl fmt::Display for TokenizerError {
 /// The role that a token plays: `Whitespace` or `Word`.
 #[derive(Clone,Copy,Debug,PartialEq)]
 pub enum TokenType {
-    /// Internal usage only.
-    Invalid,
     /// The token represents whitespace and not a word.
     Whitespace,
     /// The token represents a word within the body of text. This
@@ -212,7 +210,7 @@ enum State {
 struct Tokenizer<'text> {
     text: &'text str,
     state: State,
-    token_type: TokenType,
+    token_type: Option<TokenType>,
     token_start: usize,
     token_end: usize,
     tokens: Vec<Token<'text>>,
@@ -223,7 +221,7 @@ impl<'text> Tokenizer<'text> {
         Tokenizer {
             text: text,
             state: State::Initial,
-            token_type: TokenType::Invalid,
+            token_type: None,
             token_start: 0,
             token_end: 0,
             tokens: vec![],
@@ -232,7 +230,7 @@ impl<'text> Tokenizer<'text> {
 
     fn reset(&mut self) {
         self.state = State::Initial;
-        self.token_type = TokenType::Invalid;
+        self.token_type = None;
         self.token_start = 0;
         self.token_end = 0;
     }
@@ -241,7 +239,9 @@ impl<'text> Tokenizer<'text> {
         let token_text = &self.text[self.token_start..self.token_end + 1];
         let loc = SourceLocation::new(SourceOffset::new(self.token_start, 0, self.token_start),
                                       SourceOffset::new(self.token_end, 0, self.token_end));
-        self.tokens.push(Token::new(token_text, self.token_type, loc));
+        self.tokens.push(Token::new(token_text,
+                                    self.token_type.expect("Invalid tokenization"),
+                                    loc));
         self.reset();
     }
 
@@ -252,11 +252,11 @@ impl<'text> Tokenizer<'text> {
     }
 
     fn recognize(&mut self, offset: usize, next_state: State) {
-        if self.token_type == TokenType::Invalid {
+        if self.token_type.is_none() {
             self.token_type = if next_state == State::Whitespace {
-                TokenType::Whitespace
+                Some(TokenType::Whitespace)
             } else {
-                TokenType::Word
+                Some(TokenType::Word)
             };
             self.token_start = offset;
         }
