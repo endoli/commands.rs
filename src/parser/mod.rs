@@ -68,15 +68,16 @@
 
 mod builder;
 mod completion;
+mod constants;
 mod nodes;
 
 // Re-export public API
 pub use self::builder::{Command, CommandTree, Parameter};
+pub use self::constants::ParameterKind;
+pub use self::constants::{PRIORITY_DEFAULT, PRIORITY_MINIMUM, PRIORITY_PARAMETER};
 pub use self::completion::{Completion, CompletionOption};
-pub use self::nodes::{CommandNode, FlagParameterNode, NamedParameterNode, Node, NodeData,
-                      ParameterNameNode, ParameterNode, RepeatableNode, RootNode,
-                      SimpleParameterNode, WrapperNode};
-pub use self::nodes::{PRIORITY_DEFAULT, PRIORITY_MINIMUM, PRIORITY_PARAMETER};
+pub use self::nodes::{Node, NodeOps};
+pub use self::nodes::{CommandNode, ParameterNameNode, ParameterNode, RootNode};
 
 use std::collections::HashMap;
 use std::error::Error;
@@ -121,7 +122,7 @@ pub struct Parser<'text> {
 
 impl<'text> Parser<'text> {
     /// Construct a parser with a root node.
-    pub fn new(initial_node: Rc<RootNode>) -> Parser<'text> {
+    pub fn new(initial_node: Rc<Node>) -> Parser<'text> {
         Parser {
             current_node: initial_node,
             nodes: vec![],
@@ -191,7 +192,7 @@ impl<'text> Parser<'text> {
                 // To be a possible completion, the node should not be
                 // hidden, it should be acceptable, and if there's a token,
                 // it should be a valid match for the node.
-                !n.hidden() && n.acceptable(self) &&
+                !n.node().hidden && n.acceptable(self) &&
                 if let Some(t) = token {
                     n.matches(self, t)
                 } else {
@@ -230,14 +231,12 @@ impl<'text> Parser<'text> {
 
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: Token<'text>) -> Result<(), ParseError<'text>> {
-        // We clone the current node so that it doesn't stay borrowed
-        // and break things when we try to modify it below.
-        let cn = self.current_node.clone();
-        let acceptable = cn.successors()
-                           .into_iter()
-                           .filter(|n| n.acceptable(self))
-                           .map(|n| n.clone())
-                           .collect::<Vec<_>>();
+        let acceptable = self.current_node
+                             .successors()
+                             .into_iter()
+                             .filter(|n| n.acceptable(self))
+                             .map(|n| n.clone())
+                             .collect::<Vec<_>>();
         let matches = acceptable.clone()
                                 .into_iter()
                                 .filter(|n| n.matches(self, token))
@@ -274,13 +273,20 @@ impl<'text> Parser<'text> {
         if self.commands.is_empty() {
             return Err(VerifyError::NoCommandAccepted);
         } else {
-            for expected in self.commands[0].parameters() {
-                if expected.required() && !self.parameters.contains_key(expected.name()) {
-                    return Err(VerifyError::MissingParameter(expected.name().clone()));
-                }
-            }
+            unimplemented!();
+            // for expected in &self.commands[0].parameters {
+            // match expected {
+            // Node::Parameter(e) => {
+            // let name = &e.node.name;
+            // if e.required && !self.parameters.contains_key(name) {
+            // return Err(VerifyError::MissingParameter(name.clone()));
+            // }
+            // }
+            // _ => unreachable!(),
+            // }
+            // }
+            // Ok(())
         }
-        Ok(())
     }
 }
 
@@ -349,7 +355,7 @@ mod test {
     #[test]
     #[should_panic]
     fn verify_signals_no_command() {
-        let root = RootNode::new(vec![]);
+        let root = CommandTree::new().finalize();
         let parser = Parser::new(root);
         match parser.verify() {
             Err(VerifyError::NoCommandAccepted) => panic!(),

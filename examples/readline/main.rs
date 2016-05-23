@@ -24,13 +24,15 @@ fn main() {
                     ParseError::NoMatches(_, acceptable) => {
                         print!("\nPossible options:\n");
                         for ref option in acceptable {
-                            print!("  {} - {}\n", option.help_symbol(), option.help_text());
+                            let n = option.node();
+                            print!("  {} - {}\n", n.help_symbol, n.help_text);
                         }
                     }
                     ParseError::AmbiguousMatch(_, matches) => {
                         print!("\nCan be interpreted as:\n");
                         for ref option in matches {
-                            print!("  {} - {}\n", option.help_symbol(), option.help_text());
+                            let n = option.node();
+                            print!("  {} - {}\n", n.help_symbol, n.help_text);
                         }
                     }
                 }
