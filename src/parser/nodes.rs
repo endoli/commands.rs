@@ -229,7 +229,7 @@ impl NodeOps for RootNode {
     }
 
     fn matches(&self, _parser: &Parser, _token: Token) -> bool {
-        false
+        panic!("BUG: Can not match a root node.");
     }
 }
 
