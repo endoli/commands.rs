@@ -65,18 +65,15 @@ impl<'a> CommandTree<'a> {
                 }
             };
         }
-        if let Some(_) = command.wrapped_root {
-            // XXX: This should be a WrapperNode.
-            unimplemented!()
-        } else {
-            CommandNode::new(command.name,
-                             command.help_text,
-                             command.hidden,
-                             command.priority,
-                             successors,
-                             None,
-                             parameters)
-        }
+        // We'll want to find the right node for the wrapped_root
+        // and pass it along here.
+        CommandNode::new(command.name,
+                         command.help_text,
+                         command.hidden,
+                         command.priority,
+                         successors,
+                         None,
+                         parameters)
     }
 
     fn build_flag_parameter(&self,
