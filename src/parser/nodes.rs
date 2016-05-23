@@ -92,7 +92,7 @@ pub struct RootNode {
 /// normal commands. The `successors` will be those of the wrapped node.
 ///
 /// [`Command`]: struct.Command.html
-/// [`CommandNode`]: struct.CommandNode.html
+/// [`CommandTree`]: struct.CommandTree.html
 pub struct CommandNode {
     /// `TreeNode` data.
     pub node: TreeNode,
