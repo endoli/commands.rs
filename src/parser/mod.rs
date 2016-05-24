@@ -116,7 +116,7 @@ pub struct Parser<'text> {
     pub nodes: Vec<Rc<Node>>,
     /// The tokens which have been accepted during `parse` or `advance`.
     pub tokens: Vec<Token<'text>>,
-    commands: Vec<Rc<CommandNode>>,
+    commands: Vec<Rc<Node>>,
     parameters: HashMap<String, String>,
 }
 
@@ -245,7 +245,7 @@ impl<'text> Parser<'text> {
         match matches.len() {
             1 => {
                 let matching_node = &matches[0];
-                matching_node.accept(self, token);
+                matching_node.accept(self, token, matching_node);
                 self.current_node = matching_node.clone();
                 self.nodes.push(matching_node.clone());
                 self.tokens.push(token);
@@ -273,19 +273,21 @@ impl<'text> Parser<'text> {
         if self.commands.is_empty() {
             return Err(VerifyError::NoCommandAccepted);
         } else {
-            unimplemented!();
-            // for expected in &self.commands[0].parameters {
-            // match expected {
-            // Node::Parameter(e) => {
-            // let name = &e.node.name;
-            // if e.required && !self.parameters.contains_key(name) {
-            // return Err(VerifyError::MissingParameter(name.clone()));
-            // }
-            // }
-            // _ => unreachable!(),
-            // }
-            // }
-            // Ok(())
+            if let Node::Command(ref command) = *self.commands[0] {
+                for expected in &command.parameters {
+                    if let Node::Parameter(ref param) = **expected {
+                        let name = &param.node.name;
+                        if param.required && !self.parameters.contains_key(name) {
+                            return Err(VerifyError::MissingParameter(name.clone()));
+                        }
+                    } else {
+                        unreachable!();
+                    }
+                }
+                Ok(())
+            } else {
+                unreachable!();
+            }
         }
     }
 }
