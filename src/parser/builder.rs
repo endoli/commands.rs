@@ -186,6 +186,8 @@ impl<'a> Command<'a> {
 
     /// Give the command a priority. This is used when sorting
     /// out conflicts during matching and completion.
+    ///
+    /// This is not commonly needed.
     pub fn priority(mut self, priority: i32) -> Self {
         self.priority = priority;
         self
@@ -261,6 +263,8 @@ impl<'a> Parameter<'a> {
     /// The `priority` of a `Parameter` defaults to `PRIORITY_PARAMETER`
     /// except for when the `kind` is `ParameterKind::Flag` in which
     /// case, the default will be `PRIORITY_DEFAULT`.
+    ///
+    /// This is not commonly needed.
     pub fn priority(mut self, priority: i32) -> Self {
         self.priority = Some(priority);
         self
