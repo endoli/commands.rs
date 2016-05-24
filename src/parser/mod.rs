@@ -60,7 +60,7 @@
 //! [`Command`]: struct.Command.html
 //! [`CommandNode`]: struct.CommandNode.html
 //! [`CommandTree`]: struct.CommandTree.html
-//! [`Node`]: trait.Node.html
+//! [`Node`]: enum.Node.html
 //! [`Parameter`]: struct.Parameter.html
 //! [`ParameterNode`]: trait.ParameterNode.html
 //! [`Parser`]: struct.Parser.html
