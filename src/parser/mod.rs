@@ -192,7 +192,7 @@ impl<'text> Parser<'text> {
                 // To be a possible completion, the node should not be
                 // hidden, it should be acceptable, and if there's a token,
                 // it should be a valid match for the node.
-                !n.node().hidden && n.acceptable(self) &&
+                !n.node().hidden && n.acceptable(self, n) &&
                 if let Some(t) = token {
                     n.matches(self, t)
                 } else {
@@ -234,7 +234,7 @@ impl<'text> Parser<'text> {
         let acceptable = self.current_node
                              .successors()
                              .into_iter()
-                             .filter(|n| n.acceptable(self))
+                             .filter(|n| n.acceptable(self, n))
                              .map(|n| n.clone())
                              .collect::<Vec<_>>();
         let matches = acceptable.clone()

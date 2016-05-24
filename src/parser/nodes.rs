@@ -35,7 +35,12 @@ pub trait NodeOps {
 
     /// Can this node be accepted in the current parser state?
     /// By default, a node can be accepted when it hasn't been seen yet.
-    fn acceptable(&self, _parser: &Parser) -> bool;
+    ///
+    /// The `node_ref` is provided so that implementations have access to
+    /// the `Rc<Node>` value for the node rather than having to rely upon
+    /// `self` which won't be a `Node`, but the underlying `CommandNode` or
+    /// similar.
+    fn acceptable(&self, _parser: &Parser, _node_ref: &Rc<Node>) -> bool;
 
     /// Given a node and an optional token, provide the completion options.
     ///
@@ -170,12 +175,12 @@ impl NodeOps for Node {
         }
     }
 
-    fn acceptable(&self, parser: &Parser) -> bool {
+    fn acceptable(&self, parser: &Parser, node_ref: &Rc<Node>) -> bool {
         match *self {
-            Node::Command(ref command) => command.acceptable(parser),
-            Node::Parameter(ref parameter) => parameter.acceptable(parser),
-            Node::ParameterName(ref name) => name.acceptable(parser),
-            Node::Root(ref root) => root.acceptable(parser),
+            Node::Command(ref command) => command.acceptable(parser, node_ref),
+            Node::Parameter(ref parameter) => parameter.acceptable(parser, node_ref),
+            Node::ParameterName(ref name) => name.acceptable(parser, node_ref),
+            Node::Root(ref root) => root.acceptable(parser, node_ref),
         }
     }
 
@@ -219,7 +224,7 @@ impl RootNode {
 impl NodeOps for RootNode {
     fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token) {}
 
-    fn acceptable(&self, _parser: &Parser) -> bool {
+    fn acceptable(&self, _parser: &Parser, _node_ref: &Rc<Node>) -> bool {
         false
     }
 
@@ -270,8 +275,8 @@ impl NodeOps for CommandNode {
         }
     }
 
-    fn acceptable(&self, _parser: &Parser) -> bool {
-        true
+    fn acceptable(&self, parser: &Parser, node_ref: &Rc<Node>) -> bool {
+        !parser.nodes.contains(node_ref)
     }
 
     fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
@@ -321,14 +326,15 @@ impl NodeOps for ParameterNameNode {
     /// Record this command.
     fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token) {}
 
-    /// A repeatable node can be accepted.
-    fn acceptable(&self, _parser: &Parser) -> bool {
+    fn acceptable(&self, parser: &Parser, node_ref: &Rc<Node>) -> bool {
         if self.node.repeatable {
             return true;
         }
-        unimplemented!()
-        // This should check nodes.contains, but then go on to check
-        // for a repeat marker and whether or not that's been seen.
+        !parser.nodes.contains(node_ref) &&
+        match self.node.repeat_marker {
+            None => true,
+            Some(ref n) => !parser.nodes.contains(n),
+        }
     }
 
     fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
@@ -394,8 +400,15 @@ impl NodeOps for ParameterNode {
         }
     }
 
-    fn acceptable(&self, _parser: &Parser) -> bool {
-        true
+    fn acceptable(&self, parser: &Parser, node_ref: &Rc<Node>) -> bool {
+        if self.node.repeatable {
+            return true;
+        }
+        !parser.nodes.contains(node_ref) &&
+        match self.node.repeat_marker {
+            None => true,
+            Some(ref n) => !parser.nodes.contains(n),
+        }
     }
 
     /// By default named and simple parameters complete only to the token
