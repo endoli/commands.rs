@@ -31,7 +31,7 @@ pub trait NodeOps {
     /// Accept this node with the given `token` as data.
     ///
     /// By default, nothing needs to happen for `accept`.
-    fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token);
+    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token);
 
     /// Can this node be accepted in the current parser state?
     /// By default, a node can be accepted when it hasn't been seen yet.
@@ -40,7 +40,7 @@ pub trait NodeOps {
     /// the `Rc<Node>` value for the node rather than having to rely upon
     /// `self` which won't be a `Node`, but the underlying `CommandNode` or
     /// similar.
-    fn acceptable(&self, _parser: &Parser, _node_ref: &Rc<Node>) -> bool;
+    fn acceptable(&self, parser: &Parser, node_ref: &Rc<Node>) -> bool;
 
     /// Given a node and an optional token, provide the completion options.
     ///
@@ -58,7 +58,7 @@ pub trait NodeOps {
     /// node starts with the `token`.
     ///
     /// This is the desired behavior for ...
-    fn matches(&self, _parser: &Parser, token: Token) -> bool;
+    fn matches(&self, parser: &Parser, token: Token) -> bool;
 }
 
 /// A parse tree node.
