@@ -270,24 +270,20 @@ impl<'text> Parser<'text> {
     /// respect to having accepted a command and all
     /// required parameters.
     pub fn verify(&self) -> Result<(), VerifyError> {
-        if self.commands.is_empty() {
-            Err(VerifyError::NoCommandAccepted)
-        } else {
-            if let Node::Command(ref command) = *self.commands[0] {
-                for expected in &command.parameters {
-                    if let Node::Parameter(ref param) = **expected {
-                        let name = &param.node.name;
-                        if param.required && !self.parameters.contains_key(name) {
-                            return Err(VerifyError::MissingParameter(name.clone()));
-                        }
-                    } else {
-                        unreachable!();
+        if let Some(&Node::Command(ref command)) = self.commands.first().map(|n| &**n) {
+            for expected in &command.parameters {
+                if let Node::Parameter(ref param) = **expected {
+                    let name = &param.node.name;
+                    if param.required && !self.parameters.contains_key(name) {
+                        return Err(VerifyError::MissingParameter(name.clone()));
                     }
+                } else {
+                    unreachable!();
                 }
-                Ok(())
-            } else {
-                unreachable!();
             }
+            Ok(())
+        } else {
+            Err(VerifyError::NoCommandAccepted)
         }
     }
 }
