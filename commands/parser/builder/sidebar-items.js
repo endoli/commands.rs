@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Command","Description of a command to be added to the [`CommandTree`]."],["CommandTree","Store a command tree while populating it. This is used to construct a [`RootNode`] to be used with the [`Parser`]."],["Parameter","Description of a parameter to be added to the [`Command`]."]]});

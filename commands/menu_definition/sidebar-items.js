@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["MenuItem","Types of menu items."]],"struct":[["MenuDefinition","The definition to be used to generate a menu or toolbar in whatever GUI framework is being used."]]});

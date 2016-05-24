@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Completion","Represents the result of completing a node."],["CompletionOption","Represents a single option returned by `complete`."]],"trait":[["Complete","Trait for nodes that support completion."]]});
+initSidebarItems({"struct":[["Completion","Represents the result of completing a node. Each valid completion is represented by a [`CompletionOption`]."],["CompletionOption","Represents a single option returned by `complete`."]]});

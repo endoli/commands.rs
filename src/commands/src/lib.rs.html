@@ -68,7 +68,20 @@
 <span id="25">25</span>
 <span id="26">26</span>
 <span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
 </pre><pre class='rust '>
+<span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
+<span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
+<span class='comment'>// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
+<span class='comment'>// option. This file may not be copied, modified, or distributed</span>
+<span class='comment'>// except according to those terms.</span>
+
 <span class='doccomment'>//! # Commands</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! This crate provides a command system for use in Rust.</span>
@@ -88,11 +101,12 @@
 <span class='doccomment'>//! not everything works yet.</span>
 
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>deny</span>(<span class='ident'>trivial_casts</span>, <span class='ident'>trivial_numeric_casts</span>,
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>deny</span>(<span class='ident'>trivial_numeric_casts</span>,
         <span class='ident'>unsafe_code</span>, <span class='ident'>unstable_features</span>,
         <span class='ident'>unused_import_braces</span>, <span class='ident'>unused_qualifications</span>)]</span>
 
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>command_table</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>menu_definition</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>parser</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>tokenizer</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>util</span>;

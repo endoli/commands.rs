@@ -147,13 +147,26 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
 </pre><pre class='rust '>
-<span class='doccomment'>//! # Completion</span>
-<span class='doccomment'>//!</span>
+<span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
+<span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
+<span class='comment'>// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
+<span class='comment'>// option. This file may not be copied, modified, or distributed</span>
+<span class='comment'>// except according to those terms.</span>
 
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>allow</span>(<span class='ident'>dead_code</span>, <span class='ident'>missing_docs</span>, <span class='ident'>unused_variables</span>)]</span>
-
-<span class='kw'>use</span> <span class='ident'>parser</span>::<span class='ident'>nodes</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='ident'>tokenizer</span>::<span class='ident'>Token</span>;
 <span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>longest_common_prefix</span>;
 
@@ -162,19 +175,16 @@
 <span class='doccomment'>/// An option may be `complete`, which means that it represents</span>
 <span class='doccomment'>/// a syntactically complete parameter value which can be used</span>
 <span class='doccomment'>/// as-is, whereas incomplete options are not valid values.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// The lifetime parameter `&#39;c` refers to the lifetime of the</span>
-<span class='doccomment'>/// owning `Completion`.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CompletionOption</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span><span class='op'>&gt;</span> {
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CompletionOption</span> {
     <span class='doccomment'>/// String for this option.</span>
-    <span class='kw'>pub</span> <span class='ident'>option_string</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;c</span> <span class='ident'>str</span>,
+    <span class='kw'>pub</span> <span class='ident'>option_string</span>: <span class='ident'>String</span>,
     <span class='doccomment'>/// True if this option is complete and a valid value.</span>
     <span class='kw'>pub</span> <span class='ident'>complete</span>: <span class='ident'>bool</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span><span class='op'>&gt;</span> <span class='ident'>CompletionOption</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='ident'>CompletionOption</span> {
     <span class='doccomment'>/// CompletionOption constructor</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>option_string</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;c</span> <span class='ident'>str</span>, <span class='ident'>complete</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>CompletionOption</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>option_string</span>: <span class='ident'>String</span>, <span class='ident'>complete</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>CompletionOption</span> {
         <span class='ident'>CompletionOption</span> {
             <span class='ident'>option_string</span>: <span class='ident'>option_string</span>,
             <span class='ident'>complete</span>: <span class='ident'>complete</span>,
@@ -182,76 +192,92 @@
     }
 }
 
-<span class='doccomment'>/// Represents the result of completing a node.</span>
+<span class='doccomment'>/// Represents the result of completing a node. Each valid completion</span>
+<span class='doccomment'>/// is represented by a [`CompletionOption`].</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// This may be hinted by a pre-existing token.</span>
 <span class='doccomment'>///</span>
-<span class='doccomment'>/// If a completion is exhaustive, then only the `CompletionOption`s</span>
+<span class='doccomment'>/// If a completion is exhaustive, then only the [`CompletionOption`]s</span>
 <span class='doccomment'>/// provided are valid.</span>
 <span class='doccomment'>///</span>
-<span class='doccomment'>/// The lifetime parameter `&#39;c` refers to the lifetime of</span>
-<span class='doccomment'>/// this `Completion`. The lifetime parameter `&#39;t` refers to</span>
-<span class='doccomment'>/// the lifetime of the body of text which generated the</span>
-<span class='doccomment'>/// `Token`. The lifetime parameter `&#39;n` refers to the lifetime</span>
-<span class='doccomment'>/// of the node which generated the completion.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
+<span class='doccomment'>/// The lifetime parameter `&#39;text` refers to the lifetime of the</span>
+<span class='doccomment'>/// body of text which generated the [`Token`].</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// [`CompletionOption`]: struct.CompletionOption.html</span>
+<span class='doccomment'>/// [`Token`]: ../tokenizer/struct.Token.html</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Value placeholder for help.</span>
     <span class='kw'>pub</span> <span class='ident'>help_symbol</span>: <span class='ident'>String</span>,
     <span class='doccomment'>/// Main help text.</span>
     <span class='kw'>pub</span> <span class='ident'>help_text</span>: <span class='ident'>String</span>,
     <span class='doccomment'>/// Token used to hint the completion, if provided.</span>
-    <span class='kw'>pub</span> <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>,
+    <span class='kw'>pub</span> <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;&gt;</span>,
     <span class='doccomment'>/// Was this completion exhaustive? If yes, then only</span>
     <span class='doccomment'>/// the given completion options are valid.</span>
     <span class='kw'>pub</span> <span class='ident'>exhaustive</span>: <span class='ident'>bool</span>,
     <span class='doccomment'>/// The actual completion options.</span>
-    <span class='kw'>pub</span> <span class='ident'>options</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>CompletionOption</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span><span class='op'>&gt;&gt;</span>,
+    <span class='kw'>pub</span> <span class='ident'>options</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>CompletionOption</span><span class='op'>&gt;</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>node</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;n</span> <span class='ident'>Node</span><span class='op'>&lt;</span><span class='lifetime'>&#39;n</span><span class='op'>&gt;</span>,
-               <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>,
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Construct a new Completion.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>help_symbol</span>: <span class='ident'>String</span>,
+               <span class='ident'>help_text</span>: <span class='ident'>String</span>,
+               <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;&gt;</span>,
                <span class='ident'>exhaustive</span>: <span class='ident'>bool</span>,
                <span class='ident'>complete_options</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>str</span><span class='op'>&gt;</span>,
                <span class='ident'>other_options</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>str</span><span class='op'>&gt;</span>)
-               <span class='op'>-&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
+               <span class='op'>-&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> {
+        <span class='comment'>// Preserve all of the options while still &amp;str so that</span>
+        <span class='comment'>// we can use this with longest_common_prefix later.</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>all_options</span> <span class='op'>=</span> <span class='ident'>complete_options</span>.<span class='ident'>clone</span>();
+        <span class='ident'>all_options</span>.<span class='ident'>extend</span>(<span class='ident'>other_options</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+
+        <span class='comment'>// Convert to String...</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>complete_options</span> <span class='op'>=</span> <span class='ident'>complete_options</span>.<span class='ident'>into_iter</span>()
+                                                   .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>o</span><span class='op'>|</span> <span class='ident'>o</span>.<span class='ident'>to_string</span>())
+                                                   .<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;&gt;</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>other_options</span> <span class='op'>=</span> <span class='ident'>other_options</span>.<span class='ident'>into_iter</span>()
+                                             .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>o</span><span class='op'>|</span> <span class='ident'>o</span>.<span class='ident'>to_string</span>())
+                                             .<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;&gt;</span>();
+        <span class='comment'>// Apply token restrictions</span>
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>t</span>) <span class='op'>=</span> <span class='ident'>token</span> {
+            <span class='comment'>// Filter options using token.</span>
+            <span class='kw'>let</span> <span class='ident'>token_text</span> <span class='op'>=</span> <span class='ident'>t</span>.<span class='ident'>text</span>.<span class='ident'>to_string</span>();
+            <span class='ident'>complete_options</span>.<span class='ident'>retain</span>(<span class='op'>|</span><span class='ident'>o</span><span class='op'>|</span> <span class='ident'>o</span>.<span class='ident'>starts_with</span>(<span class='ident'>t</span>.<span class='ident'>text</span>));
+            <span class='ident'>other_options</span>.<span class='ident'>retain</span>(<span class='op'>|</span><span class='ident'>o</span><span class='op'>|</span> <span class='ident'>o</span>.<span class='ident'>starts_with</span>(<span class='ident'>t</span>.<span class='ident'>text</span>));
+            <span class='comment'>// If not exhaustive, then add the current token as</span>
+            <span class='comment'>// an incomplete option.</span>
+            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>exhaustive</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ident'>complete_options</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>token_text</span>) <span class='op'>&amp;&amp;</span>
+               <span class='op'>!</span><span class='ident'>other_options</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>token_text</span>) {
+                <span class='ident'>other_options</span>.<span class='ident'>push</span>(<span class='ident'>token_text</span>);
+            }
+        }
+        <span class='comment'>// Add longest common prefix as an incomplete options, but</span>
+        <span class='comment'>// filter it against the existing options and the token.</span>
+        <span class='kw'>let</span> <span class='ident'>lcp</span> <span class='op'>=</span> <span class='ident'>longest_common_prefix</span>(<span class='ident'>all_options</span>).<span class='ident'>to_string</span>();
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>complete_options</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>lcp</span>) <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ident'>other_options</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>lcp</span>) {
+            <span class='kw'>match</span> <span class='ident'>token</span> {
+                <span class='prelude-val'>Some</span>(<span class='ident'>t</span>) <span class='op'>=&gt;</span> {
+                    <span class='kw'>if</span> <span class='ident'>lcp</span> <span class='op'>!=</span> <span class='ident'>t</span>.<span class='ident'>text</span> {
+                        <span class='ident'>other_options</span>.<span class='ident'>push</span>(<span class='ident'>lcp</span>)
+                    }
+                }
+                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>other_options</span>.<span class='ident'>push</span>(<span class='ident'>lcp</span>),
+            }
+        }
+        <span class='comment'>// Convert options to CompletionOption.</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>options</span> <span class='op'>=</span> <span class='ident'>complete_options</span>.<span class='ident'>into_iter</span>()
+                                          .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>o</span><span class='op'>|</span> <span class='ident'>CompletionOption</span>::<span class='ident'>new</span>(<span class='ident'>o</span>, <span class='boolval'>true</span>))
+                                          .<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;&gt;</span>();
+        <span class='ident'>options</span>.<span class='ident'>extend</span>(<span class='ident'>other_options</span>.<span class='ident'>into_iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>o</span><span class='op'>|</span> <span class='ident'>CompletionOption</span>::<span class='ident'>new</span>(<span class='ident'>o</span>, <span class='boolval'>false</span>)));
         <span class='ident'>Completion</span> {
-            <span class='ident'>help_symbol</span>: <span class='ident'>node</span>.<span class='ident'>help_symbol</span>(),
-            <span class='ident'>help_text</span>: <span class='ident'>node</span>.<span class='ident'>help_text</span>(),
+            <span class='ident'>help_symbol</span>: <span class='ident'>help_symbol</span>,
+            <span class='ident'>help_text</span>: <span class='ident'>help_text</span>,
             <span class='ident'>token</span>: <span class='ident'>token</span>,
             <span class='ident'>exhaustive</span>: <span class='ident'>exhaustive</span>,
-            <span class='ident'>options</span>: <span class='macro'>vec</span><span class='macro'>!</span>[],
+            <span class='ident'>options</span>: <span class='ident'>options</span>,
         }
-    }
-}
-
-<span class='doccomment'>/// Trait for nodes that support completion.</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Complete</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Given a node and an optional token, provide the completion options.</span>
-    <span class='kw'>fn</span> <span class='ident'>complete</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;n</span> <span class='self'>self</span>, <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span>;
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='ident'>Complete</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Node</span><span class='op'>&lt;</span><span class='lifetime'>&#39;n</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>complete</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;n</span> <span class='self'>self</span>, <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-        <span class='ident'>Completion</span>::<span class='ident'>new</span>(<span class='self'>self</span>, <span class='ident'>token</span>, <span class='boolval'>true</span>, <span class='macro'>vec</span><span class='macro'>!</span>[], <span class='macro'>vec</span><span class='macro'>!</span>[])
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='ident'>Complete</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>RootNode</span><span class='op'>&lt;</span><span class='lifetime'>&#39;n</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>complete</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;n</span> <span class='self'>self</span>, <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-        <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;BUG: Can not complete a root node.&quot;</span>);
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='ident'>Complete</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>CommandNode</span><span class='op'>&lt;</span><span class='lifetime'>&#39;n</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>complete</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;n</span> <span class='self'>self</span>, <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-        <span class='ident'>Completion</span>::<span class='ident'>new</span>(<span class='self'>self</span>, <span class='ident'>token</span>, <span class='boolval'>true</span>, <span class='macro'>vec</span><span class='macro'>!</span>[<span class='self'>self</span>.<span class='ident'>name</span>()], <span class='macro'>vec</span><span class='macro'>!</span>[])
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='ident'>Complete</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;n</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>ParameterNameNode</span><span class='op'>&lt;</span><span class='lifetime'>&#39;n</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>complete</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;n</span> <span class='self'>self</span>, <span class='ident'>token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Completion</span><span class='op'>&lt;</span><span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-        <span class='ident'>Completion</span>::<span class='ident'>new</span>(<span class='self'>self</span>, <span class='ident'>token</span>, <span class='boolval'>true</span>, <span class='macro'>vec</span><span class='macro'>!</span>[<span class='self'>self</span>.<span class='ident'>name</span>()], <span class='macro'>vec</span><span class='macro'>!</span>[])
     }
 }
 </pre>

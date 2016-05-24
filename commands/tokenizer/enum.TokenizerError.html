@@ -46,21 +46,27 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-338' class='srclink' href='../../src/commands/src/tokenizer.rs.html#90-105' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-658' class='srclink' href='../../src/commands/src/tokenizer.rs.html#122-137' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum TokenizerError {
     CharacterNotAllowedHere(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>),
     SpecialNotYetImplemented(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>),
     EscapingBackslashAtEndOfInput,
     UnclosedDoubleQuoteAtEndOfInput,
-    EscapedDoubleQuoteAtEndOfInput,
+    UnclosedSingleQuoteAtEndOfInput,
 }</pre><div class='docblock'><p>Errors</p>
 </div><h2 class='variants'>Variants</h2>
 <table class='variants_table'><tr><td id='variant.CharacterNotAllowedHere'><code>CharacterNotAllowedHere</code></td><td><div class='docblock'><p>Character not allowed here</p>
 </div></td><td></td></tr><tr><td id='variant.SpecialNotYetImplemented'><code>SpecialNotYetImplemented</code></td><td><div class='docblock'><p>Special not yet implemented</p>
 </div></td><td></td></tr><tr><td id='variant.EscapingBackslashAtEndOfInput'><code>EscapingBackslashAtEndOfInput</code></td><td><div class='docblock'><p>Escaping backslash at end of input</p>
 </div></td><td></td></tr><tr><td id='variant.UnclosedDoubleQuoteAtEndOfInput'><code>UnclosedDoubleQuoteAtEndOfInput</code></td><td><div class='docblock'><p>Unclosed double quote at end of input</p>
-</div></td><td></td></tr><tr><td id='variant.EscapedDoubleQuoteAtEndOfInput'><code>EscapedDoubleQuoteAtEndOfInput</code></td><td><div class='docblock'><p>Escaped double quote at end of input</p>
-</div></td><td></td></tr></table></section>
+</div></td><td></td></tr><tr><td id='variant.UnclosedSingleQuoteAtEndOfInput'><code>UnclosedSingleQuoteAtEndOfInput</code></td><td><div class='docblock'><p>Unclosed single quote at end of input</p>
+</div></td><td></td></tr></table><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a> for <a class='enum' href='../../commands/tokenizer/enum.TokenizerError.html' title='commands::tokenizer::TokenizerError'>TokenizerError</a></code></h3><div class='impl-items'><h4 id='method.description' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.description' class='fnname'>description</a>(&amp;self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></h4>
+<h4 id='method.cause' class='method'><span class="since">1.0.0</span><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause' class='fnname'>cause</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a>&gt;</code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='enum' href='../../commands/tokenizer/enum.TokenizerError.html' title='commands::tokenizer::TokenizerError'>TokenizerError</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#method.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Error.html' title='core::fmt::Error'>Error</a>&gt;</code></h4>
+</div><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='enum' href='../../commands/tokenizer/enum.TokenizerError.html' title='commands::tokenizer::TokenizerError'>TokenizerError</a></code></h3><div class='impl-items'><h4 id='method.fmt-1' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='enum' href='../../commands/tokenizer/enum.TokenizerError.html' title='commands::tokenizer::TokenizerError'>TokenizerError</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='enum' href='../../commands/tokenizer/enum.TokenizerError.html' title='commands::tokenizer::TokenizerError'>TokenizerError</a></code></h4>
+<h4 id='method.clone_from' class='method'><span class="since">1.0.0</span><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

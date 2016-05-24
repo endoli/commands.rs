@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["MenuItem","Types of menu items."]],"struct":[["CommandTable","A group of related commands"],["CommandTableEntry","Information about a command in a command table."],["MenuDefinition","The definition to be used to generate a menu or toolbar in whatever GUI framework is being used."]],"trait":[["Command","A command"]]});
+initSidebarItems({"struct":[["CommandTable","A group of related commands"],["CommandTableEntry","Information about a command in a command table."]],"trait":[["Command","A command"]]});

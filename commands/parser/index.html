@@ -46,44 +46,270 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-27' class='srclink' href='../../src/commands/src/parser/mod.rs.html#1-110' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-30' class='srclink' href='../../src/commands/src/parser/mod.rs.html#7-436' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='command-parser' class='section-header'><a href='#command-parser'>Command Parser</a></h1>
-<p>The <code>commands::parser</code> module provides:</p>
+<p>The command parser deals with interpreting textual input (like a
+command line) and executing a command with the provided parameters.</p>
+
+<p>Each command has a name which is typically a series of words. Some
+examples might be:</p>
 
 <ul>
-<li>Functionality for building a tree of commands based on their names.</li>
-<li>Parsing tokenized input to select a command. Input tokenization can
-be performed by the <code>commands::tokenizer</code> module.</li>
-<li>Validating parameters.</li>
-<li>Performing completion on commands and parameters.</li>
+<li><code>show directory /bin</code></li>
+<li><code>show struct</code></li>
+<li><code>thread step in</code></li>
+<li><code>thread step out</code></li>
+<li><code>show process list</code></li>
 </ul>
 
-<p>The parser is still a work in progress but is rapidly advancing.</p>
-</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<p>Don&#39;t worry about commands being long. Ideally, it will be rare that
+that the entire command would be typed by applying intelligent and
+interactive autocompletion.</p>
+
+<p>Commands can take parameters. Parameters can be marked as <code>required</code>
+or <code>repeatable</code>. Repeatable parameters generate a list of values
+rather than a single value.</p>
+
+<p>There are <a href="enum.ParameterKind.html">three kinds of parameters</a>:</p>
+
+<ul>
+<li>Simple: Just a value that is present in the command line. For
+example: <code>show interface eth0</code> where <code>eth0</code> is a simple
+parameter <code>name</code> which will have the value <code>eth0</code>.</li>
+<li>Named: A name that precedes the value in the command line. For
+example: <code>show route src &lt;ip&gt; dst &lt;ip&gt;</code> where <code>src &lt;ip&gt;</code> and
+<code>dst &lt;ip&gt;</code> are both named parameters to a command <code>show route</code>.</li>
+<li>Flag: Signify a <code>true</code> value when present. For example:
+<code>show log verbose</code> where <code>verbose</code> is a flag parameter that
+results in value of <code>true</code> when present and <code>false</code> when not.</li>
+</ul>
+
+<p>The command parser does not assume anything about the implementation
+of the textual interface. It provides a mechanism for parsing tokens
+that have been tokenized from an input and a method for communicating
+with the embedding application for errors and autocompletion by way of
+using structured data rather than printing to an output device (like
+<code>stdout</code>).</p>
+
+<p>The command parser consists of two important things:</p>
+
+<ul>
+<li>A tree that represents the available commands and their arguments.
+This tree consists of instances of implementations of <a href="enum.Node.html"><code>Node</code></a> like
+<a href="struct.CommandNode.html"><code>CommandNode</code></a>, <a href="trait.ParameterNode.html"><code>ParameterNode</code></a> and <a href="struct.RootNode.html"><code>RootNode</code></a>. Construction of this
+tree is done with the help of <a href="struct.CommandTree.html"><code>CommandTree</code></a>, <a href="struct.Command.html"><code>Command</code></a> and
+<a href="struct.Parameter.html"><code>Parameter</code></a>.</li>
+<li>A <a href="struct.Parser.html"><code>Parser</code></a> that handles input and matches it against the command
+tree. This parser is intended to be short-lived and to just live
+for the duration of parsing and evaluating a single command line
+input.</li>
+</ul>
+
+<h2 id='building-a-command-tree' class='section-header'><a href='#building-a-command-tree'>Building A Command Tree</a></h2>
+<p>The commands handled by a <a href="struct.Parser.html"><code>Parser</code></a> are represented by a tree based
+the words in the commands. For example, with commands <code>show directory</code>,
+<code>show class</code>, <code>help</code>, and <code>thread step</code>, there are 3 leaf nodes from
+the root and the tree is arranged like:</p>
+
+<ul>
+<li>show
+
+<ul>
+<li>directory</li>
+<li>class</li>
+</ul></li>
+<li>help</li>
+<li>thread
+
+<ul>
+<li>step</li>
+</ul></li>
+</ul>
+
+<p>Building a tree of nodes for use with the parser is best done with
+the <a href="struct.CommandTree.html"><code>CommandTree</code></a> in conjunction with <a href="struct.Command.html"><code>Command</code></a> and <a href="struct.Parameter.html"><code>Parameter</code></a>.</p>
+
+<p>Start by creating a mutable <a href="struct.CommandTree.html"><code>CommandTree</code></a> instance:</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>commands</span>::<span class='ident'>parser</span>::{<span class='ident'>CommandTree</span>, <span class='ident'>Parser</span>};
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tree</span> <span class='op'>=</span> <span class='ident'>CommandTree</span>::<span class='ident'>new</span>();</pre>
+
+<p>Then, add your commands and arguments, and finally,
+call <code>finalize</code> on the tree to get back a <a href="struct.RootNode.html"><code>RootNode</code></a>
+that can use be used with a <a href="struct.Parser.html"><code>Parser</code></a>.</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>commands</span>::<span class='ident'>parser</span>::{<span class='ident'>Command</span>, <span class='ident'>CommandTree</span>, <span class='ident'>Parameter</span>, <span class='ident'>Parser</span>};
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tree</span> <span class='op'>=</span> <span class='ident'>CommandTree</span>::<span class='ident'>new</span>();
+<span class='ident'>tree</span>.<span class='ident'>command</span>(<span class='ident'>Command</span>::<span class='ident'>new</span>(<span class='string'>&quot;again&quot;</span>)
+                 .<span class='ident'>hidden</span>(<span class='boolval'>false</span>)
+                 .<span class='ident'>parameter</span>(<span class='ident'>Parameter</span>::<span class='ident'>new</span>(<span class='string'>&quot;test&quot;</span>)
+                                .<span class='ident'>required</span>(<span class='boolval'>false</span>)
+                                .<span class='ident'>help</span>(<span class='string'>&quot;This is just a test parameter.&quot;</span>)));
+<span class='kw'>let</span> <span class='ident'>root</span> <span class='op'>=</span> <span class='ident'>tree</span>.<span class='ident'>finalize</span>();
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>parser</span> <span class='op'>=</span> <span class='ident'>Parser</span>::<span class='ident'>new</span>(<span class='ident'>root</span>);</pre>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                     <tr class=' module-item'>
-                        <td><a class='mod' href='completion/index.html'
-                               title='commands::parser::completion'>completion</a></td>
+                        <td><a class='struct' href='struct.Command.html'
+                               title='commands::parser::Command'>Command</a></td>
                         <td class='docblock short'>
-                             
+                             <p>Description of a command to be added to the <a href="struct.CommandTree.html"><code>CommandTree</code></a>.</p>
                         </td>
                     </tr>
                 
                     <tr class=' module-item'>
-                        <td><a class='mod' href='nodes/index.html'
-                               title='commands::parser::nodes'>nodes</a></td>
+                        <td><a class='struct' href='struct.CommandNode.html'
+                               title='commands::parser::CommandNode'>CommandNode</a></td>
                         <td class='docblock short'>
-                             
+                             <p>A node representing a command. Constructed via <a href="struct.Command.html"><code>Command</code></a> and <a href="struct.CommandTree.html"><code>CommandTree</code></a>.</p>
                         </td>
                     </tr>
-                </table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.CommandTree.html'
+                               title='commands::parser::CommandTree'>CommandTree</a></td>
+                        <td class='docblock short'>
+                             <p>Store a command tree while populating it. This is used
+to construct a <a href="struct.RootNode.html"><code>RootNode</code></a> to be used with the <a href="struct.Parser.html"><code>Parser</code></a>.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Completion.html'
+                               title='commands::parser::Completion'>Completion</a></td>
+                        <td class='docblock short'>
+                             <p>Represents the result of completing a node. Each valid completion
+is represented by a <a href="struct.CompletionOption.html"><code>CompletionOption</code></a>.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.CompletionOption.html'
+                               title='commands::parser::CompletionOption'>CompletionOption</a></td>
+                        <td class='docblock short'>
+                             <p>Represents a single option returned by <code>complete</code>.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Parameter.html'
+                               title='commands::parser::Parameter'>Parameter</a></td>
+                        <td class='docblock short'>
+                             <p>Description of a parameter to be added to the <a href="struct.Command.html"><code>Command</code></a>.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.ParameterNameNode.html'
+                               title='commands::parser::ParameterNameNode'>ParameterNameNode</a></td>
+                        <td class='docblock short'>
+                             <p>A node that represented the name portion of a named
+parameter.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.ParameterNode.html'
+                               title='commands::parser::ParameterNode'>ParameterNode</a></td>
+                        <td class='docblock short'>
+                             <p>A node representing a parameter for a command.</p>
+                        </td>
+                    </tr>
+                
                     <tr class=' module-item'>
                         <td><a class='struct' href='struct.Parser.html'
                                title='commands::parser::Parser'>Parser</a></td>
                         <td class='docblock short'>
                              <p>Command parser</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.RootNode.html'
+                               title='commands::parser::RootNode'>RootNode</a></td>
+                        <td class='docblock short'>
+                             <p>The root of a command tree.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.TreeNode.html'
+                               title='commands::parser::TreeNode'>TreeNode</a></td>
+                        <td class='docblock short'>
+                             <p>A parse tree node.</p>
+                        </td>
+                    </tr>
+                </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Node.html'
+                               title='commands::parser::Node'>Node</a></td>
+                        <td class='docblock short'>
+                             <p>Enumeration of node types used to have vectors of <code>Node</code> and so on.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.ParameterKind.html'
+                               title='commands::parser::ParameterKind'>ParameterKind</a></td>
+                        <td class='docblock short'>
+                             <p>Indicate the type of parameter, so that the correct class and node
+structures are created.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.ParseError.html'
+                               title='commands::parser::ParseError'>ParseError</a></td>
+                        <td class='docblock short'>
+                             <p>Errors that calling <code>parse</code> on the <code>Parser</code> can raise.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.VerifyError.html'
+                               title='commands::parser::VerifyError'>VerifyError</a></td>
+                        <td class='docblock short'>
+                             <p>Errors that calling <code>verify</code> on the <code>Parser</code> can raise.</p>
+                        </td>
+                    </tr>
+                </table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.PRIORITY_DEFAULT.html'
+                               title='commands::parser::PRIORITY_DEFAULT'>PRIORITY_DEFAULT</a></td>
+                        <td class='docblock short'>
+                             <p>The default priority.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.PRIORITY_MINIMUM.html'
+                               title='commands::parser::PRIORITY_MINIMUM'>PRIORITY_MINIMUM</a></td>
+                        <td class='docblock short'>
+                             <p>Minimum priority.</p>
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.PRIORITY_PARAMETER.html'
+                               title='commands::parser::PRIORITY_PARAMETER'>PRIORITY_PARAMETER</a></td>
+                        <td class='docblock short'>
+                             <p>The default priority for a parameter.</p>
+                        </td>
+                    </tr>
+                </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.NodeOps.html'
+                               title='commands::parser::NodeOps'>NodeOps</a></td>
+                        <td class='docblock short'>
+                             <p>The operations that every node must implement.</p>
                         </td>
                     </tr>
                 </table></section>

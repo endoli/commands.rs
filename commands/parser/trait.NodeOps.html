@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `NodeOps` trait in crate `commands`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, NodeOps">
+
+    <title>commands::parser::NodeOps - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>commands</a>::<wbr><a href='index.html'>parser</a></p><script>window.sidebarCurrent = {name: 'NodeOps', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>commands</a>::<wbr><a href='index.html'>parser</a>::<wbr><a class='trait' href=''>NodeOps</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-238' class='srclink' href='../../src/commands/src/parser/nodes.rs.html#30-75' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait NodeOps {
+    fn <a href='#tymethod.accept' class='fnname'>accept</a>&lt;'text&gt;(&amp;self, parser: &amp;mut <a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>&lt;'text&gt;, token: <a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>, node_ref: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html' title='alloc::rc::Rc'>Rc</a>&lt;<a class='enum' href='../../commands/parser/enum.Node.html' title='commands::parser::Node'>Node</a>&gt;);
+    fn <a href='#tymethod.acceptable' class='fnname'>acceptable</a>(&amp;self, parser: &amp;<a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>, node_ref: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html' title='alloc::rc::Rc'>Rc</a>&lt;<a class='enum' href='../../commands/parser/enum.Node.html' title='commands::parser::Node'>Node</a>&gt;) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>;
+    fn <a href='#tymethod.complete' class='fnname'>complete</a>&lt;'text&gt;(&amp;self, token: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>&lt;'text&gt;&gt;) -&gt; <a class='struct' href='../../commands/parser/struct.Completion.html' title='commands::parser::Completion'>Completion</a>&lt;'text&gt;;
+    fn <a href='#tymethod.matches' class='fnname'>matches</a>(&amp;self, parser: &amp;<a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>, token: <a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>;
+}</pre><div class='docblock'><p>The operations that every node must implement.</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.accept' class='method stab '><code>fn <a href='#tymethod.accept' class='fnname'>accept</a>&lt;'text&gt;(&amp;self, parser: &amp;mut <a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>&lt;'text&gt;, token: <a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>, node_ref: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html' title='alloc::rc::Rc'>Rc</a>&lt;<a class='enum' href='../../commands/parser/enum.Node.html' title='commands::parser::Node'>Node</a>&gt;)</code></h3><div class='docblock'><p>Accept this node with the given <code>token</code> as data.</p>
+
+<p>By default, nothing needs to happen for <code>accept</code>.</p>
+</div><h3 id='tymethod.acceptable' class='method stab '><code>fn <a href='#tymethod.acceptable' class='fnname'>acceptable</a>(&amp;self, parser: &amp;<a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>, node_ref: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html' title='alloc::rc::Rc'>Rc</a>&lt;<a class='enum' href='../../commands/parser/enum.Node.html' title='commands::parser::Node'>Node</a>&gt;) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3><div class='docblock'><p>Can this node be accepted in the current parser state?
+By default, a node can be accepted when it hasn&#39;t been seen yet.</p>
+
+<p>The <code>node_ref</code> is provided so that implementations have access to
+the <code>Rc&lt;Node&gt;</code> value for the node rather than having to rely upon
+<code>self</code> which won&#39;t be a <a href="enum.Node.html"><code>Node</code></a>, but the underlying <a href="struct.CommandNode.html"><code>CommandNode</code></a>
+or similar.</p>
+</div><h3 id='tymethod.complete' class='method stab '><code>fn <a href='#tymethod.complete' class='fnname'>complete</a>&lt;'text&gt;(&amp;self, token: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>&lt;'text&gt;&gt;) -&gt; <a class='struct' href='../../commands/parser/struct.Completion.html' title='commands::parser::Completion'>Completion</a>&lt;'text&gt;</code></h3><div class='docblock'><p>Given a node and an optional token, provide the completion options.</p>
+
+<p>By default, completion should complete for the name of the given
+node.</p>
+
+<p>This is the expected behavior for <a href="struct.CommandNode.html"><code>CommandNode</code></a>,
+<a href="struct.ParameterNameNode.html"><code>ParameterNameNode</code></a>, as well as <a href="struct.ParameterNode.html"><code>ParameterNode</code></a> where the
+<a href="enum.ParameterKind.html"><code>ParameterKind</code></a> is <code>Flag</code>.</p>
+</div><h3 id='tymethod.matches' class='method stab '><code>fn <a href='#tymethod.matches' class='fnname'>matches</a>(&amp;self, parser: &amp;<a class='struct' href='../../commands/parser/struct.Parser.html' title='commands::parser::Parser'>Parser</a>, token: <a class='struct' href='../../commands/tokenizer/struct.Token.html' title='commands::tokenizer::Token'>Token</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3><div class='docblock'><p>By default, a node matches a <code>token</code> when the name of the
+node starts with the <code>token</code>.</p>
+
+<p>This is the expected behavior for <a href="struct.CommandNode.html"><code>CommandNode</code></a>,
+<a href="struct.ParameterNameNode.html"><code>ParameterNameNode</code></a>, as well as <a href="struct.ParameterNode.html"><code>ParameterNode</code></a> where the
+<a href="enum.ParameterKind.html"><code>ParameterKind</code></a> is <code>Flag</code>.</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl <a class='trait' href='../../commands/parser/trait.NodeOps.html' title='commands::parser::NodeOps'>NodeOps</a> for <a class='enum' href='../../commands/parser/enum.Node.html' title='commands::parser::Node'>Node</a></code></li>
+<li><code>impl <a class='trait' href='../../commands/parser/trait.NodeOps.html' title='commands::parser::NodeOps'>NodeOps</a> for <a class='struct' href='../../commands/parser/struct.RootNode.html' title='commands::parser::RootNode'>RootNode</a></code></li>
+<li><code>impl <a class='trait' href='../../commands/parser/trait.NodeOps.html' title='commands::parser::NodeOps'>NodeOps</a> for <a class='struct' href='../../commands/parser/struct.CommandNode.html' title='commands::parser::CommandNode'>CommandNode</a></code></li>
+<li><code>impl <a class='trait' href='../../commands/parser/trait.NodeOps.html' title='commands::parser::NodeOps'>NodeOps</a> for <a class='struct' href='../../commands/parser/struct.ParameterNameNode.html' title='commands::parser::ParameterNameNode'>ParameterNameNode</a></code></li>
+<li><code>impl <a class='trait' href='../../commands/parser/trait.NodeOps.html' title='commands::parser::NodeOps'>NodeOps</a> for <a class='struct' href='../../commands/parser/struct.ParameterNode.html' title='commands::parser::ParameterNode'>ParameterNode</a></code></li>
+</ul><script type="text/javascript" async
+                              src="../../implementors/commands/parser/trait.NodeOps.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "commands";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

@@ -434,43 +434,199 @@
 <span id="391">391</span>
 <span id="392">392</span>
 <span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
 </pre><pre class='rust '>
+<span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
+<span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
+<span class='comment'>// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
+<span class='comment'>// option. This file may not be copied, modified, or distributed</span>
+<span class='comment'>// except according to those terms.</span>
+
 <span class='doccomment'>//! # Command Tokenization</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! The command parser needs to be able to tokenize commands</span>
+<span class='doccomment'>//! The [command parser] needs to be able to [tokenize] commands</span>
 <span class='doccomment'>//! into their constituent words and whitespace.</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! The `tokenizer` breaks source text into a vector of tokens</span>
-<span class='doccomment'>//! which can be either whitespace or a word. The tokenizer</span>
-<span class='doccomment'>//! handles using double quotes to provide a single token</span>
-<span class='doccomment'>//! which may include whitespace.</span>
+<span class='doccomment'>//! The `tokenizer` breaks source text into a vector of [tokens]</span>
+<span class='doccomment'>//! which can be either [whitespace or a word]. The tokenizer</span>
+<span class='doccomment'>//! handles using single and double quotes to provide a single</span>
+<span class='doccomment'>//! token which may include whitespace.</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! Tokens also track their source location within the source</span>
+<span class='doccomment'>//! Tokens also track their [source location] within the source</span>
 <span class='doccomment'>//! text. This allows the parser using the tokenizer to provide</span>
 <span class='doccomment'>//! better error highlighting and other functionality.</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! # Examples</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```</span>
-<span class='doccomment'>//! use commands::tokenizer::tokenize;</span>
+<span class='doccomment'>//! use commands::tokenizer::{tokenize, TokenType};</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! if let Ok(tokens) = tokenize(&quot;word&quot;) {</span>
 <span class='doccomment'>//!     assert_eq!(tokens.len(), 1);</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//!</span>
+<span class='doccomment'>//! // This is 3 tokens due to the whitespace token</span>
+<span class='doccomment'>//! // between the 2 words.</span>
 <span class='doccomment'>//! if let Ok(tokens) = tokenize(&quot;show interface&quot;) {</span>
 <span class='doccomment'>//!     assert_eq!(tokens.len(), 3);</span>
+<span class='doccomment'>//!     assert_eq!(tokens[1].token_type, TokenType::Whitespace);</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! if let Ok(tokens) = tokenize(&quot;echo -n \&quot;a b c\&quot;&quot;) {</span>
+<span class='doccomment'>//! // Double quoted strings are treated as a single token.</span>
+<span class='doccomment'>//! if let Ok(tokens) = tokenize(r#&quot;echo -n &quot;a b c&quot;&quot;#) {</span>
 <span class='doccomment'>//!     assert_eq!(tokens.len(), 5);</span>
+<span class='doccomment'>//!     assert_eq!(tokens[0].text, &quot;echo&quot;);</span>
+<span class='doccomment'>//!     assert_eq!(tokens[2].text, &quot;-n&quot;);</span>
+<span class='doccomment'>//!     assert_eq!(tokens[4].text, r#&quot;&quot;a b c&quot;&quot;#);</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! if let Ok(tokens) = tokenize(&quot;ls My\\ Documents&quot;) {</span>
+<span class='doccomment'>//! // Single quoted strings are treated as a single token</span>
+<span class='doccomment'>//! // as well.</span>
+<span class='doccomment'>//! if let Ok(tokens) = tokenize(r#&quot;&#39;&quot;One token&quot;&#39; &#39;and another&#39;&quot;#) {</span>
 <span class='doccomment'>//!     assert_eq!(tokens.len(), 3);</span>
-<span class='doccomment'>//!     assert_eq!(tokens[2].text, &quot;My\\ Documents&quot;);</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! // Or you can use a \ to escape a space.</span>
+<span class='doccomment'>//! if let Ok(tokens) = tokenize(r#&quot;ls My\ Documents&quot;#) {</span>
+<span class='doccomment'>//!     assert_eq!(tokens.len(), 3);</span>
+<span class='doccomment'>//!     assert_eq!(tokens[2].text, r#&quot;My\ Documents&quot;#);</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//! ```</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! [command parser]: ../parser/index.html</span>
+<span class='doccomment'>//! [source location]: struct.SourceLocation.html</span>
+<span class='doccomment'>//! [tokenize]: fn.tokenize.html</span>
+<span class='doccomment'>//! [tokens]: struct.Token.html</span>
+<span class='doccomment'>//! [whitespace or a word]: enum.TokenType.html</span>
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>error</span>::<span class='ident'>Error</span>;
 
 <span class='doccomment'>/// A position within a body of text.</span>
 <span class='doccomment'>///</span>
@@ -482,8 +638,10 @@
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// The `SourceOffset` is typically used as a pair of offsets</span>
 <span class='doccomment'>/// indicating the start and end of a range of text as used</span>
-<span class='doccomment'>/// by the `SourceLocation`.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>)]</span>
+<span class='doccomment'>/// by the [`SourceLocation`].</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// [`SourceLocation`]: struct.SourceLocation.html</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SourceOffset</span> {
     <span class='doccomment'>/// The index of this character within the body of text.</span>
     <span class='kw'>pub</span> <span class='ident'>char</span>: <span class='ident'>usize</span>,
@@ -505,7 +663,7 @@
 }
 
 <span class='doccomment'>/// A range within a body of text.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SourceLocation</span> {
     <span class='doccomment'>/// The start of the range.</span>
     <span class='kw'>pub</span> <span class='ident'>start</span>: <span class='ident'>SourceOffset</span>,
@@ -524,6 +682,7 @@
 }
 
 <span class='doccomment'>/// Errors</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>,<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>TokenizerError</span> {
     <span class='doccomment'>/// Character not allowed here</span>
     <span class='ident'>CharacterNotAllowedHere</span>(<span class='ident'>usize</span>),
@@ -537,15 +696,35 @@
     <span class='doccomment'>/// Unclosed double quote at end of input</span>
     <span class='ident'>UnclosedDoubleQuoteAtEndOfInput</span>,
 
-    <span class='doccomment'>/// Escaped double quote at end of input</span>
-    <span class='ident'>EscapedDoubleQuoteAtEndOfInput</span>,
+    <span class='doccomment'>/// Unclosed single quote at end of input</span>
+    <span class='ident'>UnclosedSingleQuoteAtEndOfInput</span>,
+}
+
+<span class='kw'>impl</span> <span class='ident'>Error</span> <span class='kw'>for</span> <span class='ident'>TokenizerError</span> {
+    <span class='kw'>fn</span> <span class='ident'>description</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>str</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>TokenizerError</span>::<span class='ident'>CharacterNotAllowedHere</span>(_) <span class='op'>=&gt;</span> <span class='string'>&quot;Character not allowed here&quot;</span>,
+            <span class='ident'>TokenizerError</span>::<span class='ident'>SpecialNotYetImplemented</span>(_) <span class='op'>=&gt;</span> <span class='string'>&quot;Special not yet implemented&quot;</span>,
+            <span class='ident'>TokenizerError</span>::<span class='ident'>EscapingBackslashAtEndOfInput</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Escaping backlash at end of input&quot;</span>,
+            <span class='ident'>TokenizerError</span>::<span class='ident'>UnclosedDoubleQuoteAtEndOfInput</span> <span class='op'>=&gt;</span> {
+                <span class='string'>&quot;Unclosed double quote at end of input&quot;</span>
+            }
+            <span class='ident'>TokenizerError</span>::<span class='ident'>UnclosedSingleQuoteAtEndOfInput</span> <span class='op'>=&gt;</span> {
+                <span class='string'>&quot;Unclosed single quote at end of input&quot;</span>
+            }
+        }
+    }
+}
+
+<span class='kw'>impl</span> <span class='ident'>fmt</span>::<span class='ident'>Display</span> <span class='kw'>for</span> <span class='ident'>TokenizerError</span> {
+    <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>fmt</span>::<span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>fmt</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>description</span>().<span class='ident'>fmt</span>(<span class='ident'>f</span>)
+    }
 }
 
 <span class='doccomment'>/// The role that a token plays: `Whitespace` or `Word`.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>TokenType</span> {
-    <span class='doccomment'>/// Internal usage only.</span>
-    <span class='ident'>Invalid</span>,
     <span class='doccomment'>/// The token represents whitespace and not a word.</span>
     <span class='ident'>Whitespace</span>,
     <span class='doccomment'>/// The token represents a word within the body of text. This</span>
@@ -555,22 +734,22 @@
 
 <span class='doccomment'>/// A token from a body of text.</span>
 <span class='doccomment'>///</span>
-<span class='doccomment'>/// The lifetime parameter `&#39;t` refers to the lifetime</span>
+<span class='doccomment'>/// The lifetime parameter `&#39;text` refers to the lifetime</span>
 <span class='doccomment'>/// of the body of text that was tokenized, creating this token.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// The text of the token.</span>
-    <span class='kw'>pub</span> <span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>str</span>,
+    <span class='kw'>pub</span> <span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;text</span> <span class='ident'>str</span>,
     <span class='doccomment'>/// The type of the token (`Whitespace` or `Word`).</span>
     <span class='kw'>pub</span> <span class='ident'>token_type</span>: <span class='ident'>TokenType</span>,
     <span class='doccomment'>/// The location of the token in the source body of text.</span>
     <span class='kw'>pub</span> <span class='ident'>location</span>: <span class='ident'>SourceLocation</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Construct a `Token`. The lifetime parameter `&#39;t` refers to the lifetime of the</span>
-    <span class='doccomment'>/// text being tokenized.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>str</span>, <span class='ident'>token_type</span>: <span class='ident'>TokenType</span>, <span class='ident'>location</span>: <span class='ident'>SourceLocation</span>) <span class='op'>-&gt;</span> <span class='ident'>Token</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> <span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Construct a `Token`. The lifetime parameter `&#39;text` refers</span>
+    <span class='doccomment'>/// to the lifetime of the text being tokenized.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;text</span> <span class='ident'>str</span>, <span class='ident'>token_type</span>: <span class='ident'>TokenType</span>, <span class='ident'>location</span>: <span class='ident'>SourceLocation</span>) <span class='op'>-&gt;</span> <span class='ident'>Token</span> {
         <span class='ident'>Token</span> {
             <span class='ident'>text</span>: <span class='ident'>text</span>,
             <span class='ident'>token_type</span>: <span class='ident'>token_type</span>,
@@ -586,25 +765,27 @@
     <span class='ident'>Whitespace</span>,
     <span class='ident'>Doublequote</span>,
     <span class='ident'>DoublequoteBackslash</span>,
+    <span class='ident'>Singlequote</span>,
+    <span class='ident'>SinglequoteBackslash</span>,
     <span class='ident'>Word</span>,
     <span class='ident'>WordBackslash</span>,
 }
 
-<span class='kw'>struct</span> <span class='ident'>Tokenizer</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-    <span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>str</span>,
+<span class='kw'>struct</span> <span class='ident'>Tokenizer</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> {
+    <span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;text</span> <span class='ident'>str</span>,
     <span class='ident'>state</span>: <span class='ident'>State</span>,
-    <span class='ident'>token_type</span>: <span class='ident'>TokenType</span>,
+    <span class='ident'>token_type</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>TokenType</span><span class='op'>&gt;</span>,
     <span class='ident'>token_start</span>: <span class='ident'>usize</span>,
     <span class='ident'>token_end</span>: <span class='ident'>usize</span>,
-    <span class='ident'>tokens</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;&gt;</span>,
+    <span class='ident'>tokens</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Token</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;&gt;</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> <span class='ident'>Tokenizer</span><span class='op'>&lt;</span><span class='lifetime'>&#39;t</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;t</span> <span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>Tokenizer</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> <span class='ident'>Tokenizer</span><span class='op'>&lt;</span><span class='lifetime'>&#39;text</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>text</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;text</span> <span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>Tokenizer</span> {
         <span class='ident'>Tokenizer</span> {
             <span class='ident'>text</span>: <span class='ident'>text</span>,
             <span class='ident'>state</span>: <span class='ident'>State</span>::<span class='ident'>Initial</span>,
-            <span class='ident'>token_type</span>: <span class='ident'>TokenType</span>::<span class='ident'>Invalid</span>,
+            <span class='ident'>token_type</span>: <span class='prelude-val'>None</span>,
             <span class='ident'>token_start</span>: <span class='number'>0</span>,
             <span class='ident'>token_end</span>: <span class='number'>0</span>,
             <span class='ident'>tokens</span>: <span class='macro'>vec</span><span class='macro'>!</span>[],
@@ -613,7 +794,7 @@
 
     <span class='kw'>fn</span> <span class='ident'>reset</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Initial</span>;
-        <span class='self'>self</span>.<span class='ident'>token_type</span> <span class='op'>=</span> <span class='ident'>TokenType</span>::<span class='ident'>Invalid</span>;
+        <span class='self'>self</span>.<span class='ident'>token_type</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
         <span class='self'>self</span>.<span class='ident'>token_start</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='self'>self</span>.<span class='ident'>token_end</span> <span class='op'>=</span> <span class='number'>0</span>;
     }
@@ -622,7 +803,9 @@
         <span class='kw'>let</span> <span class='ident'>token_text</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>text</span>[<span class='self'>self</span>.<span class='ident'>token_start</span>..<span class='self'>self</span>.<span class='ident'>token_end</span> <span class='op'>+</span> <span class='number'>1</span>];
         <span class='kw'>let</span> <span class='ident'>loc</span> <span class='op'>=</span> <span class='ident'>SourceLocation</span>::<span class='ident'>new</span>(<span class='ident'>SourceOffset</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>token_start</span>, <span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>token_start</span>),
                                       <span class='ident'>SourceOffset</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>token_end</span>, <span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>token_end</span>));
-        <span class='self'>self</span>.<span class='ident'>tokens</span>.<span class='ident'>push</span>(<span class='ident'>Token</span>::<span class='ident'>new</span>(<span class='ident'>token_text</span>, <span class='self'>self</span>.<span class='ident'>token_type</span>, <span class='ident'>loc</span>));
+        <span class='self'>self</span>.<span class='ident'>tokens</span>.<span class='ident'>push</span>(<span class='ident'>Token</span>::<span class='ident'>new</span>(<span class='ident'>token_text</span>,
+                                    <span class='self'>self</span>.<span class='ident'>token_type</span>.<span class='ident'>expect</span>(<span class='string'>&quot;Invalid tokenization&quot;</span>),
+                                    <span class='ident'>loc</span>));
         <span class='self'>self</span>.<span class='ident'>reset</span>();
     }
 
@@ -633,11 +816,11 @@
     }
 
     <span class='kw'>fn</span> <span class='ident'>recognize</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>offset</span>: <span class='ident'>usize</span>, <span class='ident'>next_state</span>: <span class='ident'>State</span>) {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>token_type</span> <span class='op'>==</span> <span class='ident'>TokenType</span>::<span class='ident'>Invalid</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>token_type</span>.<span class='ident'>is_none</span>() {
             <span class='self'>self</span>.<span class='ident'>token_type</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>next_state</span> <span class='op'>==</span> <span class='ident'>State</span>::<span class='ident'>Whitespace</span> {
-                <span class='ident'>TokenType</span>::<span class='ident'>Whitespace</span>
+                <span class='prelude-val'>Some</span>(<span class='ident'>TokenType</span>::<span class='ident'>Whitespace</span>)
             } <span class='kw'>else</span> {
-                <span class='ident'>TokenType</span>::<span class='ident'>Word</span>
+                <span class='prelude-val'>Some</span>(<span class='ident'>TokenType</span>::<span class='ident'>Word</span>)
             };
             <span class='self'>self</span>.<span class='ident'>token_start</span> <span class='op'>=</span> <span class='ident'>offset</span>;
         }
@@ -651,14 +834,12 @@
     <span class='kw'>fn</span> <span class='ident'>initial</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>offset</span>: <span class='ident'>usize</span>, <span class='ident'>c</span>: <span class='ident'>char</span>) {
         <span class='kw'>if</span> <span class='ident'>c</span>.<span class='ident'>is_whitespace</span>() {
             <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Whitespace</span>);
-        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;;&#39;</span> {
-            <span class='self'>self</span>.<span class='ident'>special</span>(<span class='ident'>offset</span>);
-        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;?&#39;</span> {
-            <span class='self'>self</span>.<span class='ident'>special</span>(<span class='ident'>offset</span>);
-        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;|&#39;</span> {
+        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;;&#39;</span> <span class='op'>||</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;?&#39;</span> <span class='op'>||</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;|&#39;</span> {
             <span class='self'>self</span>.<span class='ident'>special</span>(<span class='ident'>offset</span>);
         } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;&quot;&#39;</span> {
             <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Doublequote</span>);
+        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;\&#39;&#39;</span> {
+            <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Singlequote</span>);
         } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;\\&#39;</span> {
             <span class='self'>self</span>.<span class='ident'>recognize</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Word</span>);
             <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>WordBackslash</span>);
@@ -683,15 +864,15 @@
                     <span class='kw'>if</span> <span class='ident'>c</span>.<span class='ident'>is_whitespace</span>() {
                         <span class='self'>self</span>.<span class='ident'>reduce</span>();
                         <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Whitespace</span>);
-                    } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;;&#39;</span> {
-                        <span class='self'>self</span>.<span class='ident'>reduce</span>();
-                        <span class='self'>self</span>.<span class='ident'>special</span>(<span class='ident'>offset</span>);
-                    } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;|&#39;</span> {
+                    } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;;&#39;</span> <span class='op'>||</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;|&#39;</span> {
                         <span class='self'>self</span>.<span class='ident'>reduce</span>();
                         <span class='self'>self</span>.<span class='ident'>special</span>(<span class='ident'>offset</span>);
                     } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;&quot;&#39;</span> {
                         <span class='self'>self</span>.<span class='ident'>reduce</span>();
                         <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Doublequote</span>);
+                    } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;\&#39;&#39;</span> {
+                        <span class='self'>self</span>.<span class='ident'>reduce</span>();
+                        <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Singlequote</span>);
                     } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;\\&#39;</span> {
                         <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>WordBackslash</span>);
                     } <span class='kw'>else</span> {
@@ -723,6 +904,23 @@
                         <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>CharacterNotAllowedHere</span>(<span class='ident'>offset</span>));
                     };
                 }
+                <span class='ident'>State</span>::<span class='ident'>Singlequote</span> <span class='op'>=&gt;</span> {
+                    <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;\&#39;&#39;</span> {
+                        <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Singlequote</span>);
+                        <span class='self'>self</span>.<span class='ident'>reduce</span>();
+                    } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>==</span> <span class='string'>&#39;\\&#39;</span> {
+                        <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>SinglequoteBackslash</span>);
+                    } <span class='kw'>else</span> {
+                        <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Singlequote</span>);
+                    };
+                }
+                <span class='ident'>State</span>::<span class='ident'>SinglequoteBackslash</span> <span class='op'>=&gt;</span> {
+                    <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>c</span>.<span class='ident'>is_whitespace</span>() {
+                        <span class='self'>self</span>.<span class='ident'>shift</span>(<span class='ident'>offset</span>, <span class='ident'>State</span>::<span class='ident'>Singlequote</span>);
+                    } <span class='kw'>else</span> {
+                        <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>CharacterNotAllowedHere</span>(<span class='ident'>offset</span>));
+                    };
+                }
                 <span class='ident'>State</span>::<span class='ident'>Special</span> <span class='op'>=&gt;</span> {
                     <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>SpecialNotYetImplemented</span>(<span class='ident'>offset</span>));
                 }
@@ -732,12 +930,13 @@
         <span class='comment'>// Now for the end of the text...</span>
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
             <span class='ident'>State</span>::<span class='ident'>Initial</span> <span class='op'>=&gt;</span> {}
-            <span class='ident'>State</span>::<span class='ident'>Word</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>reduce</span>(),
-            <span class='ident'>State</span>::<span class='ident'>Whitespace</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>reduce</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Word</span> <span class='op'>|</span> <span class='ident'>State</span>::<span class='ident'>Whitespace</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>reduce</span>(),
             <span class='ident'>State</span>::<span class='ident'>WordBackslash</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>EscapingBackslashAtEndOfInput</span>),
             <span class='ident'>State</span>::<span class='ident'>Doublequote</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>UnclosedDoubleQuoteAtEndOfInput</span>),
-            <span class='ident'>State</span>::<span class='ident'>DoublequoteBackslash</span> <span class='op'>=&gt;</span> {
-                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>EscapedDoubleQuoteAtEndOfInput</span>)
+            <span class='ident'>State</span>::<span class='ident'>Singlequote</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>UnclosedSingleQuoteAtEndOfInput</span>),
+            <span class='ident'>State</span>::<span class='ident'>DoublequoteBackslash</span> <span class='op'>|</span>
+            <span class='ident'>State</span>::<span class='ident'>SinglequoteBackslash</span> <span class='op'>=&gt;</span> {
+                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>EscapingBackslashAtEndOfInput</span>)
             }
             <span class='ident'>State</span>::<span class='ident'>Special</span> <span class='op'>=&gt;</span> {
                 <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>SpecialNotYetImplemented</span>(<span class='self'>self</span>.<span class='ident'>text</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>))
@@ -805,13 +1004,26 @@
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>quoted_text</span>() {
-        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;a \&quot;b c\&quot;&quot;</span>) {
+    <span class='kw'>fn</span> <span class='ident'>double_quoted_text</span>() {
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;a &quot;b c&quot;&quot;#</span>) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>ts</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>0</span>], <span class='ident'>mk_token</span>(<span class='string'>&quot;a&quot;</span>, <span class='ident'>TokenType</span>::<span class='ident'>Word</span>, <span class='number'>0</span>, <span class='number'>0</span>));
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>1</span>], <span class='ident'>mk_token</span>(<span class='string'>&quot; &quot;</span>, <span class='ident'>TokenType</span>::<span class='ident'>Whitespace</span>, <span class='number'>1</span>, <span class='number'>1</span>));
-                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>2</span>], <span class='ident'>mk_token</span>(<span class='string'>&quot;\&quot;b c\&quot;&quot;</span>, <span class='ident'>TokenType</span>::<span class='ident'>Word</span>, <span class='number'>2</span>, <span class='number'>6</span>));
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>2</span>], <span class='ident'>mk_token</span>(<span class='string'>r#&quot;&quot;b c&quot;&quot;#</span>, <span class='ident'>TokenType</span>::<span class='ident'>Word</span>, <span class='number'>2</span>, <span class='number'>6</span>));
+            }
+            _ <span class='op'>=&gt;</span> {}
+        };
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>single_quoted_text</span>() {
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;a &#39;&quot;b c&quot;&#39;&quot;#</span>) {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ts</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>0</span>], <span class='ident'>mk_token</span>(<span class='string'>&quot;a&quot;</span>, <span class='ident'>TokenType</span>::<span class='ident'>Word</span>, <span class='number'>0</span>, <span class='number'>0</span>));
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>1</span>], <span class='ident'>mk_token</span>(<span class='string'>&quot; &quot;</span>, <span class='ident'>TokenType</span>::<span class='ident'>Whitespace</span>, <span class='number'>1</span>, <span class='number'>1</span>));
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>2</span>], <span class='ident'>mk_token</span>(<span class='string'>r#&quot;&#39;&quot;b c&quot;&#39;&quot;#</span>, <span class='ident'>TokenType</span>::<span class='ident'>Word</span>, <span class='number'>2</span>, <span class='number'>8</span>));
             }
             _ <span class='op'>=&gt;</span> {}
         };
@@ -819,13 +1031,55 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>escaped_whitespace_in_word</span>() {
-        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>&quot;a\\ b&quot;</span>) {
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;a\ b&quot;#</span>) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>ts</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>0</span>], <span class='ident'>mk_token</span>(<span class='string'>&quot;a\\ b&quot;</span>, <span class='ident'>TokenType</span>::<span class='ident'>Word</span>, <span class='number'>0</span>, <span class='number'>3</span>));
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ts</span>[<span class='number'>0</span>], <span class='ident'>mk_token</span>(<span class='string'>r#&quot;a\ b&quot;#</span>, <span class='ident'>TokenType</span>::<span class='ident'>Word</span>, <span class='number'>0</span>, <span class='number'>3</span>));
             }
             _ <span class='op'>=&gt;</span> {}
         };
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>character_not_allowed_here</span>() {
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;ab \!&quot;#</span>) {
+            <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>CharacterNotAllowedHere</span>(_)) <span class='op'>=&gt;</span> {}
+            _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(),
+        };
+
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;ab &quot;\ ab&quot;#</span>) {
+            <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>CharacterNotAllowedHere</span>(_)) <span class='op'>=&gt;</span> {}
+            _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(),
+        };
+    }
+
+    <span class='comment'>// TODO: Test TokenizeError::SpecialNotYetImplemented</span>
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>escaping_backslash_at_end_of_input</span>() {
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;ab \&quot;#</span>) {
+            <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>EscapingBackslashAtEndOfInput</span>) <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(),
+            _ <span class='op'>=&gt;</span> {}
+        }
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>unclosed_double_quote_at_end_of_input</span>() {
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;ab &quot;&quot;#</span>) {
+            <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>UnclosedDoubleQuoteAtEndOfInput</span>) <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(),
+            _ <span class='op'>=&gt;</span> {}
+        }
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>escaped_double_quote_at_end_of_input</span>() {
+        <span class='kw'>match</span> <span class='ident'>tokenize</span>(<span class='string'>r#&quot;ab &quot;\&quot;#</span>) {
+            <span class='prelude-val'>Err</span>(<span class='ident'>TokenizerError</span>::<span class='ident'>EscapingBackslashAtEndOfInput</span>) <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(),
+            _ <span class='op'>=&gt;</span> {}
+        }
     }
 }
 </pre>
