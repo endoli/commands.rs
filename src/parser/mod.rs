@@ -271,7 +271,7 @@ impl<'text> Parser<'text> {
     /// required parameters.
     pub fn verify(&self) -> Result<(), VerifyError> {
         if self.commands.is_empty() {
-            return Err(VerifyError::NoCommandAccepted);
+            Err(VerifyError::NoCommandAccepted)
         } else {
             if let Node::Command(ref command) = *self.commands[0] {
                 for expected in &command.parameters {
