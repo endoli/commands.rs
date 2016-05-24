@@ -205,12 +205,10 @@ impl<'a> Command<'a> {
         self
     }
 
-    /// Create a [`WrapperNode`] instead of a [`CommandNode`]. The
-    /// `wrapped_root` signifies the path to the command that should
-    /// be wrapped by this command.
+    /// The `wrapped_root` signifies the path to the command that should
+    /// be wrapped by this command. This is used for the `help` command.
     ///
     /// [`CommandNode`]: struct.CommandNode.html
-    /// [`WrapperNode`]: struct.WrapperNode.html
     pub fn wraps(mut self, wrapped_root: String) -> Self {
         self.wrapped_root = Some(wrapped_root);
         self
