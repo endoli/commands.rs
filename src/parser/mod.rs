@@ -76,7 +76,7 @@ pub use self::builder::{Command, CommandTree, Parameter};
 pub use self::constants::ParameterKind;
 pub use self::constants::{PRIORITY_DEFAULT, PRIORITY_MINIMUM, PRIORITY_PARAMETER};
 pub use self::completion::{Completion, CompletionOption};
-pub use self::nodes::{Node, NodeOps};
+pub use self::nodes::{Node, NodeOps, TreeNode};
 pub use self::nodes::{CommandNode, ParameterNameNode, ParameterNode, RootNode};
 
 use std::collections::HashMap;
