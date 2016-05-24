@@ -6,13 +6,44 @@
 
 //! # Command Parser
 //!
-//! The `commands::parser` module provides:
+//! The command parser deals with interpreting textual input (like a
+//! command line) and executing a command with the provided parameters.
 //!
-//! * Functionality for building a tree of commands based on their names.
-//! * Parsing tokenized input to select a command. Input tokenization can
-//!   be performed by the [`commands::tokenizer`] module.
-//! * Validating parameters.
-//! * Performing completion on commands and parameters.
+//! Each command has a name which is typically a series of words. Some
+//! examples might be:
+//!
+//! * `show directory /bin`
+//! * `show struct`
+//! * `thread step in`
+//! * `thread step out`
+//! * `show process list`
+//!
+//! Don't worry about commands being long. Ideally, it will be rare that
+//! that the entire command would be typed by applying intelligent and
+//! interactive autocompletion.
+//!
+//! Commands can take parameters. Parameters can be marked as `required`
+//! or `repeatable`. Repeatable parameters generate a list of values
+//! rather than a single value.
+//!
+//! There are [three kinds of parameters]:
+//!
+//! * Simple: Just a value that is present in the command line. For
+//!   example: `show interface eth0` where `eth0` is a simple
+//!   parameter `name` which will have the value `eth0`.
+//! * Named: A name that precedes the value in the command line. For
+//!   example: `show route src <ip> dst <ip>` where `src <ip>` and
+//!   `dst <ip>` are both named parameters to a command `show route`.
+//! * Flag: Signify a `true` value when present. For example:
+//!   `show log verbose` where `verbose` is a flag parameter that
+//!   results in value of `true` when present and `false` when not.
+//!
+//! The command parser does not assume anything about the implementation
+//! of the textual interface. It provides a mechanism for parsing tokens
+//! that have been tokenized from an input and a method for communicating
+//! with the embedding application for errors and autocompletion by way of
+//! using structured data rather than printing to an output device (like
+//! `stdout`).
 //!
 //! The command parser consists of two important things:
 //!
@@ -26,7 +57,19 @@
 //!   for the duration of parsing and evaluating a single command line
 //!   input.
 //!
-//! ## Building Nodes
+//! ## Building A Command Tree
+//!
+//! The commands handled by a [`Parser`] are represented by a tree based
+//! the words in the commands. For example, with commands `show directory`,
+//! `show class`, `help`, and `thread step`, there are 3 leaf nodes from
+//! the root and the tree is arranged like:
+//!
+//! * show
+//!   * directory
+//!   * class
+//! * help
+//! * thread
+//!   * step
 //!
 //! Building a tree of nodes for use with the parser is best done with
 //! the [`CommandTree`] in conjunction with [`Command`] and [`Parameter`].
@@ -65,6 +108,7 @@
 //! [`ParameterNode`]: trait.ParameterNode.html
 //! [`Parser`]: struct.Parser.html
 //! [`RootNode`]: struct.RootNode.html
+//! [three kinds of parameters]: enum.ParameterKind.html
 
 mod builder;
 mod completion;
