@@ -121,8 +121,6 @@ pub struct CommandNode {
     /// The handler which is executed once this node has been accepted.
     pub handler: Option<fn(&node: Node) -> ()>,
     /// Parameter nodes for this command
-    ///
-    /// XXX: This should be Vec<Rc<ParameterNode>> or similar.
     pub parameters: Vec<Rc<Node>>,
     /// If present, the command wrapped by this node.
     pub wrapped_root: Option<Rc<Node>>,
@@ -136,8 +134,6 @@ pub struct ParameterNameNode {
     /// [`TreeNode`]: struct.TreeNode.html
     pub node: TreeNode,
     /// The `parameter` named by this node.
-    ///
-    /// XXX: This should be Rc<ParameterNode> or similar.
     pub parameter: Rc<Node>,
 }
 
