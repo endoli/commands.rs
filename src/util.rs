@@ -30,10 +30,10 @@ pub fn longest_common_prefix(strings: Vec<&str>) -> &str {
     for str in &strings[1..] {
         len = cmp::min(len,
                        str.as_bytes()
-                          .iter()
-                          .zip(str0bytes)
-                          .take_while(|&(a, b)| a == b)
-                          .count());
+                           .iter()
+                           .zip(str0bytes)
+                           .take_while(|&(a, b)| a == b)
+                           .count());
     }
     &strings[0][..len]
 }

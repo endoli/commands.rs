@@ -276,16 +276,16 @@ impl<'text> Parser<'text> {
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: Token<'text>) -> Result<(), ParseError<'text>> {
         let acceptable = self.current_node
-                             .successors()
-                             .into_iter()
-                             .filter(|n| n.acceptable(self, n))
-                             .map(|n| n.clone())
-                             .collect::<Vec<_>>();
+            .successors()
+            .into_iter()
+            .filter(|n| n.acceptable(self, n))
+            .map(|n| n.clone())
+            .collect::<Vec<_>>();
         let matches = acceptable.clone()
-                                .into_iter()
-                                .filter(|n| n.matches(self, token))
-                                .map(|n| n.clone())
-                                .collect::<Vec<_>>();
+            .into_iter()
+            .filter(|n| n.matches(self, token))
+            .map(|n| n.clone())
+            .collect::<Vec<_>>();
         match matches.len() {
             1 => {
                 let matching_node = &matches[0];

@@ -72,11 +72,11 @@ impl<'text> Completion<'text> {
 
         // Convert to String...
         let mut complete_options = complete_options.into_iter()
-                                                   .map(|o| o.to_string())
-                                                   .collect::<Vec<_>>();
+            .map(|o| o.to_string())
+            .collect::<Vec<_>>();
         let mut other_options = other_options.into_iter()
-                                             .map(|o| o.to_string())
-                                             .collect::<Vec<_>>();
+            .map(|o| o.to_string())
+            .collect::<Vec<_>>();
         // Apply token restrictions
         if let Some(t) = token {
             // Filter options using token.
@@ -105,8 +105,8 @@ impl<'text> Completion<'text> {
         }
         // Convert options to CompletionOption.
         let mut options = complete_options.into_iter()
-                                          .map(|o| CompletionOption::new(o, true))
-                                          .collect::<Vec<_>>();
+            .map(|o| CompletionOption::new(o, true))
+            .collect::<Vec<_>>();
         options.extend(other_options.into_iter().map(|o| CompletionOption::new(o, false)));
         Completion {
             help_symbol: help_symbol,

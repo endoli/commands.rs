@@ -102,7 +102,7 @@ impl<'a> CommandTree<'a> {
                                    parameter.help_text,
                                    parameter.hidden,
                                    parameter.priority
-                                            .unwrap_or(PRIORITY_PARAMETER),
+                                       .unwrap_or(PRIORITY_PARAMETER),
                                    vec![],
                                    parameter.repeatable,
                                    None,
