@@ -231,7 +231,7 @@ impl<'text> Parser<'text> {
     pub fn complete(&self, token: Option<Token<'text>>) -> Vec<Completion> {
         self.current_node
             .successors()
-            .into_iter()
+            .iter()
             .filter(|n| {
                 // To be a possible completion, the node should not be
                 // hidden, it should be acceptable, and if there's a token,
@@ -277,12 +277,12 @@ impl<'text> Parser<'text> {
     pub fn advance(&mut self, token: Token<'text>) -> Result<(), ParseError<'text>> {
         let acceptable = self.current_node
             .successors()
-            .into_iter()
+            .iter()
             .filter(|n| n.acceptable(self, n))
             .map(|n| n.clone())
             .collect::<Vec<_>>();
         let matches = acceptable.clone()
-            .into_iter()
+            .iter()
             .filter(|n| n.matches(self, token))
             .map(|n| n.clone())
             .collect::<Vec<_>>();

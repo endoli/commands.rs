@@ -71,10 +71,10 @@ impl<'text> Completion<'text> {
         all_options.extend(other_options.iter().cloned());
 
         // Convert to String...
-        let mut complete_options = complete_options.into_iter()
+        let mut complete_options = complete_options.iter()
             .map(|o| o.to_string())
             .collect::<Vec<_>>();
-        let mut other_options = other_options.into_iter()
+        let mut other_options = other_options.iter()
             .map(|o| o.to_string())
             .collect::<Vec<_>>();
         // Apply token restrictions
@@ -104,10 +104,10 @@ impl<'text> Completion<'text> {
             }
         }
         // Convert options to CompletionOption.
-        let mut options = complete_options.into_iter()
-            .map(|o| CompletionOption::new(o, true))
+        let mut options = complete_options.iter()
+            .map(|o| CompletionOption::new(o.clone(), true))
             .collect::<Vec<_>>();
-        options.extend(other_options.into_iter().map(|o| CompletionOption::new(o, false)));
+        options.extend(other_options.iter().map(|o| CompletionOption::new(o.clone(), false)));
         Completion {
             help_symbol: help_symbol,
             help_text: help_text,
