@@ -275,16 +275,11 @@ impl<'text> Parser<'text> {
 
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: Token<'text>) -> Result<(), ParseError<'text>> {
-        let acceptable = self.current_node
+        let matches = self.current_node
             .successors()
             .iter()
-            .filter(|n| n.acceptable(self, n))
-            .map(|n| n.clone())
-            .collect::<Vec<_>>();
-        let matches = acceptable.clone()
-            .iter()
-            .filter(|n| n.matches(self, token))
-            .map(|n| n.clone())
+            .filter(|n| n.acceptable(self, n) && n.matches(self, token))
+            .cloned()
             .collect::<Vec<_>>();
         match matches.len() {
             1 => {
@@ -295,7 +290,15 @@ impl<'text> Parser<'text> {
                 self.tokens.push(token);
                 Ok(())
             }
-            0 => Err(ParseError::NoMatches(token, acceptable)),
+            0 => {
+                Err(ParseError::NoMatches(token,
+                                          self.current_node
+                                              .successors()
+                                              .iter()
+                                              .filter(|n| n.acceptable(self, n))
+                                              .cloned()
+                                              .collect::<Vec<_>>()))
+            }
             _ => Err(ParseError::AmbiguousMatch(token, matches)),
         }
     }
