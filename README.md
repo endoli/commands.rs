@@ -1,6 +1,6 @@
 # Commands
 
-[![Build Status](https://travis-ci.org/waywardmonkeys/commands.rs.svg?branch=master)](https://travis-ci.org/waywardmonkeys/commands.rs)
+[![Build Status](https://travis-ci.org/endoli/commands.rs.svg?branch=master)](https://travis-ci.org/endoli/commands.rs)
 [![](http://meritbadge.herokuapp.com/commands)](https://crates.io/crates/commands)
 
 A command system for Rust.
@@ -10,7 +10,7 @@ Dual licensed under the MIT and Apache 2 licenses.
 ## Documentation
 
 The API is fully documented with examples:
-[http://waywardmonkeys.github.io/commands.rs/commands/](http://waywardmonkeys.github.io/commands.rs/commands/)
+[http://endoli.github.io/commands.rs/commands/](http://endoli.github.io/commands.rs/commands/)
 
 ## Installation
 

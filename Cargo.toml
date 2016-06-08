@@ -1,14 +1,14 @@
 [package]
 name = "commands"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Bruce Mitchener <bruce.mitchener@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
 description = "A command system for Rust. This provides a general command system which can be used in a variety of environments, including GUI applications and command line utilities. This is inspired by elements of the Lisp Machine, the Common Lisp Interface Manager (CLIM), router command line interfaces, and the TOPS-20 command line among other things."
 keywords = ["argument", "cli", "command"]
-homepage = "https://github.com/waywardmonkeys/commands.rs"
-repository = "https://github.com/waywardmonkeys/commands.rs"
-documentation = "http://waywardmonkeys.github.io/commands.rs/commands/"
+homepage = "https://github.com/endoli/commands.rs"
+repository = "https://github.com/endoli/commands.rs"
+documentation = "http://endoli.github.io/commands.rs/commands/"
 
 [[example]]
 name = "readline"
