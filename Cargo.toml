@@ -8,7 +8,7 @@ description = "A command system for Rust. This provides a general command system
 keywords = ["argument", "cli", "command"]
 homepage = "https://github.com/endoli/commands.rs"
 repository = "https://github.com/endoli/commands.rs"
-documentation = "http://endoli.github.io/commands.rs/commands/"
+documentation = "https://endoli.github.io/commands.rs/commands/"
 
 [[example]]
 name = "readline"
