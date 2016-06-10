@@ -14,7 +14,12 @@ documentation = "https://endoli.github.io/commands.rs/commands/"
 name = "readline"
 path = "examples/readline/main.rs"
 
+[[example]]
+name = "rustyline"
+path = "examples/rustyline/main.rs"
+
 [dependencies]
 
 [dev-dependencies]
 readline = "0.0.12"
+rustyline = "0.2.3"
