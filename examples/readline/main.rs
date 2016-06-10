@@ -22,27 +22,27 @@ fn main() {
             if let Err(err) = parser.parse(tokens) {
                 match err {
                     ParseError::NoMatches(_, acceptable) => {
-                        print!("\nPossible options:\n");
+                        println!("\nPossible options:");
                         for ref option in acceptable {
                             let n = option.node();
-                            print!("  {} - {}\n", n.help_symbol, n.help_text);
+                            println!("  {} - {}", n.help_symbol, n.help_text);
                         }
                     }
                     ParseError::AmbiguousMatch(_, matches) => {
-                        print!("\nCan be interpreted as:\n");
+                        println!("\nCan be interpreted as:");
                         for ref option in matches {
                             let n = option.node();
-                            print!("  {} - {}\n", n.help_symbol, n.help_text);
+                            println!("  {} - {}", n.help_symbol, n.help_text);
                         }
                     }
                 }
             } else if let Err(err) = parser.verify() {
-                print!("{}\n", err);
+                println!("{}", err);
             } else {
                 parser.execute();
             }
         }
-        print!("\n");
+        println!("");
     }
-    print!("\nExiting.\n");
+    println!("\nExiting.");
 }
