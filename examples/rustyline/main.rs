@@ -17,6 +17,7 @@ fn main() {
 
     let mut rl = rustyline::Editor::new();
     while let Ok(line) = rl.readline(">> ") {
+        rl.add_history_entry(&line);
         if let Ok(tokens) = tokenize(&line) {
             let mut parser = Parser::new(root.clone());
             if let Err(err) = parser.parse(tokens) {
