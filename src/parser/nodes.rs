@@ -119,7 +119,7 @@ pub struct CommandNode {
     /// [`TreeNode`]: struct.TreeNode.html
     pub node: TreeNode,
     /// The handler which is executed once this node has been accepted.
-    pub handler: Option<fn(&node: Node) -> ()>,
+    pub handler: Option<fn(node: &Node) -> ()>,
     /// Parameter nodes for this command
     pub parameters: Vec<Rc<Node>>,
     /// If present, the command wrapped by this node.
@@ -267,7 +267,7 @@ impl CommandNode {
                hidden: bool,
                priority: i32,
                successors: Vec<Rc<Node>>,
-               handler: Option<fn(&node: Node) -> ()>,
+               handler: Option<fn(node: &Node) -> ()>,
                parameters: Vec<Rc<Node>>)
                -> Self {
         CommandNode {
