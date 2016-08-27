@@ -11,6 +11,10 @@ repository = "https://github.com/endoli/commands.rs"
 documentation = "https://endoli.github.io/commands.rs/commands/"
 
 [[example]]
+name = "linefeed"
+path = "examples/linefeed/main.rs"
+
+[[example]]
 name = "readline"
 path = "examples/readline/main.rs"
 
@@ -21,5 +25,6 @@ path = "examples/rustyline/main.rs"
 [dependencies]
 
 [dev-dependencies]
+linefeed = "0.1.2"
 readline = "0.0.12"
 rustyline = "0.2.3"
