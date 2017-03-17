@@ -71,12 +71,9 @@ impl<'text> Completion<'text> {
         all_options.extend(other_options.iter().cloned());
 
         // Convert to String...
-        let mut complete_options = complete_options.iter()
-            .map(|o| o.to_string())
-            .collect::<Vec<_>>();
-        let mut other_options = other_options.iter()
-            .map(|o| o.to_string())
-            .collect::<Vec<_>>();
+        let mut complete_options =
+            complete_options.iter().map(|o| o.to_string()).collect::<Vec<_>>();
+        let mut other_options = other_options.iter().map(|o| o.to_string()).collect::<Vec<_>>();
         // Apply token restrictions
         if let Some(t) = token {
             // Filter options using token.

@@ -101,8 +101,7 @@ impl<'a> CommandTree<'a> {
         let p = ParameterNode::new(parameter.name,
                                    parameter.help_text,
                                    parameter.hidden,
-                                   parameter.priority
-                                       .unwrap_or(PRIORITY_PARAMETER),
+                                   parameter.priority.unwrap_or(PRIORITY_PARAMETER),
                                    vec![],
                                    parameter.repeatable,
                                    None,

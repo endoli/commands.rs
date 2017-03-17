@@ -49,10 +49,10 @@ impl CommandTable {
                commands: Vec<CommandTableEntry>)
                -> Rc<CommandTable> {
         Rc::new(CommandTable {
-            name: name,
-            inherit: inherit,
-            commands: commands,
-            menu_definition: None,
-        })
+                    name: name,
+                    inherit: inherit,
+                    commands: commands,
+                    menu_definition: None,
+                })
     }
 }
