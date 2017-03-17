@@ -16,11 +16,13 @@
 //! command line among other things.
 //!
 //! * Commands can be defined and grouped into command tables.
-//! * Commands can be hooked up with a ``Parser`` for implementing
+//! * Commands can be hooked up with a [`Parser`] for implementing
 //!   command line interfaces with completion and parameter validation.
 //!
 //! This library is in the early stages of development and
 //! not everything works yet.
+//!
+//! [`Parser`]: parser/struct.Parser.html
 
 #![warn(missing_docs)]
 #![deny(trivial_numeric_casts,
