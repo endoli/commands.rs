@@ -9,15 +9,16 @@ extern crate linefeed;
 
 use commands::parser::{Command, CommandTree, ParseError, Parser};
 use commands::tokenizer::tokenize;
+use linefeed::{Reader, ReadResult};
 
 fn main() {
     let mut tree = CommandTree::new();
     tree.command(Command::new("show"));
     let root = tree.finalize();
 
-    let mut reader = linefeed::Reader::new("example").unwrap();
+    let mut reader = Reader::new("example").unwrap();
     reader.set_prompt(">> ");
-    while let Ok(Some(line)) = reader.read_line() {
+    while let Ok(ReadResult::Input(line)) = reader.read_line() {
         reader.add_history(line.clone());
         if let Ok(tokens) = tokenize(&line) {
             let mut parser = Parser::new(root.clone());
