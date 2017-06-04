@@ -15,7 +15,7 @@ fn main() {
     tree.command(Command::new("show"));
     let root = tree.finalize();
 
-    let mut rl = rustyline::Editor::new();
+    let mut rl = rustyline::Editor::<()>::new();
     while let Ok(line) = rl.readline(">> ") {
         rl.add_history_entry(&line);
         if let Ok(tokens) = tokenize(&line) {

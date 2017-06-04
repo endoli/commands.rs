@@ -27,4 +27,4 @@ path = "examples/rustyline/main.rs"
 [dev-dependencies]
 linefeed = "0.2"
 readline = "0.0.13"
-rustyline = "0.2.3"
+rustyline = "1"
