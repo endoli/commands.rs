@@ -7,15 +7,52 @@
 extern crate commands;
 extern crate rustyline;
 
-use commands::parser::{Command, CommandTree, ParseError, Parser};
+use commands::parser::{Command, CommandTree, Node, ParseError, Parser};
 use commands::tokenizer::tokenize;
+use rustyline::{Editor, Result};
+use rustyline::completion::Completer;
+use std::rc::Rc;
+
+struct CommandCompleter {
+    root: Rc<Node>,
+}
+
+impl CommandCompleter {
+    fn new(root: Rc<Node>) -> Self {
+        CommandCompleter { root: root }
+    }
+}
+
+impl Completer for CommandCompleter {
+    fn complete(&self, line: &str, _pos: usize) -> Result<(usize, Vec<String>)> {
+        // TODO: This is an initial implementation that needs a lot more work.
+        if let Ok(tokens) = tokenize(line) {
+            let p = Parser::new(self.root.clone());
+            let cs = p.complete(Some(tokens[0]));
+            if !cs.is_empty() {
+                Ok((0,
+                    cs[0]
+                        .options
+                        .iter()
+                        .map(|co| co.option_string.clone())
+                        .collect()))
+            } else {
+                Ok((0, Vec::new()))
+            }
+        } else {
+            Ok((0, Vec::new()))
+        }
+    }
+}
 
 fn main() {
     let mut tree = CommandTree::new();
     tree.command(Command::new("show"));
     let root = tree.finalize();
 
-    let mut rl = rustyline::Editor::<()>::new();
+    let c = CommandCompleter::new(root.clone());
+    let mut rl = Editor::<CommandCompleter>::new();
+    rl.set_completer(Some(c));
     while let Ok(line) = rl.readline(">> ") {
         rl.add_history_entry(&line);
         if let Ok(tokens) = tokenize(&line) {
