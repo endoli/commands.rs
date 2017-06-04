@@ -20,7 +20,7 @@ Add it to your `Cargo.toml` like so:
 
 ```toml
 [dependencies]
-commands = "0.0.4"
+commands = "0.0.5"
 ```
 
 ## Status of Implementation
