@@ -19,10 +19,6 @@ name = "linefeed"
 path = "examples/linefeed/main.rs"
 
 [[example]]
-name = "readline"
-path = "examples/readline/main.rs"
-
-[[example]]
 name = "rustyline"
 path = "examples/rustyline/main.rs"
 
@@ -30,5 +26,4 @@ path = "examples/rustyline/main.rs"
 
 [dev-dependencies]
 linefeed = "0.2"
-readline = "0.0.13"
 rustyline = "1"
