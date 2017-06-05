@@ -130,10 +130,10 @@ pub enum TokenizerError {
     EscapingBackslashAtEndOfInput,
 
     /// Unclosed double quote at end of input
-    UnclosedDoubleQuoteAtEndOfInput,
+    UnclosedDoubleQuote,
 
     /// Unclosed single quote at end of input
-    UnclosedSingleQuoteAtEndOfInput,
+    UnclosedSingleQuote,
 }
 
 impl Error for TokenizerError {
@@ -142,12 +142,8 @@ impl Error for TokenizerError {
             TokenizerError::CharacterNotAllowedHere(_) => "Character not allowed here",
             TokenizerError::SpecialNotYetImplemented(_) => "Special not yet implemented",
             TokenizerError::EscapingBackslashAtEndOfInput => "Escaping backlash at end of input",
-            TokenizerError::UnclosedDoubleQuoteAtEndOfInput => {
-                "Unclosed double quote at end of input"
-            }
-            TokenizerError::UnclosedSingleQuoteAtEndOfInput => {
-                "Unclosed single quote at end of input"
-            }
+            TokenizerError::UnclosedDoubleQuote => "Unclosed double quote at end of input",
+            TokenizerError::UnclosedSingleQuote => "Unclosed single quote at end of input",
         }
     }
 }
@@ -368,8 +364,8 @@ impl<'text> Tokenizer<'text> {
             State::Initial => {}
             State::Word | State::Whitespace => self.reduce(),
             State::WordBackslash => return Err(TokenizerError::EscapingBackslashAtEndOfInput),
-            State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput),
-            State::Singlequote => return Err(TokenizerError::UnclosedSingleQuoteAtEndOfInput),
+            State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuote),
+            State::Singlequote => return Err(TokenizerError::UnclosedSingleQuote),
             State::DoublequoteBackslash |
             State::SinglequoteBackslash => {
                 return Err(TokenizerError::EscapingBackslashAtEndOfInput)
@@ -504,7 +500,7 @@ mod test {
     #[should_panic]
     fn unclosed_double_quote_at_end_of_input() {
         match tokenize(r#"ab ""#) {
-            Err(TokenizerError::UnclosedDoubleQuoteAtEndOfInput) => panic!(),
+            Err(TokenizerError::UnclosedDoubleQuote) => panic!(),
             _ => {}
         }
     }
