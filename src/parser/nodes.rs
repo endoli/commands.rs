@@ -307,8 +307,8 @@ impl NodeOps for CommandNode {
             self.node.help_text.clone(),
             token,
             true,
-            vec![&self.node.name],
-            vec![],
+            &[&self.node.name],
+            &[],
         )
     }
 
@@ -368,8 +368,8 @@ impl NodeOps for ParameterNameNode {
             self.node.help_text.clone(),
             token,
             true,
-            vec![&self.node.name],
-            vec![],
+            &[&self.node.name],
+            &[],
         )
     }
 
@@ -452,8 +452,8 @@ impl NodeOps for ParameterNode {
                     self.node.help_text.clone(),
                     token,
                     true,
-                    vec![],
-                    vec![],
+                    &[],
+                    &[],
                 )
             }
             ParameterKind::Flag => {
@@ -462,8 +462,8 @@ impl NodeOps for ParameterNode {
                     self.node.help_text.clone(),
                     token,
                     true,
-                    vec![&self.node.name],
-                    vec![],
+                    &[&self.node.name],
+                    &[],
                 )
             }
         }

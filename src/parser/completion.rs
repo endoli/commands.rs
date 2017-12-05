@@ -63,12 +63,12 @@ impl<'text> Completion<'text> {
         help_text: String,
         token: Option<Token<'text>>,
         exhaustive: bool,
-        complete_options: Vec<&str>,
-        other_options: Vec<&str>,
+        complete_options: &[&str],
+        other_options: &[&str],
     ) -> Completion<'text> {
         // Preserve all of the options while still &str so that
         // we can use this with longest_common_prefix later.
-        let mut all_options = complete_options.clone();
+        let mut all_options = complete_options.to_vec();
         all_options.extend(other_options.iter().cloned());
 
         // Convert to String...
@@ -96,7 +96,7 @@ impl<'text> Completion<'text> {
         }
         // Add longest common prefix as an incomplete options, but
         // filter it against the existing options and the token.
-        let lcp = longest_common_prefix(all_options).to_string();
+        let lcp = longest_common_prefix(&all_options).to_string();
         if !complete_options.contains(&lcp) && !other_options.contains(&lcp) {
             match token {
                 Some(t) => {

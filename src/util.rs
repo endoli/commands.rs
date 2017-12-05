@@ -16,11 +16,11 @@ use std::cmp;
 /// ```
 /// use commands::util::longest_common_prefix;
 ///
-/// let words = vec!["zebrawood", "zebrafish", "zebra mussel"];
+/// let words = &["zebrawood", "zebrafish", "zebra mussel"];
 /// let prefix = longest_common_prefix(words);
 /// assert_eq!(prefix, "zebra");
 /// ```
-pub fn longest_common_prefix(strings: Vec<&str>) -> &str {
+pub fn longest_common_prefix<'s>(strings: &'s [&str]) -> &'s str {
     if strings.is_empty() {
         return "";
     }
@@ -46,27 +46,27 @@ mod test {
 
     #[test]
     fn empty_lcp() {
-        assert_eq!(longest_common_prefix(vec![]), "");
+        assert_eq!(longest_common_prefix(&[]), "");
     }
 
     #[test]
     fn single_lcp() {
-        assert_eq!(longest_common_prefix(vec!["ab"]), "ab");
+        assert_eq!(longest_common_prefix(&["ab"]), "ab");
     }
 
     #[test]
     fn no_lcp() {
-        assert_eq!(longest_common_prefix(vec!["a", "b", "c"]), "");
+        assert_eq!(longest_common_prefix(&["a", "b", "c"]), "");
     }
 
     #[test]
     fn valid_lcp() {
-        // assert_eq!(longest_common_prefix(vec!["aa", "ab", "ac"]), "a");
-        assert_eq!(longest_common_prefix(vec!["aba", "abb", "abc"]), "ab");
+        // assert_eq!(longest_common_prefix(&["aa", "ab", "ac"]), "a");
+        assert_eq!(longest_common_prefix(&["aba", "abb", "abc"]), "ab");
     }
 
     #[test]
     fn valid_is_shortest_lcp() {
-        assert_eq!(longest_common_prefix(vec!["aba", "ab", "abc"]), "ab");
+        assert_eq!(longest_common_prefix(&["aba", "ab", "abc"]), "ab");
     }
 }
