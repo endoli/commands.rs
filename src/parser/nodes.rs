@@ -262,14 +262,15 @@ impl NodeOps for RootNode {
 
 impl CommandNode {
     /// Construct a new `CommandNode`.
-    pub fn new(name: &str,
-               help_text: Option<&str>,
-               hidden: bool,
-               priority: i32,
-               successors: Vec<Rc<Node>>,
-               handler: Option<fn(node: &Node) -> ()>,
-               parameters: Vec<Rc<Node>>)
-               -> Self {
+    pub fn new(
+        name: &str,
+        help_text: Option<&str>,
+        hidden: bool,
+        priority: i32,
+        successors: Vec<Rc<Node>>,
+        handler: Option<fn(node: &Node) -> ()>,
+        parameters: Vec<Rc<Node>>,
+    ) -> Self {
         CommandNode {
             node: TreeNode {
                 name: name.to_string(),
@@ -301,12 +302,14 @@ impl NodeOps for CommandNode {
     }
 
     fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
-        Completion::new(self.node.help_symbol.clone(),
-                        self.node.help_text.clone(),
-                        token,
-                        true,
-                        vec![&self.node.name],
-                        vec![])
+        Completion::new(
+            self.node.help_symbol.clone(),
+            self.node.help_text.clone(),
+            token,
+            true,
+            vec![&self.node.name],
+            vec![],
+        )
     }
 
     fn matches(&self, _parser: &Parser, token: Token) -> bool {
@@ -316,14 +319,15 @@ impl NodeOps for CommandNode {
 
 impl ParameterNameNode {
     /// Construct a new `ParameterNameNode`.
-    pub fn new(name: &str,
-               hidden: bool,
-               priority: i32,
-               successors: Vec<Rc<Node>>,
-               repeatable: bool,
-               repeat_marker: Option<Rc<Node>>,
-               parameter: Rc<Node>)
-               -> Self {
+    pub fn new(
+        name: &str,
+        hidden: bool,
+        priority: i32,
+        successors: Vec<Rc<Node>>,
+        repeatable: bool,
+        repeat_marker: Option<Rc<Node>>,
+        parameter: Rc<Node>,
+    ) -> Self {
         let param_node = &parameter.node();
         let help_text = param_node.help_text.clone();
         let help_symbol = name.to_string() + " " + param_node.help_symbol.as_str();
@@ -352,19 +356,21 @@ impl NodeOps for ParameterNameNode {
             return true;
         }
         !parser.nodes.contains(node_ref) &&
-        match self.node.repeat_marker {
-            None => true,
-            Some(ref n) => !parser.nodes.contains(n),
-        }
+            match self.node.repeat_marker {
+                None => true,
+                Some(ref n) => !parser.nodes.contains(n),
+            }
     }
 
     fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
-        Completion::new(self.node.help_symbol.clone(),
-                        self.node.help_text.clone(),
-                        token,
-                        true,
-                        vec![&self.node.name],
-                        vec![])
+        Completion::new(
+            self.node.help_symbol.clone(),
+            self.node.help_text.clone(),
+            token,
+            true,
+            vec![&self.node.name],
+            vec![],
+        )
     }
 
     fn matches(&self, _parser: &Parser, token: Token) -> bool {
@@ -374,16 +380,17 @@ impl NodeOps for ParameterNameNode {
 
 impl ParameterNode {
     /// Construct a new `ParameterNode`.
-    pub fn new(name: &str,
-               help_text: Option<&str>,
-               hidden: bool,
-               priority: i32,
-               successors: Vec<Rc<Node>>,
-               repeatable: bool,
-               repeat_marker: Option<Rc<Node>>,
-               kind: ParameterKind,
-               required: bool)
-               -> Self {
+    pub fn new(
+        name: &str,
+        help_text: Option<&str>,
+        hidden: bool,
+        priority: i32,
+        successors: Vec<Rc<Node>>,
+        repeatable: bool,
+        repeat_marker: Option<Rc<Node>>,
+        kind: ParameterKind,
+        required: bool,
+    ) -> Self {
         let help_symbol = if repeatable {
             String::from("<") + name + ">..."
         } else {
@@ -417,7 +424,10 @@ impl NodeOps for ParameterNode {
         if self.node.repeatable {
             unimplemented!();
         } else {
-            parser.parameters.insert(self.node.name.clone(), token.text.to_string());
+            parser.parameters.insert(
+                self.node.name.clone(),
+                token.text.to_string(),
+            );
         }
     }
 
@@ -426,10 +436,10 @@ impl NodeOps for ParameterNode {
             return true;
         }
         !parser.nodes.contains(node_ref) &&
-        match self.node.repeat_marker {
-            None => true,
-            Some(ref n) => !parser.nodes.contains(n),
-        }
+            match self.node.repeat_marker {
+                None => true,
+                Some(ref n) => !parser.nodes.contains(n),
+            }
     }
 
     /// By default named and simple parameters complete only to the token
@@ -437,20 +447,24 @@ impl NodeOps for ParameterNode {
     fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
         match self.kind {
             ParameterKind::Named | ParameterKind::Simple => {
-                Completion::new(self.node.help_symbol.clone(),
-                                self.node.help_text.clone(),
-                                token,
-                                true,
-                                vec![],
-                                vec![])
+                Completion::new(
+                    self.node.help_symbol.clone(),
+                    self.node.help_text.clone(),
+                    token,
+                    true,
+                    vec![],
+                    vec![],
+                )
             }
             ParameterKind::Flag => {
-                Completion::new(self.node.help_symbol.clone(),
-                                self.node.help_text.clone(),
-                                token,
-                                true,
-                                vec![&self.node.name],
-                                vec![])
+                Completion::new(
+                    self.node.help_symbol.clone(),
+                    self.node.help_text.clone(),
+                    token,
+                    true,
+                    vec![&self.node.name],
+                    vec![],
+                )
             }
         }
     }

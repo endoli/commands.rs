@@ -58,22 +58,28 @@ pub struct Completion<'text> {
 
 impl<'text> Completion<'text> {
     /// Construct a new Completion.
-    pub fn new(help_symbol: String,
-               help_text: String,
-               token: Option<Token<'text>>,
-               exhaustive: bool,
-               complete_options: Vec<&str>,
-               other_options: Vec<&str>)
-               -> Completion<'text> {
+    pub fn new(
+        help_symbol: String,
+        help_text: String,
+        token: Option<Token<'text>>,
+        exhaustive: bool,
+        complete_options: Vec<&str>,
+        other_options: Vec<&str>,
+    ) -> Completion<'text> {
         // Preserve all of the options while still &str so that
         // we can use this with longest_common_prefix later.
         let mut all_options = complete_options.clone();
         all_options.extend(other_options.iter().cloned());
 
         // Convert to String...
-        let mut complete_options =
-            complete_options.iter().map(|o| o.to_string()).collect::<Vec<_>>();
-        let mut other_options = other_options.iter().map(|o| o.to_string()).collect::<Vec<_>>();
+        let mut complete_options = complete_options
+            .iter()
+            .map(|o| o.to_string())
+            .collect::<Vec<_>>();
+        let mut other_options = other_options
+            .iter()
+            .map(|o| o.to_string())
+            .collect::<Vec<_>>();
         // Apply token restrictions
         if let Some(t) = token {
             // Filter options using token.
@@ -83,7 +89,8 @@ impl<'text> Completion<'text> {
             // If not exhaustive, then add the current token as
             // an incomplete option.
             if !exhaustive && !complete_options.contains(&token_text) &&
-               !other_options.contains(&token_text) {
+                !other_options.contains(&token_text)
+            {
                 other_options.push(token_text);
             }
         }
@@ -101,10 +108,13 @@ impl<'text> Completion<'text> {
             }
         }
         // Convert options to CompletionOption.
-        let mut options = complete_options.iter()
+        let mut options = complete_options
+            .iter()
             .map(|o| CompletionOption::new(o.clone(), true))
             .collect::<Vec<_>>();
-        options.extend(other_options.iter().map(|o| CompletionOption::new(o.clone(), false)));
+        options.extend(other_options.iter().map(|o| {
+            CompletionOption::new(o.clone(), false)
+        }));
         Completion {
             help_symbol: help_symbol,
             help_text: help_text,

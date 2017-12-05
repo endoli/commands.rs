@@ -237,11 +237,11 @@ impl<'text> Parser<'text> {
                 // hidden, it should be acceptable, and if there's a token,
                 // it should be a valid match for the node.
                 !n.node().hidden && n.acceptable(self, n) &&
-                if let Some(t) = token {
-                    n.matches(self, t)
-                } else {
-                    true
-                }
+                    if let Some(t) = token {
+                        n.matches(self, t)
+                    } else {
+                        true
+                    }
             })
             .map(|n| n.complete(token))
             .collect::<Vec<_>>()
@@ -291,13 +291,15 @@ impl<'text> Parser<'text> {
                 Ok(())
             }
             0 => {
-                Err(ParseError::NoMatches(token,
-                                          self.current_node
-                                              .successors()
-                                              .iter()
-                                              .filter(|n| n.acceptable(self, n))
-                                              .cloned()
-                                              .collect::<Vec<_>>()))
+                Err(ParseError::NoMatches(
+                    token,
+                    self.current_node
+                        .successors()
+                        .iter()
+                        .filter(|n| n.acceptable(self, n))
+                        .cloned()
+                        .collect::<Vec<_>>(),
+                ))
             }
             _ => Err(ParseError::AmbiguousMatch(token, matches)),
         }
@@ -369,7 +371,7 @@ impl<'text> fmt::Display for ParseError<'text> {
 }
 
 /// Errors that calling `verify` on the `Parser` can raise.
-#[derive(Clone,Debug)]
+#[derive(Clone, Debug)]
 pub enum VerifyError {
     /// No command has been accepted by the parser.
     NoCommandAccepted,

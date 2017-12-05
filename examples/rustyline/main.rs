@@ -30,12 +30,14 @@ impl Completer for CommandCompleter {
             let p = Parser::new(self.root.clone());
             let cs = p.complete(Some(tokens[0]));
             if !cs.is_empty() {
-                Ok((0,
+                Ok((
+                    0,
                     cs[0]
                         .options
                         .iter()
                         .map(|co| co.option_string.clone())
-                        .collect()))
+                        .collect(),
+                ))
             } else {
                 Ok((0, Vec::new()))
             }

@@ -77,7 +77,7 @@ use std::error::Error;
 /// by the [`SourceLocation`].
 ///
 /// [`SourceLocation`]: struct.SourceLocation.html
-#[derive(Clone,Copy,Debug,PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct SourceOffset {
     /// The index of this character within the body of text.
     pub char: usize,
@@ -99,7 +99,7 @@ impl SourceOffset {
 }
 
 /// A range within a body of text.
-#[derive(Clone,Copy,Debug,PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct SourceLocation {
     /// The start of the range.
     pub start: SourceOffset,
@@ -118,7 +118,7 @@ impl SourceLocation {
 }
 
 /// Errors
-#[derive(Clone,Debug)]
+#[derive(Clone, Debug)]
 pub enum TokenizerError {
     /// Character not allowed here
     CharacterNotAllowedHere(usize),
@@ -155,7 +155,7 @@ impl fmt::Display for TokenizerError {
 }
 
 /// The role that a token plays: `Whitespace` or `Word`.
-#[derive(Clone,Copy,Debug,PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TokenType {
     /// The token represents whitespace and not a word.
     Whitespace,
@@ -168,7 +168,7 @@ pub enum TokenType {
 ///
 /// The lifetime parameter `'text` refers to the lifetime
 /// of the body of text that was tokenized, creating this token.
-#[derive(Clone,Copy,Debug,PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Token<'text> {
     /// The text of the token.
     pub text: &'text str,
@@ -190,7 +190,7 @@ impl<'text> Token<'text> {
     }
 }
 
-#[derive(Clone,Copy,PartialEq)]
+#[derive(Clone, Copy, PartialEq)]
 enum State {
     Initial,
     Special,
@@ -233,11 +233,15 @@ impl<'text> Tokenizer<'text> {
 
     fn reduce(&mut self) {
         let token_text = &self.text[self.token_start..self.token_end + 1];
-        let loc = SourceLocation::new(SourceOffset::new(self.token_start, 0, self.token_start),
-                                      SourceOffset::new(self.token_end, 0, self.token_end));
-        self.tokens.push(Token::new(token_text,
-                                    self.token_type.expect("Invalid tokenization"),
-                                    loc));
+        let loc = SourceLocation::new(
+            SourceOffset::new(self.token_start, 0, self.token_start),
+            SourceOffset::new(self.token_end, 0, self.token_end),
+        );
+        self.tokens.push(Token::new(
+            token_text,
+            self.token_type.expect("Invalid tokenization"),
+            loc,
+        ));
         self.reset();
     }
 
@@ -371,7 +375,9 @@ impl<'text> Tokenizer<'text> {
                 return Err(TokenizerError::EscapingBackslashAtEndOfInput)
             }
             State::Special => {
-                return Err(TokenizerError::SpecialNotYetImplemented(self.text.len() - 1))
+                return Err(TokenizerError::SpecialNotYetImplemented(
+                    self.text.len() - 1,
+                ))
             }
         }
 
@@ -393,10 +399,14 @@ mod test {
     use super::*;
 
     fn mk_token(text: &str, token_type: TokenType, start: usize, end: usize) -> Token {
-        Token::new(text,
-                   token_type,
-                   SourceLocation::new(SourceOffset::new(start, 0, start),
-                                       SourceOffset::new(end, 0, end)))
+        Token::new(
+            text,
+            token_type,
+            SourceLocation::new(
+                SourceOffset::new(start, 0, start),
+                SourceOffset::new(end, 0, end),
+            ),
+        )
     }
 
     #[test]

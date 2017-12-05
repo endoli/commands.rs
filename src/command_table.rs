@@ -44,15 +44,16 @@ pub struct CommandTable {
 
 impl CommandTable {
     /// Construct a `CommandTable`.
-    pub fn new(name: String,
-               inherit: Vec<Rc<CommandTable>>,
-               commands: Vec<CommandTableEntry>)
-               -> Rc<CommandTable> {
+    pub fn new(
+        name: String,
+        inherit: Vec<Rc<CommandTable>>,
+        commands: Vec<CommandTableEntry>,
+    ) -> Rc<CommandTable> {
         Rc::new(CommandTable {
-                    name: name,
-                    inherit: inherit,
-                    commands: commands,
-                    menu_definition: None,
-                })
+            name: name,
+            inherit: inherit,
+            commands: commands,
+            menu_definition: None,
+        })
     }
 }

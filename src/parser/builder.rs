@@ -67,81 +67,99 @@ impl<'a> CommandTree<'a> {
         }
         // We'll want to find the right node for the wrapped_root
         // and pass it along here.
-        CommandNode::new(command.name,
-                         command.help_text,
-                         command.hidden,
-                         command.priority,
-                         successors,
-                         None,
-                         parameters)
+        CommandNode::new(
+            command.name,
+            command.help_text,
+            command.hidden,
+            command.priority,
+            successors,
+            None,
+            parameters,
+        )
     }
 
-    fn build_flag_parameter(&self,
-                            parameter: &Parameter,
-                            parameters: &mut Vec<Rc<Node>>,
-                            successors: &mut Vec<Rc<Node>>) {
-        let p = ParameterNode::new(parameter.name,
-                                   parameter.help_text,
-                                   parameter.hidden,
-                                   parameter.priority.unwrap_or(PRIORITY_DEFAULT),
-                                   vec![],
-                                   parameter.repeatable,
-                                   None,
-                                   parameter.kind,
-                                   parameter.required);
+    fn build_flag_parameter(
+        &self,
+        parameter: &Parameter,
+        parameters: &mut Vec<Rc<Node>>,
+        successors: &mut Vec<Rc<Node>>,
+    ) {
+        let p = ParameterNode::new(
+            parameter.name,
+            parameter.help_text,
+            parameter.hidden,
+            parameter.priority.unwrap_or(PRIORITY_DEFAULT),
+            vec![],
+            parameter.repeatable,
+            None,
+            parameter.kind,
+            parameter.required,
+        );
         let p = Rc::new(Node::Parameter(p));
         parameters.push(p.clone());
         successors.push(p);
     }
 
-    fn build_named_parameter(&self,
-                             parameter: &Parameter,
-                             parameters: &mut Vec<Rc<Node>>,
-                             successors: &mut Vec<Rc<Node>>) {
-        let p = ParameterNode::new(parameter.name,
-                                   parameter.help_text,
-                                   parameter.hidden,
-                                   parameter.priority.unwrap_or(PRIORITY_PARAMETER),
-                                   vec![],
-                                   parameter.repeatable,
-                                   None,
-                                   parameter.kind,
-                                   parameter.required);
+    fn build_named_parameter(
+        &self,
+        parameter: &Parameter,
+        parameters: &mut Vec<Rc<Node>>,
+        successors: &mut Vec<Rc<Node>>,
+    ) {
+        let p = ParameterNode::new(
+            parameter.name,
+            parameter.help_text,
+            parameter.hidden,
+            parameter.priority.unwrap_or(PRIORITY_PARAMETER),
+            vec![],
+            parameter.repeatable,
+            None,
+            parameter.kind,
+            parameter.required,
+        );
         let p = Rc::new(Node::Parameter(p));
         parameters.push(p.clone());
-        let n = ParameterNameNode::new(parameter.name,
-                                       parameter.hidden,
-                                       PRIORITY_DEFAULT,
-                                       vec![p.clone()],
-                                       parameter.repeatable,
-                                       Some(p.clone()),
-                                       p.clone());
+        let n = ParameterNameNode::new(
+            parameter.name,
+            parameter.hidden,
+            PRIORITY_DEFAULT,
+            vec![p.clone()],
+            parameter.repeatable,
+            Some(p.clone()),
+            p.clone(),
+        );
         successors.push(Rc::new(Node::ParameterName(n)));
         for alias in &parameter.aliases {
-            let a = ParameterNameNode::new(alias,
-                                           parameter.hidden,
-                                           PRIORITY_DEFAULT,
-                                           vec![p.clone()],
-                                           parameter.repeatable,
-                                           Some(p.clone()),
-                                           p.clone());
+            let a = ParameterNameNode::new(
+                alias,
+                parameter.hidden,
+                PRIORITY_DEFAULT,
+                vec![p.clone()],
+                parameter.repeatable,
+                Some(p.clone()),
+                p.clone(),
+            );
             successors.push(Rc::new(Node::ParameterName(a)));
         }
     }
 
-    fn build_simple_parameter(&self,
-                              parameter: &Parameter,
-                              parameters: &mut Vec<Rc<Node>>,
-                              successors: &mut Vec<Rc<Node>>) {
-        let p = ParameterNode::new(parameter.name,
-                                   parameter.help_text,
-                                   parameter.hidden,
-                                   parameter.priority.unwrap_or(PRIORITY_PARAMETER),
-                                   vec![],
-                                   parameter.repeatable,
-                                   None,
-                                   parameter.kind,
-                                   parameter.required);
+    fn build_simple_parameter(
+        &self,
+        parameter: &Parameter,
+        parameters: &mut Vec<Rc<Node>>,
+        successors: &mut Vec<Rc<Node>>,
+    ) {
+        let p = ParameterNode::new(
+            parameter.name,
+            parameter.help_text,
+            parameter.hidden,
+            parameter.priority.unwrap_or(PRIORITY_PARAMETER),
+            vec![],
+            parameter.repeatable,
+            None,
+            parameter.kind,
+            parameter.required,
+        );
         let p = Rc::new(Node::Parameter(p));
         parameters.push(p.clone());
         successors.push(p.clone());
