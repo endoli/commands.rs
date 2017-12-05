@@ -27,14 +27,14 @@ fn main() {
                     ParseError::NoMatches(_, acceptable) => {
                         println!("No match for '{}'", line);
                         println!("\nPossible options:");
-                        for ref option in acceptable {
+                        for option in &acceptable {
                             let n = option.node();
                             println!("  {} - {}", n.help_symbol, n.help_text);
                         }
                     }
                     ParseError::AmbiguousMatch(_, matches) => {
                         println!("\nCan be interpreted as:");
-                        for ref option in matches {
+                        for option in &matches {
                             let n = option.node();
                             println!("  {} - {}", n.help_symbol, n.help_text);
                         }
@@ -46,7 +46,7 @@ fn main() {
                 parser.execute();
             }
         }
-        println!("");
+        println!();
     }
     println!("\nExiting.");
 }
