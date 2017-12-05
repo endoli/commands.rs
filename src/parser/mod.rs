@@ -285,8 +285,8 @@ impl<'text> Parser<'text> {
             1 => {
                 let matching_node = &matches[0];
                 matching_node.accept(self, token, matching_node);
-                self.current_node = matching_node.clone();
-                self.nodes.push(matching_node.clone());
+                self.current_node = Rc::clone(matching_node);
+                self.nodes.push(Rc::clone(matching_node));
                 self.tokens.push(token);
                 Ok(())
             }

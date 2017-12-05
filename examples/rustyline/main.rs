@@ -27,7 +27,7 @@ impl Completer for CommandCompleter {
     fn complete(&self, line: &str, _pos: usize) -> Result<(usize, Vec<String>)> {
         // TODO: This is an initial implementation that needs a lot more work.
         if let Ok(tokens) = tokenize(line) {
-            let p = Parser::new(self.root.clone());
+            let p = Parser::new(Rc::clone(&self.root));
             let cs = p.complete(Some(tokens[0]));
             if !cs.is_empty() {
                 Ok((
@@ -52,13 +52,13 @@ fn main() {
     tree.command(Command::new("show"));
     let root = tree.finalize();
 
-    let c = CommandCompleter::new(root.clone());
+    let c = CommandCompleter::new(Rc::clone(&root));
     let mut rl = Editor::<CommandCompleter>::new();
     rl.set_completer(Some(c));
     while let Ok(line) = rl.readline(">> ") {
         rl.add_history_entry(&line);
         if let Ok(tokens) = tokenize(&line) {
-            let mut parser = Parser::new(root.clone());
+            let mut parser = Parser::new(Rc::clone(&root));
             if let Err(err) = parser.parse(tokens) {
                 match err {
                     ParseError::NoMatches(_, acceptable) => {

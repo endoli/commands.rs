@@ -293,7 +293,7 @@ impl NodeOps for CommandNode {
     /// Record this command.
     fn accept<'text>(&self, parser: &mut Parser<'text>, _token: Token, node_ref: &Rc<Node>) {
         if self.handler.is_some() {
-            parser.commands.push(node_ref.clone())
+            parser.commands.push(Rc::clone(node_ref))
         }
     }
 
@@ -342,7 +342,7 @@ impl ParameterNameNode {
                 repeatable: repeatable,
                 successors: successors,
             },
-            parameter: parameter.clone(),
+            parameter: Rc::clone(&parameter),
         }
     }
 }

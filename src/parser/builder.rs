@@ -96,7 +96,7 @@ impl<'a> CommandTree<'a> {
             parameter.required,
         );
         let p = Rc::new(Node::Parameter(p));
-        parameters.push(p.clone());
+        parameters.push(Rc::clone(&p));
         successors.push(p);
     }
 
@@ -118,15 +118,15 @@ impl<'a> CommandTree<'a> {
             parameter.required,
         );
         let p = Rc::new(Node::Parameter(p));
-        parameters.push(p.clone());
+        parameters.push(Rc::clone(&p));
         let n = ParameterNameNode::new(
             parameter.name,
             parameter.hidden,
             PRIORITY_DEFAULT,
-            vec![p.clone()],
+            vec![Rc::clone(&p)],
             parameter.repeatable,
-            Some(p.clone()),
-            p.clone(),
+            Some(Rc::clone(&p)),
+            Rc::clone(&p),
         );
         successors.push(Rc::new(Node::ParameterName(n)));
         for alias in &parameter.aliases {
@@ -134,10 +134,10 @@ impl<'a> CommandTree<'a> {
                 alias,
                 parameter.hidden,
                 PRIORITY_DEFAULT,
-                vec![p.clone()],
+                vec![Rc::clone(&p)],
                 parameter.repeatable,
-                Some(p.clone()),
-                p.clone(),
+                Some(Rc::clone(&p)),
+                Rc::clone(&p),
             );
             successors.push(Rc::new(Node::ParameterName(a)));
         }
@@ -161,8 +161,8 @@ impl<'a> CommandTree<'a> {
             parameter.required,
         );
         let p = Rc::new(Node::Parameter(p));
-        parameters.push(p.clone());
-        successors.push(p.clone());
+        parameters.push(Rc::clone(&p));
+        successors.push(Rc::clone(&p));
     }
 }
 

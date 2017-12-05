@@ -7,6 +7,8 @@
 extern crate commands;
 extern crate linefeed;
 
+use std::rc::Rc;
+
 use commands::parser::{Command, CommandTree, ParseError, Parser};
 use commands::tokenizer::tokenize;
 use linefeed::{Reader, ReadResult};
@@ -21,7 +23,7 @@ fn main() {
     while let Ok(ReadResult::Input(line)) = reader.read_line() {
         reader.add_history(line.clone());
         if let Ok(tokens) = tokenize(&line) {
-            let mut parser = Parser::new(root.clone());
+            let mut parser = Parser::new(Rc::clone(&root));
             if let Err(err) = parser.parse(tokens) {
                 match err {
                     ParseError::NoMatches(_, acceptable) => {
