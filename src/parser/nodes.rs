@@ -153,7 +153,7 @@ pub struct ParameterNode {
 impl PartialEq for Node {
     /// Nodes are equal based on pointer equality.
     fn eq(&self, other: &Self) -> bool {
-        self as *const _ == other as *const _
+        std::ptr::eq(self, other)
     }
 }
 
