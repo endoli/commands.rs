@@ -9,8 +9,8 @@ extern crate rustyline;
 
 use commands::parser::{Command, CommandTree, Node, ParseError, Parser};
 use commands::tokenizer::tokenize;
-use rustyline::{Editor, Result};
 use rustyline::completion::Completer;
+use rustyline::{Editor, Result};
 use std::rc::Rc;
 
 struct CommandCompleter {

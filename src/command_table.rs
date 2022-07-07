@@ -6,8 +6,8 @@
 
 //! # Command Tables
 
-use std::rc::Rc;
 use menu_definition::MenuDefinition;
+use std::rc::Rc;
 
 /// A command
 pub trait Command {

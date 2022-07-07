@@ -88,8 +88,9 @@ impl<'text> Completion<'text> {
             other_options.retain(|o| o.starts_with(t.text));
             // If not exhaustive, then add the current token as
             // an incomplete option.
-            if !exhaustive && !complete_options.contains(&token_text) &&
-                !other_options.contains(&token_text)
+            if !exhaustive
+                && !complete_options.contains(&token_text)
+                && !other_options.contains(&token_text)
             {
                 other_options.push(token_text);
             }
@@ -112,9 +113,11 @@ impl<'text> Completion<'text> {
             .iter()
             .map(|o| CompletionOption::new(o.clone(), true))
             .collect::<Vec<_>>();
-        options.extend(other_options.iter().map(|o| {
-            CompletionOption::new(o.clone(), false)
-        }));
+        options.extend(
+            other_options
+                .iter()
+                .map(|o| CompletionOption::new(o.clone(), false)),
+        );
         Completion {
             help_symbol,
             help_text,

@@ -4,9 +4,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::rc::Rc;
 use super::constants::*;
 use super::nodes::*;
+use std::rc::Rc;
 
 /// Store a command tree while populating it. This is used
 /// to construct a [`RootNode`] to be used with the [`Parser`].

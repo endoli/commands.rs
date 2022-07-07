@@ -11,7 +11,7 @@ use std::rc::Rc;
 
 use commands::parser::{Command, CommandTree, ParseError, Parser};
 use commands::tokenizer::tokenize;
-use linefeed::{Reader, ReadResult};
+use linefeed::{ReadResult, Reader};
 
 fn main() {
     let mut tree = CommandTree::new();

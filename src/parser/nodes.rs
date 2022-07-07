@@ -10,8 +10,8 @@
 
 use std::rc::Rc;
 
-use super::{Completion, Parser};
 use super::constants::*;
+use super::{Completion, Parser};
 use tokenizer::Token;
 
 /// Enumeration of node types used to have vectors of `Node` and so on.
@@ -355,8 +355,8 @@ impl NodeOps for ParameterNameNode {
         if self.node.repeatable {
             return true;
         }
-        !parser.nodes.contains(node_ref) &&
-            match self.node.repeat_marker {
+        !parser.nodes.contains(node_ref)
+            && match self.node.repeat_marker {
                 None => true,
                 Some(ref n) => !parser.nodes.contains(n),
             }
@@ -424,10 +424,9 @@ impl NodeOps for ParameterNode {
         if self.node.repeatable {
             unimplemented!();
         } else {
-            parser.parameters.insert(
-                self.node.name.clone(),
-                token.text.to_string(),
-            );
+            parser
+                .parameters
+                .insert(self.node.name.clone(), token.text.to_string());
         }
     }
 
@@ -435,8 +434,8 @@ impl NodeOps for ParameterNode {
         if self.node.repeatable {
             return true;
         }
-        !parser.nodes.contains(node_ref) &&
-            match self.node.repeat_marker {
+        !parser.nodes.contains(node_ref)
+            && match self.node.repeat_marker {
                 None => true,
                 Some(ref n) => !parser.nodes.contains(n),
             }
@@ -446,26 +445,22 @@ impl NodeOps for ParameterNode {
     /// being input while flag parameters complete to the name of the flag.
     fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text> {
         match self.kind {
-            ParameterKind::Named | ParameterKind::Simple => {
-                Completion::new(
-                    self.node.help_symbol.clone(),
-                    self.node.help_text.clone(),
-                    token,
-                    true,
-                    &[],
-                    &[],
-                )
-            }
-            ParameterKind::Flag => {
-                Completion::new(
-                    self.node.help_symbol.clone(),
-                    self.node.help_text.clone(),
-                    token,
-                    true,
-                    &[&self.node.name],
-                    &[],
-                )
-            }
+            ParameterKind::Named | ParameterKind::Simple => Completion::new(
+                self.node.help_symbol.clone(),
+                self.node.help_text.clone(),
+                token,
+                true,
+                &[],
+                &[],
+            ),
+            ParameterKind::Flag => Completion::new(
+                self.node.help_symbol.clone(),
+                self.node.help_text.clone(),
+                token,
+                true,
+                &[&self.node.name],
+                &[],
+            ),
         }
     }
 

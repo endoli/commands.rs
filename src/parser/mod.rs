@@ -117,11 +117,11 @@ mod nodes;
 
 // Re-export public API
 pub use self::builder::{Command, CommandTree, Parameter};
+pub use self::completion::{Completion, CompletionOption};
 pub use self::constants::ParameterKind;
 pub use self::constants::{PRIORITY_DEFAULT, PRIORITY_MINIMUM, PRIORITY_PARAMETER};
-pub use self::completion::{Completion, CompletionOption};
-pub use self::nodes::{Node, NodeOps, TreeNode};
 pub use self::nodes::{CommandNode, ParameterNameNode, ParameterNode, RootNode};
+pub use self::nodes::{Node, NodeOps, TreeNode};
 
 use std::collections::HashMap;
 use std::error::Error;
@@ -236,8 +236,9 @@ impl<'text> Parser<'text> {
                 // To be a possible completion, the node should not be
                 // hidden, it should be acceptable, and if there's a token,
                 // it should be a valid match for the node.
-                !n.node().hidden && n.acceptable(self, n) &&
-                    if let Some(t) = token {
+                !n.node().hidden
+                    && n.acceptable(self, n)
+                    && if let Some(t) = token {
                         n.matches(self, t)
                     } else {
                         true
@@ -275,7 +276,8 @@ impl<'text> Parser<'text> {
 
     /// Parse a single token, advancing through the node hierarchy.
     pub fn advance(&mut self, token: Token<'text>) -> Result<(), ParseError<'text>> {
-        let matches = self.current_node
+        let matches = self
+            .current_node
             .successors()
             .iter()
             .filter(|n| n.acceptable(self, n) && n.matches(self, token))
@@ -290,17 +292,15 @@ impl<'text> Parser<'text> {
                 self.tokens.push(token);
                 Ok(())
             }
-            0 => {
-                Err(ParseError::NoMatches(
-                    token,
-                    self.current_node
-                        .successors()
-                        .iter()
-                        .filter(|n| n.acceptable(self, n))
-                        .cloned()
-                        .collect::<Vec<_>>(),
-                ))
-            }
+            0 => Err(ParseError::NoMatches(
+                token,
+                self.current_node
+                    .successors()
+                    .iter()
+                    .filter(|n| n.acceptable(self, n))
+                    .cloned()
+                    .collect::<Vec<_>>(),
+            )),
             _ => Err(ParseError::AmbiguousMatch(token, matches)),
         }
     }

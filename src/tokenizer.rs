@@ -61,8 +61,8 @@
 //! [tokens]: struct.Token.html
 //! [whitespace or a word]: enum.TokenType.html
 
-use std::fmt;
 use std::error::Error;
+use std::fmt;
 
 /// A position within a body of text.
 ///
@@ -90,11 +90,7 @@ pub struct SourceOffset {
 impl SourceOffset {
     /// Construct a `SourceOffset`.
     pub fn new(char: usize, line: usize, column: usize) -> SourceOffset {
-        SourceOffset {
-            char,
-            line,
-            column,
-        }
+        SourceOffset { char, line, column }
     }
 }
 
@@ -110,10 +106,7 @@ pub struct SourceLocation {
 impl SourceLocation {
     /// Construct a `SourceLocation`.
     pub fn new(start: SourceOffset, end: SourceOffset) -> SourceLocation {
-        SourceLocation {
-            start,
-            end,
-        }
+        SourceLocation { start, end }
     }
 }
 
@@ -370,8 +363,7 @@ impl<'text> Tokenizer<'text> {
             State::WordBackslash => return Err(TokenizerError::EscapingBackslashAtEndOfInput),
             State::Doublequote => return Err(TokenizerError::UnclosedDoubleQuote),
             State::Singlequote => return Err(TokenizerError::UnclosedSingleQuote),
-            State::DoublequoteBackslash |
-            State::SinglequoteBackslash => {
+            State::DoublequoteBackslash | State::SinglequoteBackslash => {
                 return Err(TokenizerError::EscapingBackslashAtEndOfInput)
             }
             State::Special => {
