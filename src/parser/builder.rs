@@ -182,7 +182,7 @@ impl<'a> Command<'a> {
         Command {
             hidden: false,
             priority: PRIORITY_DEFAULT,
-            name: name,
+            name,
             help_text: None,
             parameters: vec![],
             wrapped_root: None,
@@ -253,7 +253,7 @@ impl<'a> Parameter<'a> {
         Parameter {
             hidden: false,
             priority: None,
-            name: name,
+            name,
             repeatable: false,
             aliases: vec![],
             help_text: None,

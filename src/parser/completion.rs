@@ -23,8 +23,8 @@ impl CompletionOption {
     /// CompletionOption constructor
     pub fn new(option_string: String, complete: bool) -> CompletionOption {
         CompletionOption {
-            option_string: option_string,
-            complete: complete,
+            option_string,
+            complete,
         }
     }
 }
@@ -116,11 +116,11 @@ impl<'text> Completion<'text> {
             CompletionOption::new(o.clone(), false)
         }));
         Completion {
-            help_symbol: help_symbol,
-            help_text: help_text,
-            token: token,
-            exhaustive: exhaustive,
-            options: options,
+            help_symbol,
+            help_text,
+            token,
+            exhaustive,
+            options,
         }
     }
 }

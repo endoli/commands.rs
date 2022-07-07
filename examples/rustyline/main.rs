@@ -19,7 +19,7 @@ struct CommandCompleter {
 
 impl CommandCompleter {
     fn new(root: Rc<Node>) -> Self {
-        CommandCompleter { root: root }
+        CommandCompleter { root }
     }
 }
 

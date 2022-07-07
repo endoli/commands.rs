@@ -234,7 +234,7 @@ impl RootNode {
                 priority: PRIORITY_DEFAULT,
                 repeat_marker: None,
                 repeatable: false,
-                successors: successors,
+                successors,
             },
         }
     }
@@ -276,14 +276,14 @@ impl CommandNode {
                 name: name.to_string(),
                 help_symbol: name.to_string(),
                 help_text: help_text.unwrap_or("Command").to_string(),
-                hidden: hidden,
-                priority: priority,
+                hidden,
+                priority,
                 repeat_marker: None,
                 repeatable: false,
-                successors: successors,
+                successors,
             },
-            handler: handler,
-            parameters: parameters,
+            handler,
+            parameters,
             wrapped_root: None,
         }
     }
@@ -334,13 +334,13 @@ impl ParameterNameNode {
         ParameterNameNode {
             node: TreeNode {
                 name: name.to_string(),
-                help_symbol: help_symbol,
-                help_text: help_text,
-                hidden: hidden,
-                priority: priority,
-                repeat_marker: repeat_marker,
-                repeatable: repeatable,
-                successors: successors,
+                help_symbol,
+                help_text,
+                hidden,
+                priority,
+                repeat_marker,
+                repeatable,
+                successors,
             },
             parameter: Rc::clone(&parameter),
         }
@@ -404,16 +404,16 @@ impl ParameterNode {
         ParameterNode {
             node: TreeNode {
                 name: name.to_string(),
-                help_symbol: help_symbol,
-                help_text: help_text,
-                hidden: hidden,
-                priority: priority,
-                repeat_marker: repeat_marker,
-                repeatable: repeatable,
-                successors: successors,
+                help_symbol,
+                help_text,
+                hidden,
+                priority,
+                repeat_marker,
+                repeatable,
+                successors,
             },
-            kind: kind,
-            required: required,
+            kind,
+            required,
         }
     }
 }

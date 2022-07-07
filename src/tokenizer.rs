@@ -91,9 +91,9 @@ impl SourceOffset {
     /// Construct a `SourceOffset`.
     pub fn new(char: usize, line: usize, column: usize) -> SourceOffset {
         SourceOffset {
-            char: char,
-            line: line,
-            column: column,
+            char,
+            line,
+            column,
         }
     }
 }
@@ -111,8 +111,8 @@ impl SourceLocation {
     /// Construct a `SourceLocation`.
     pub fn new(start: SourceOffset, end: SourceOffset) -> SourceLocation {
         SourceLocation {
-            start: start,
-            end: end,
+            start,
+            end,
         }
     }
 }
@@ -183,9 +183,9 @@ impl<'text> Token<'text> {
     /// to the lifetime of the text being tokenized.
     pub fn new(text: &'text str, token_type: TokenType, location: SourceLocation) -> Token {
         Token {
-            text: text,
-            token_type: token_type,
-            location: location,
+            text,
+            token_type,
+            location,
         }
     }
 }
@@ -215,7 +215,7 @@ struct Tokenizer<'text> {
 impl<'text> Tokenizer<'text> {
     fn new(text: &'text str) -> Tokenizer {
         Tokenizer {
-            text: text,
+            text,
             state: State::Initial,
             token_type: None,
             token_start: 0,
