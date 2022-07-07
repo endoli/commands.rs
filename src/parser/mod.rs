@@ -267,7 +267,7 @@ impl<'text> Parser<'text> {
         for token in tokens {
             match token.token_type {
                 TokenType::Whitespace => {}
-                TokenType::Word => try!(self.advance(token)),
+                TokenType::Word => self.advance(token)?,
             }
         }
         Ok(())
