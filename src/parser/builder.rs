@@ -19,14 +19,9 @@ use super::nodes::*;
 /// [parameter]: struct.Parameter.html
 /// [`Parser`]: struct.Parser.html
 /// [`RootNode`]: struct.RootNode.html
+#[derive(Default)]
 pub struct CommandTree<'a> {
     commands: Vec<Command<'a>>,
-}
-
-impl<'a> Default for CommandTree<'a> {
-    fn default() -> Self {
-        CommandTree { commands: vec![] }
-    }
 }
 
 impl<'a> CommandTree<'a> {
