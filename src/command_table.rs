@@ -20,7 +20,7 @@ pub struct CommandTableEntry {
     /// Name of a command. This is used for command line entry.
     pub name: String,
     /// The underlying command that can be executed.
-    pub command: Rc<Command>,
+    pub command: Rc<dyn Command>,
 }
 
 /// A group of related commands
