@@ -6,7 +6,7 @@
 
 /// Indicate the type of parameter, so that the correct class and node
 /// structures are created.
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub enum ParameterKind {
     /// This parameter is a flag parameter.
     Flag,

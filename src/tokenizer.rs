@@ -77,7 +77,7 @@ use std::error::Error;
 /// by the [`SourceLocation`].
 ///
 /// [`SourceLocation`]: struct.SourceLocation.html
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SourceOffset {
     /// The index of this character within the body of text.
     pub char: usize,
@@ -99,7 +99,7 @@ impl SourceOffset {
 }
 
 /// A range within a body of text.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SourceLocation {
     /// The start of the range.
     pub start: SourceOffset,
@@ -155,7 +155,7 @@ impl fmt::Display for TokenizerError {
 }
 
 /// The role that a token plays: `Whitespace` or `Word`.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum TokenType {
     /// The token represents whitespace and not a word.
     Whitespace,
@@ -168,7 +168,7 @@ pub enum TokenType {
 ///
 /// The lifetime parameter `'text` refers to the lifetime
 /// of the body of text that was tokenized, creating this token.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Token<'text> {
     /// The text of the token.
     pub text: &'text str,
@@ -190,7 +190,7 @@ impl<'text> Token<'text> {
     }
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 enum State {
     Initial,
     Special,
