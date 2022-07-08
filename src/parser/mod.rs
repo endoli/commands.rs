@@ -99,16 +99,15 @@
 //! let mut parser = Parser::new(root);
 //! ```
 //!
-//! [`commands::tokenizer`]: ../tokenizer/index.html
-//! [`Command`]: struct.Command.html
-//! [`CommandNode`]: struct.CommandNode.html
-//! [`CommandTree`]: struct.CommandTree.html
-//! [`Node`]: enum.Node.html
-//! [`Parameter`]: struct.Parameter.html
-//! [`ParameterNode`]: trait.ParameterNode.html
-//! [`Parser`]: struct.Parser.html
-//! [`RootNode`]: struct.RootNode.html
-//! [three kinds of parameters]: enum.ParameterKind.html
+//! [`commands::tokenizer`]: crate::tokenizer
+//! [`Command`]: crate::parser::Command
+//! [`CommandNode`]: crate::parser::CommandNode
+//! [`CommandTree`]: crate::parser::CommandTree
+//! [`Node`]: crate::parser::Node
+//! [`Parameter`]: crate::parser::Parameter
+//! [`ParameterNode`]: crate::parser::ParameterNode
+//! [`RootNode`]: crate::parser::RootNode
+//! [three kinds of parameters]: crate::parser::ParameterKind
 
 mod builder;
 mod completion;
@@ -152,8 +151,8 @@ use tokenizer::{Token, TokenType};
 /// The parser is constructed as a `mut`able object as most of
 /// the methods on it will modify its state.
 ///
-/// [`CommandTree`]: struct.CommandTree.html
-/// ['RootNode`]: struct.RootNode.html
+/// [`CommandTree`]: crate::parser::CommandTree
+/// ['RootNode`]: crate::parser::RootNode
 pub struct Parser<'text> {
     current_node: Rc<Node>,
     /// The nodes which have been accepted during `parse` or `advance`.
@@ -226,8 +225,8 @@ impl<'text> Parser<'text> {
     /// }
     /// ```
     ///
-    /// [`Completion`]: struct.Completion.html
-    /// [`CompletionOption`]: struct.CompletionOption.html
+    /// [`Completion`]: crate::parser::Completion
+    /// [`CompletionOption`]: crate::parser::CompletionOption
     pub fn complete(&self, token: Option<Token<'text>>) -> Vec<Completion> {
         self.current_node
             .successors()

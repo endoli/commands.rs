@@ -20,7 +20,7 @@ pub struct CompletionOption {
 }
 
 impl CompletionOption {
-    /// CompletionOption constructor
+    /// `CompletionOption` constructor
     pub fn new(option_string: String, complete: bool) -> CompletionOption {
         CompletionOption {
             option_string,
@@ -40,8 +40,7 @@ impl CompletionOption {
 /// The lifetime parameter `'text` refers to the lifetime of the
 /// body of text which generated the [`Token`].
 ///
-/// [`CompletionOption`]: struct.CompletionOption.html
-/// [`Token`]: ../tokenizer/struct.Token.html
+/// [`Token`]: crate::tokenizer::Token
 pub struct Completion<'text> {
     /// Value placeholder for help.
     pub help_symbol: String,

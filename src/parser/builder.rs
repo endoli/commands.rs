@@ -15,10 +15,10 @@ use std::rc::Rc;
 /// of the strings used for [command] and [parameter] names and
 /// help text.
 ///
-/// [command]: struct.Command.html
-/// [parameter]: struct.Parameter.html
-/// [`Parser`]: struct.Parser.html
-/// [`RootNode`]: struct.RootNode.html
+/// [command]: Command
+/// [parameter]: Parameter
+/// [`Parser`]: crate::parser::Parser
+/// [`RootNode`]: crate::parser::RootNode
 #[derive(Default)]
 pub struct CommandTree<'a> {
     commands: Vec<Command<'a>>,
@@ -35,7 +35,9 @@ impl<'a> CommandTree<'a> {
         self.commands.push(command);
     }
 
-    /// Construct the `CommandTree` and produce a `RootNode`.
+    /// Construct the `CommandTree` and produce a [`RootNode`].
+    ///
+    /// [`RootNode`]: crate::parser::RootNode
     pub fn finalize(&self) -> Rc<Node> {
         let mut successors: Vec<Rc<Node>> = vec![];
         for c in &self.commands {
@@ -165,8 +167,6 @@ impl<'a> CommandTree<'a> {
 ///
 /// The lifetime parameter `'a` refers to the lifetime
 /// of the strings used for command names and help text.
-///
-/// [`CommandTree`]: struct.CommandTree.html
 pub struct Command<'a> {
     hidden: bool,
     priority: i32,
@@ -212,8 +212,6 @@ impl<'a> Command<'a> {
     }
 
     /// Add a [`Parameter`] to the command.
-    ///
-    /// [`Parameter`]: struct.Parameter.html
     pub fn parameter(mut self, parameter: Parameter<'a>) -> Self {
         self.parameters.push(parameter);
         self
@@ -222,7 +220,7 @@ impl<'a> Command<'a> {
     /// The `wrapped_root` signifies the path to the command that should
     /// be wrapped by this command. This is used for the `help` command.
     ///
-    /// [`CommandNode`]: struct.CommandNode.html
+    /// [`CommandNode`]: crate::parser::CommandNode
     pub fn wraps(mut self, wrapped_root: String) -> Self {
         self.wrapped_root = Some(wrapped_root);
         self
@@ -234,8 +232,6 @@ impl<'a> Command<'a> {
 /// The lifetime parameter `'a` refers to the lifetime
 /// of the strings used for parameter names, aliases and
 /// help text.
-///
-/// [`Command`]: struct.Command.html
 pub struct Parameter<'a> {
     hidden: bool,
     priority: Option<i32>,
@@ -314,7 +310,7 @@ impl<'a> Parameter<'a> {
     /// Set which type of [`ParameterNode`] is supposed to be created
     /// to represent this parameter.
     ///
-    /// [`ParameterNode`]: trait.ParameterNode.html
+    /// [`ParameterNode`]: crate::parser::ParameterNode
     pub fn kind(mut self, kind: ParameterKind) -> Self {
         self.kind = kind;
         self

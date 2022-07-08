@@ -22,7 +22,7 @@
 //! This library is in the early stages of development and
 //! not everything works yet.
 //!
-//! [`Parser`]: parser/struct.Parser.html
+//! [`Parser`]: crate::parser::Parser
 
 #![warn(missing_docs)]
 #![deny(

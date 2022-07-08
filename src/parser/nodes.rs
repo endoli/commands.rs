@@ -40,9 +40,6 @@ pub trait NodeOps {
     /// the `Rc<Node>` value for the node rather than having to rely upon
     /// `self` which won't be a [`Node`], but the underlying [`CommandNode`]
     /// or similar.
-    ///
-    /// [`Node`]: enum.Node.html
-    /// [`CommandNode`]: struct.CommandNode.html
     fn acceptable(&self, parser: &Parser, node_ref: &Rc<Node>) -> bool;
 
     /// Given a node and an optional token, provide the completion options.
@@ -53,11 +50,6 @@ pub trait NodeOps {
     /// This is the expected behavior for [`CommandNode`],
     /// [`ParameterNameNode`], as well as [`ParameterNode`] where the
     /// [`ParameterKind`] is `Flag`.
-    ///
-    /// [`CommandNode`]: struct.CommandNode.html
-    /// [`ParameterKind`]: enum.ParameterKind.html
-    /// [`ParameterNameNode`]: struct.ParameterNameNode.html
-    /// [`ParameterNode`]: struct.ParameterNode.html
     fn complete<'text>(&self, token: Option<Token<'text>>) -> Completion<'text>;
 
     /// By default, a node matches a `token` when the name of the
@@ -66,11 +58,6 @@ pub trait NodeOps {
     /// This is the expected behavior for [`CommandNode`],
     /// [`ParameterNameNode`], as well as [`ParameterNode`] where the
     /// [`ParameterKind`] is `Flag`.
-    ///
-    /// [`CommandNode`]: struct.CommandNode.html
-    /// [`ParameterKind`]: enum.ParameterKind.html
-    /// [`ParameterNameNode`]: struct.ParameterNameNode.html
-    /// [`ParameterNode`]: struct.ParameterNode.html
     fn matches(&self, parser: &Parser, token: Token) -> bool;
 }
 
@@ -100,8 +87,6 @@ pub struct TreeNode {
 /// The root of a command tree.
 pub struct RootNode {
     /// [`TreeNode`] data.
-    ///
-    /// [`TreeNode`]: struct.TreeNode.html
     pub node: TreeNode,
 }
 
@@ -111,12 +96,10 @@ pub struct RootNode {
 /// This is used for the help command so that it can complete
 /// normal commands. The `successors` will be those of the wrapped node.
 ///
-/// [`Command`]: struct.Command.html
-/// [`CommandTree`]: struct.CommandTree.html
+/// [`Command`]: crate::parser::Command
+/// [`CommandTree`]: crate::parser::CommandTree
 pub struct CommandNode {
     /// [`TreeNode`] data.
-    ///
-    /// [`TreeNode`]: struct.TreeNode.html
     pub node: TreeNode,
     /// The handler which is executed once this node has been accepted.
     pub handler: Option<fn(node: &Node) -> ()>,
@@ -130,8 +113,6 @@ pub struct CommandNode {
 /// parameter.
 pub struct ParameterNameNode {
     /// [`TreeNode`] data.
-    ///
-    /// [`TreeNode`]: struct.TreeNode.html
     pub node: TreeNode,
     /// The `parameter` named by this node.
     pub parameter: Rc<Node>,
@@ -140,13 +121,11 @@ pub struct ParameterNameNode {
 /// A node representing a parameter for a command.
 pub struct ParameterNode {
     /// [`TreeNode`] data.
-    ///
-    /// [`TreeNode`]: struct.TreeNode.html
     pub node: TreeNode,
     /// A `required` parameter must be supplied for the
     /// command line being parsed to be valid.
     pub required: bool,
-    /// What type of `ParameterKind` this is.
+    /// What type of [`ParameterKind`] this is.
     pub kind: ParameterKind,
 }
 
@@ -164,8 +143,6 @@ impl PartialEq for Node {
 /// support.
 impl Node {
     /// Get the [`TreeNode`] data for a given `Node`.
-    ///
-    /// [`TreeNode`]: struct.TreeNode.html
     pub fn node(&self) -> &TreeNode {
         match *self {
             Node::Command(ref command) => &command.node,

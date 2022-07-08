@@ -6,7 +6,7 @@
 
 //! # Command Tokenization
 //!
-//! The [command parser] needs to be able to [tokenize] commands
+//! The command parser needs to be able to [tokenize] commands
 //! into their constituent words and whitespace.
 //!
 //! The `tokenizer` breaks source text into a vector of [tokens]
@@ -55,11 +55,9 @@
 //! }
 //! ```
 //!
-//! [command parser]: ../parser/index.html
-//! [source location]: struct.SourceLocation.html
-//! [tokenize]: fn.tokenize.html
-//! [tokens]: struct.Token.html
-//! [whitespace or a word]: enum.TokenType.html
+//! [source location]: SourceLocation
+//! [tokens]: Token
+//! [whitespace or a word]: TokenType
 
 use std::error::Error;
 use std::fmt;
@@ -75,8 +73,6 @@ use std::fmt;
 /// The `SourceOffset` is typically used as a pair of offsets
 /// indicating the start and end of a range of text as used
 /// by the [`SourceLocation`].
-///
-/// [`SourceLocation`]: struct.SourceLocation.html
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SourceOffset {
     /// The index of this character within the body of text.
