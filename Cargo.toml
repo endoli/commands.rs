@@ -11,9 +11,6 @@ homepage = "https://github.com/endoli/commands.rs"
 repository = "https://github.com/endoli/commands.rs"
 documentation = "https://endoli.github.io/commands.rs/commands/"
 
-[badges]
-travis-ci = { repository = "endoli/commands.rs" }
-
 [[example]]
 name = "linefeed"
 path = "examples/linefeed/main.rs"

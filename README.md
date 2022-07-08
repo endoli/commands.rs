@@ -1,6 +1,6 @@
 # Commands
 
-[![Build Status](https://travis-ci.org/endoli/commands.rs.svg?branch=master)](https://travis-ci.org/endoli/commands.rs)
+[![Build Status](https://github.com/endoli/commands.rs/actions/workflows/rust.yml/badge.svg)](https://github.com/endoli/commands.rs/actions/workflows/rust.yml)
 [![](http://meritbadge.herokuapp.com/commands)](https://crates.io/crates/commands)
 
 A command system for Rust.
