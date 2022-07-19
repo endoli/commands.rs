@@ -11,15 +11,15 @@ use std::rc::Rc;
 
 use commands::parser::{Command, CommandTree, ParseError, Parser};
 use commands::tokenizer::tokenize;
-use linefeed::{ReadResult, Reader};
+use linefeed::{Interface, ReadResult};
 
 fn main() {
     let mut tree = CommandTree::new();
     tree.command(Command::new("show"));
     let root = tree.finalize();
 
-    let mut reader = Reader::new("example").unwrap();
-    reader.set_prompt(">> ");
+    let reader = Interface::new("example").unwrap();
+    reader.set_prompt(">> ").unwrap();
     while let Ok(ReadResult::Input(line)) = reader.read_line() {
         reader.add_history(line.clone());
         if let Ok(tokens) = tokenize(&line) {
