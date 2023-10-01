@@ -318,7 +318,7 @@ impl<'text> Parser<'text> {
     /// respect to having accepted a command and all
     /// required parameters.
     pub fn verify(&self) -> Result<(), VerifyError> {
-        if let Some(&Node::Command(ref command)) = self.commands.first().map(|n| &**n) {
+        if let Some(Node::Command(command)) = self.commands.first().map(|n| &**n) {
             for expected in &command.parameters {
                 if let Node::Parameter(ref param) = **expected {
                     let name = &param.node.name;
