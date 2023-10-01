@@ -31,7 +31,7 @@ pub trait NodeOps {
     /// Accept this node with the given `token` as data.
     ///
     /// By default, nothing needs to happen for `accept`.
-    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token, node_ref: &Rc<Node>);
+    fn accept(&self, parser: &mut Parser, token: Token, node_ref: &Rc<Node>);
 
     /// Can this node be accepted in the current parser state?
     /// By default, a node can be accepted when it hasn't been seen yet.
@@ -162,7 +162,7 @@ impl Node {
 }
 
 impl NodeOps for Node {
-    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token, node_ref: &Rc<Node>) {
+    fn accept(&self, parser: &mut Parser, token: Token, node_ref: &Rc<Node>) {
         match *self {
             Node::Command(ref command) => command.accept(parser, token, node_ref),
             Node::Parameter(ref parameter) => parameter.accept(parser, token, node_ref),
@@ -220,7 +220,7 @@ impl RootNode {
 /// `RootNode` does not want to perform any actual `NodeOps` as these
 /// operations should only be invoked by the `Parser` on successor nodes.
 impl NodeOps for RootNode {
-    fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token, _node_ref: &Rc<Node>) {}
+    fn accept(&self, _parser: &mut Parser, _token: Token, _node_ref: &Rc<Node>) {}
 
     fn acceptable(&self, _parser: &Parser, _node_ref: &Rc<Node>) -> bool {
         false
@@ -268,7 +268,7 @@ impl CommandNode {
 
 impl NodeOps for CommandNode {
     /// Record this command.
-    fn accept<'text>(&self, parser: &mut Parser<'text>, _token: Token, node_ref: &Rc<Node>) {
+    fn accept(&self, parser: &mut Parser, _token: Token, node_ref: &Rc<Node>) {
         if self.handler.is_some() {
             parser.commands.push(Rc::clone(node_ref))
         }
@@ -326,7 +326,7 @@ impl ParameterNameNode {
 
 impl NodeOps for ParameterNameNode {
     /// Record this command.
-    fn accept<'text>(&self, _parser: &mut Parser<'text>, _token: Token, _node_ref: &Rc<Node>) {}
+    fn accept(&self, _parser: &mut Parser, _token: Token, _node_ref: &Rc<Node>) {}
 
     fn acceptable(&self, parser: &Parser, node_ref: &Rc<Node>) -> bool {
         if self.node.repeatable {
@@ -397,7 +397,7 @@ impl ParameterNode {
 
 impl NodeOps for ParameterNode {
     /// Record this parameter value.
-    fn accept<'text>(&self, parser: &mut Parser<'text>, token: Token, _node_ref: &Rc<Node>) {
+    fn accept(&self, parser: &mut Parser, token: Token, _node_ref: &Rc<Node>) {
         if self.node.repeatable {
             unimplemented!();
         } else {
