@@ -122,11 +122,11 @@ pub use self::constants::{PRIORITY_DEFAULT, PRIORITY_MINIMUM, PRIORITY_PARAMETER
 pub use self::nodes::{CommandNode, ParameterNameNode, ParameterNode, RootNode};
 pub use self::nodes::{Node, NodeOps, TreeNode};
 
+use crate::tokenizer::{Token, TokenType};
 use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use std::rc::Rc;
-use crate::tokenizer::{Token, TokenType};
 
 /// Command parser
 ///
