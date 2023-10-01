@@ -10,6 +10,7 @@ categories = ["command-line-interface"]
 homepage = "https://github.com/endoli/commands.rs"
 repository = "https://github.com/endoli/commands.rs"
 documentation = "https://docs.rs/commands/"
+edition = "2021"
 
 [[example]]
 name = "linefeed"

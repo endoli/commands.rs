@@ -6,7 +6,7 @@
 
 //! # Command Tables
 
-use menu_definition::MenuDefinition;
+use crate::menu_definition::MenuDefinition;
 use std::rc::Rc;
 
 /// A command

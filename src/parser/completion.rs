@@ -4,8 +4,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use tokenizer::Token;
-use util::longest_common_prefix;
+use crate::tokenizer::Token;
+use crate::util::longest_common_prefix;
 
 /// Represents a single option returned by `complete`.
 ///

@@ -126,7 +126,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use std::rc::Rc;
-use tokenizer::{Token, TokenType};
+use crate::tokenizer::{Token, TokenType};
 
 /// Command parser
 ///
@@ -396,7 +396,7 @@ impl fmt::Display for VerifyError {
 #[cfg(test)]
 mod test {
     use super::*;
-    use tokenizer::tokenize;
+    use crate::tokenizer::tokenize;
 
     #[test]
     #[should_panic]

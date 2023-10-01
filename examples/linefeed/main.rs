@@ -4,9 +4,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-extern crate commands;
-extern crate linefeed;
-
 use std::rc::Rc;
 
 use commands::parser::{Command, CommandTree, ParseError, Parser};

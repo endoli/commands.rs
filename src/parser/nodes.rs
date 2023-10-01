@@ -12,7 +12,7 @@ use std::rc::Rc;
 
 use super::constants::*;
 use super::{Completion, Parser};
-use tokenizer::Token;
+use crate::tokenizer::Token;
 
 /// Enumeration of node types used to have vectors of `Node` and so on.
 pub enum Node {

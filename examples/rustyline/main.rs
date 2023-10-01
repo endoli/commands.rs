@@ -4,9 +4,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-extern crate commands;
-extern crate rustyline;
-
 use commands::parser::{Command, CommandTree, Node, ParseError, Parser};
 use commands::tokenizer::tokenize;
 use rustyline::completion::Completer;
