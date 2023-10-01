@@ -9,7 +9,7 @@ keywords = ["argument", "cli", "command"]
 categories = ["command-line-interface"]
 homepage = "https://github.com/endoli/commands.rs"
 repository = "https://github.com/endoli/commands.rs"
-documentation = "https://endoli.github.io/commands.rs/commands/"
+documentation = "https://docs.rs/commands/"
 
 [[example]]
 name = "linefeed"

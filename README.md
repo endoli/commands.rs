@@ -1,7 +1,8 @@
 # Commands
 
 [![Build Status](https://github.com/endoli/commands.rs/actions/workflows/rust.yml/badge.svg)](https://github.com/endoli/commands.rs/actions/workflows/rust.yml)
-[![](http://meritbadge.herokuapp.com/commands)](https://crates.io/crates/commands)
+[![](https://img.shields.io/crates/v/commands.svg)](https://crates.io/crates/commands)
+[![docs.rs](https://img.shields.io/docsrs/commands)](https://docs.rs/commands)
 
 A command system for Rust.
 
@@ -9,8 +10,7 @@ Dual licensed under the MIT and Apache 2 licenses.
 
 ## Documentation
 
-The API is fully documented with examples:
-[https://endoli.github.io/commands.rs/commands/](https://endoli.github.io/commands.rs/commands/)
+The API is fully documented with examples: <https://docs.rs/commands/>
 
 ## Installation
 
