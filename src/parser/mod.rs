@@ -348,8 +348,8 @@ pub enum ParseError<'text> {
 impl<'text> fmt::Debug for ParseError<'text> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            ParseError::NoMatches(token, _) => write!(f, "NoMatches({:?}, ...)", token),
-            ParseError::AmbiguousMatch(token, _) => write!(f, "AmbiguousMatch({:?}, ...)", token),
+            ParseError::NoMatches(token, _) => write!(f, "NoMatches({token:?}, ...)"),
+            ParseError::AmbiguousMatch(token, _) => write!(f, "AmbiguousMatch({token:?}, ...)"),
         }
     }
 }
