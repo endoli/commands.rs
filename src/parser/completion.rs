@@ -101,7 +101,7 @@ impl<'text> Completion<'text> {
             match token {
                 Some(t) => {
                     if lcp != t.text {
-                        other_options.push(lcp)
+                        other_options.push(lcp);
                     }
                 }
                 None => other_options.push(lcp),

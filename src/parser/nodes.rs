@@ -270,7 +270,7 @@ impl NodeOps for CommandNode {
     /// Record this command.
     fn accept(&self, parser: &mut Parser, _token: Token, node_ref: &Rc<Node>) {
         if self.handler.is_some() {
-            parser.commands.push(Rc::clone(node_ref))
+            parser.commands.push(Rc::clone(node_ref));
         }
     }
 
