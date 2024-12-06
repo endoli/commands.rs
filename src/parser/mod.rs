@@ -345,7 +345,7 @@ pub enum ParseError<'text> {
     AmbiguousMatch(Token<'text>, Vec<Rc<Node>>),
 }
 
-impl<'text> fmt::Debug for ParseError<'text> {
+impl fmt::Debug for ParseError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             ParseError::NoMatches(token, _) => write!(f, "NoMatches({token:?}, ...)"),
@@ -354,7 +354,7 @@ impl<'text> fmt::Debug for ParseError<'text> {
     }
 }
 
-impl<'text> Error for ParseError<'text> {
+impl Error for ParseError<'_> {
     fn description(&self) -> &str {
         match *self {
             ParseError::NoMatches(_, _) => "No match.",
@@ -363,7 +363,7 @@ impl<'text> Error for ParseError<'text> {
     }
 }
 
-impl<'text> fmt::Display for ParseError<'text> {
+impl fmt::Display for ParseError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         self.description().fmt(f)
     }
