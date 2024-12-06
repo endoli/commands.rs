@@ -170,7 +170,7 @@ pub struct Token<'text> {
 impl<'text> Token<'text> {
     /// Construct a `Token`. The lifetime parameter `'text` refers
     /// to the lifetime of the text being tokenized.
-    pub fn new(text: &'text str, token_type: TokenType, location: SourceLocation) -> Token {
+    pub fn new(text: &'text str, token_type: TokenType, location: SourceLocation) -> Token<'text> {
         Token {
             text,
             token_type,
@@ -202,7 +202,7 @@ struct Tokenizer<'text> {
 }
 
 impl<'text> Tokenizer<'text> {
-    fn new(text: &'text str) -> Tokenizer {
+    fn new(text: &'text str) -> Tokenizer<'text> {
         Tokenizer {
             text,
             state: State::Initial,
