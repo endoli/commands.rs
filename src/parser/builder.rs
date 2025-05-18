@@ -60,7 +60,7 @@ impl<'a> CommandTree<'a> {
                 ParameterKind::Simple => {
                     self.build_simple_parameter(parameter, &mut parameters, &mut successors);
                 }
-            };
+            }
         }
         // We'll want to find the right node for the wrapped_root
         // and pass it along here.

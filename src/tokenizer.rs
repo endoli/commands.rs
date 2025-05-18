@@ -283,7 +283,7 @@ impl<'text> Tokenizer<'text> {
                     } else {
                         self.reduce();
                         self.initial(offset, c);
-                    };
+                    }
                 }
                 State::Word => {
                     if c.is_whitespace() {
@@ -310,7 +310,7 @@ impl<'text> Tokenizer<'text> {
                         self.shift(offset, State::Word);
                     } else {
                         return Err(TokenizerError::CharacterNotAllowedHere(offset));
-                    };
+                    }
                 }
                 State::Doublequote => {
                     if c == '"' {
@@ -320,14 +320,14 @@ impl<'text> Tokenizer<'text> {
                         self.shift(offset, State::DoublequoteBackslash);
                     } else {
                         self.shift(offset, State::Doublequote);
-                    };
+                    }
                 }
                 State::DoublequoteBackslash => {
                     if !c.is_whitespace() {
                         self.shift(offset, State::Doublequote);
                     } else {
                         return Err(TokenizerError::CharacterNotAllowedHere(offset));
-                    };
+                    }
                 }
                 State::Singlequote => {
                     if c == '\'' {
@@ -337,14 +337,14 @@ impl<'text> Tokenizer<'text> {
                         self.shift(offset, State::SinglequoteBackslash);
                     } else {
                         self.shift(offset, State::Singlequote);
-                    };
+                    }
                 }
                 State::SinglequoteBackslash => {
                     if !c.is_whitespace() {
                         self.shift(offset, State::Singlequote);
                     } else {
                         return Err(TokenizerError::CharacterNotAllowedHere(offset));
-                    };
+                    }
                 }
                 State::Special => {
                     return Err(TokenizerError::SpecialNotYetImplemented(offset));
